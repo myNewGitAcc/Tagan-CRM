@@ -11,6 +11,16 @@
 // about supported directives.
 //
 //= require jquery
+//= require angular
+//= require angular-ui-router
+//= require angular-animate
+//= require angular-messages
+//= require a0-angular-storage
+//= require angular-bootstrap
+
+
+
+// new components need include before
 //= require jquery_ujs
-//= require turbolinks
-//= require_tree .
+//= require app/app.config
+//= require_tree ./app

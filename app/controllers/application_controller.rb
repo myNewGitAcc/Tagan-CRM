@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
+  # protect_from_forgery with: :exception
   # before_filter :configure_permitted_parameters, if: :devise_controller?
-  before_action :auth_user!
+  # before_action :auth_user!
 
   # include DeviseOverrides
 
@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
   def auth_user!
     exclusion_redirect = [login_path, registration_path].include?(request.fullpath)
     if current_user

@@ -3,7 +3,13 @@ module API
     class Root < Grape::API
       version 'v1'
       include API::Concern::Status
+      include API::Concern::Session
 
+      add_swagger_documentation(
+          base_path: '/api',
+          hide_documentation_path: true,
+          api_version: 'v1'
+      )
     end
   end
 end

@@ -1,0 +1,51 @@
+<div class="card card-container">
+    <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+    <p id="profile-name" class="profile-name-card"></p>
+    <div class="error-msg text-center" ng-if="signInCtrl.showError"> {{signInCtrl.signInErrorMsg}}</div>
+    <form name="signinForm" class="form-signin" novalidate>
+        <span id="reauth-email" class="reauth-email"></span>
+        <input name="email"
+               type="email"
+               id="inputEmail"
+               class="form-control"
+               placeholder="Email"
+               ng-model="user_credentials.email"
+               ng-focus="loginCtrl.showError = false"
+               required>
+        <div class="valid-errors" ng-messages="signinForm.email.$error" ng-if="signinForm.email.$touched">
+            <p ng-message="email">This needs to be a valid email</p>
+            <p ng-message="required">This field is required!</p>
+        </div>
+
+        <input name="password"
+               type="password"
+               id="inputPassword"
+               class="form-control"
+               placeholder="Password"
+               ng-model="user_credentials.password"
+               ng-minlength="6"
+               ng-focus="loginCtrl.showError = false"
+               required>
+        <div class="valid-errors" ng-messages="signinForm.password.$error" ng-if="signinForm.password.$touched">
+            <p ng-message="minlength">Your password is too short.</p>
+            <p ng-message="required">This field is required!</p>
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block btn-signin"
+                type="submit"
+                ng-disabled="signinForm.$invalid"
+                ng-click="loginCtrl.signInSubmit(user_credentials)">
+
+            Sign in
+        </button>
+    </form><!-- /form -->
+    <a href="#" class="forgot-password">
+        Forgot the password?
+    </a>
+    <div class="bottom text-center">
+        New here? <a class="forgot-password" href="#" ng-click="loginCtrl.signUpOpen()"><b>Sign Up</b></a>
+    </div>
+    <!--<div class="bottom text-center">-->
+        <!--New here? <a class="forgot-password" href="#" ng-click="loginCtrl.logout()"><b>logout</b></a>-->
+    <!--</div>-->
+</div><!-- /card-container -->
