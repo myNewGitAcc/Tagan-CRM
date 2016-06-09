@@ -26,6 +26,32 @@ class User < ActiveRecord::Base
     t.add lambda{ |usr| usr.profile.as_api_response(:basic) rescue nil }, as: :profile
   end
 
+  class << self
+    def authenticate(email_or_username, password)
+      user = where(["lower(email) = :value", { :value => email_or_username.downcase }]).first
+      return nil unless user
+      unless user.valid_password?(password)
+        sign_in_attributes = {
+            failed_attempts: user.failed_attempts.to_i + 1
+        }
+        user.update_columns(sign_in_attributes)
+        user.lock_access! if user.failed_attempts >= Devise.maximum_attempts
+        return nil
+      end
+      user.unlock_access! if user.access_locked? && user.locked_at < Devise.unlock_in.ago
+      user
+    end
+
+    def find_for_database_authentication(warden_conditions)
+      conditions = warden_conditions.dup
+      if login = conditions.delete(:login)
+        where(conditions.to_h).where(["lower(email) = :value", { :value => login.downcase }]).first
+      else
+        where(conditions).first
+      end
+    end
+  end
+
   def validate_request!(request, params)
     if access_locked?
       errors.add(:account,'is locked please contact us')
