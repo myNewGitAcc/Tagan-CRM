@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'messages/index'
+
+  get 'messages/create'
+
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
@@ -24,6 +28,8 @@ Rails.application.routes.draw do
 
   get '/login', to: 'auth#login'
   get '/registration', to: 'auth#registration'
+
+  resources :messages
 
 
   # match '*path' => redirect('/'), via: :get

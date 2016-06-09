@@ -53,6 +53,8 @@ gem 'rack-cors', :require => 'rack/cors'
 
 gem 'devise'
 gem 'devise-token_authenticatable'
-
 gem 'acts_as_api', '~> 0.4.2'
+
+gem 'thin'
+gem 'faye'
 
