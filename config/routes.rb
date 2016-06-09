@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
-  # root 'welcome#index'
   root to: 'application#show'
 
   def shared_devise_path
@@ -27,6 +26,6 @@ Rails.application.routes.draw do
   get '/registration', to: 'auth#registration'
 
 
-  # # match '*path' => redirect('/'), via: :get
-  # get '/*path' => redirect('/'), via: :get
+  # match '*path' => redirect('/'), via: :get
+  get '/*path' => 'auth#redirect'
 end

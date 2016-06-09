@@ -1,2 +1,41 @@
-<h1>Auth#registration</h1>
-<p>Find me in app/views/auth/registration.html.erb</p>
+<!-- Flip back area -->
+<div class="clearfix flip-slide back-side">
+  <div class="small-12 medium-10 medium-push-1 large-10 large-push-1 column form-box">
+    <form action="/access" class="invitation-form clearfix validate-form" autocomplete="off" method="post" data-thank-page="true">
+      <input type="text" style="display:none" />
+      <input type="password" style="display:none">
+      <div class="small-12 medium-8 medium-push-2 large-9 large-push-0 column input-holder">
+        <div class="small-12 medium-12 large-6 column valid-row">
+          <label class="row form-label" for="email">
+            <span class="label-text text-uppercase">email address</span>
+            <input class="required-email" type="email" required id="email" name="user[email]">
+          </label>
+        </div>
+        <div class="small-12 medium-6 large-3 column valid-row">
+          <label class="row form-label" for="password">
+            <span class="label-text text-uppercase">password</span>
+            <input class="required-password" type="password" required id="password" name="user[password]">
+          </label>
+        </div>
+        <div class="small-12 medium-6 large-3 column valid-row last">
+          <label class="row form-label" for="password_confirmation">
+            <span class="label-text text-uppercase">pass confirmation</span>
+            <input class="required-password-confirmation" type="password" required id="password_confirmation" name="user[password_confirmation]">
+          </label>
+        </div>
+      </div>
+      <div class="small-12 medium-12 large-3 column">
+        <button type="submit"><span class="text">request registration</span></button>
+      </div>
+    </form>
+    <div class="to-login-link">
+      <%= link_to 'to login', login_path %>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    $('.registration-link').removeAttr('href').css('text-decoration', 'none');
+  });
+</script>

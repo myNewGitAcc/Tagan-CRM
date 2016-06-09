@@ -11,7 +11,7 @@
             <div class="small-12 medium-6 large-6 column valid-row">
               <label class="row form-label" for="login">
                 <span class="label-text">email</span>
-                <input class="required" autocomplete="off" type="text" id="login" name="user[login]">
+                <input class="required" autocomplete="off" type="text" id="login" name="user[email]">
               </label>
             </div>
             <div class="small-12 medium-6 large-6 column last valid-row">
@@ -37,6 +37,9 @@
           <input type="submit" class="button btn-login" value="login">
         </form>
       </div>
+    </div>
+    <div class="to-register-link">
+      <%= link_to 'to register', registration_path %>
     </div>
   </div>
 </div>
