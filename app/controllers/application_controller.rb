@@ -21,9 +21,7 @@ class ApplicationController < ActionController::Base
       if exclusion_redirect
         redirect_to root_path if current_user_valid
       else
-        unless current_user_valid
-          warden.logout
-        end
+        warden.logout unless current_user_valid
       end
     else
       redirect_to login_path if !exclusion_redirect

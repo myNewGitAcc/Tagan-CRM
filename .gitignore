@@ -11,4 +11,5 @@
 /log/*
 !/log/.keep
 /tmp
-.idea//vendor/assets/components*
+.idea/
+/vendor/assets/components*
