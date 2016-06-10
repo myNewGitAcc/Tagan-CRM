@@ -1,0 +1,11 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title SpaApp
+    = stylesheet_link_tag    'messages', media: 'all'
+    = javascript_include_tag 'messages', 'http://localhost:9292/faye/client.js'
+    = csrf_meta_tags
+  %body
+    .app-content
+      = yield

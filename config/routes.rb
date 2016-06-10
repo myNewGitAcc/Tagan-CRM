@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get 'messages/index'
-
-  get 'messages/create'
 
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
