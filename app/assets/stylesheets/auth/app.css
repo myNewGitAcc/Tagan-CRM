@@ -2456,10 +2456,7 @@ small.error {
     margin-bottom: 1rem;
 }
 
-.error label,
-.error label.error {
-    color: #f13300;
-}
+
 
 .error small.error {
     display: block;
