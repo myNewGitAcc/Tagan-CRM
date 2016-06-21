@@ -11,6 +11,8 @@
 /log/*
 !/log/.keep
 /tmp
-.idea/
-/vendor/assets/components*
+.idea/*
+/vendor/assets/components/*
 node_modules/
+/bower.json
+/.vscode/*

@@ -14,11 +14,11 @@ angular
             $urlRouterProvider.otherwise('/');
 
             $stateProvider
-                .state('root', {
+                .state('worktime', {
                     url: '/',
-                    templateUrl: 'assets/app/components/root/root.tpl.html',
-                    controller: 'rootController',
-                    controllerAs: 'rootCtrl'
+                    templateUrl: 'assets/app/components/worktime/worktime.tpl.html',
+                    controller: 'worktimeController',
+                    controllerAs: 'worktimeCtrl'
                 })
                 .state('state1', {
                     url: '/state1',

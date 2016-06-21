@@ -300,7 +300,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
    *   and controller properties.
    * - **ownParams** `{object}` - returns an array of params that belong to the state, 
    *   not including any params defined by ancestor states.
-   * - **path** `{string}` - returns the full path from the root down to this state. 
+   * - **path** `{string}` - returns the full path from the root down to this state.
    *   Needed for state activation.
    * - **includes** `{object}` - returns an object that includes every state that 
    *   would pass a `$state.includes()` test.

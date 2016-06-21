@@ -1,0 +1,13 @@
+<div id="popUpDialog-bg" ng-show="log.showPopUpDialog">
+    <div id="popUpDialog">
+        <div class="content">{{log.content}}</div>
+        <div class="clearfix buttons-container">
+            <div class="pull-left">
+                <button class="btn btn-primary" ng-click="log.close()">Yes</button>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-warning" ng-click="log.cancel()">No</button>
+            </div>
+        </div>
+    </div>
+</div>

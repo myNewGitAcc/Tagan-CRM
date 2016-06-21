@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<component name="dataSourceStorage">
-  <data-source name="Rails spa_app: test" uuid="0032a532-b9ae-4499-a9f1-4104fbec06dd">
-    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
-  </data-source>
-  <data-source name="Rails spa_app: development" uuid="9989db0c-2f8f-4f17-83af-1385f4f9a6d4">
-    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
-  </data-source>
-</component>
