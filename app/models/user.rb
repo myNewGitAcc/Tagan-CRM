@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   api_accessible :basic do |t|
     t.add :id
     t.add :email
-    # t.add :username
+    t.add :role_id
     t.add :created_at
   end
 

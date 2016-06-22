@@ -58,4 +58,4 @@ gem 'acts_as_api', '~> 0.4.2'
 
 gem 'thin'
 gem 'faye'
-
+gem "angular-faye-rails"

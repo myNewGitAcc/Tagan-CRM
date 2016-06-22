@@ -1,4 +1,4 @@
-<div class="navbar navbar-default navbar-static-top" ng-controller="NavbarController">
+<div class="navbar navbar-default navbar-static-top">
     <div class="container" ng-controller="LogoutController">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" ng-click="nav.isCollapsed = !nav.isCollapsed">
@@ -11,8 +11,11 @@
         </div>
         <div uib-collapse="nav.isCollapsed" class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav">
-                <li class="active" ui-sref-active="active">
-                    <a href="/">Worktime</a>
+                <li ng-class="{'active': nav.activePage == '/'}">
+                    <a href="/" ng-click="nav.setPage(1)">Worktime</a>
+                </li>
+                <li ng-class="{'active': nav.activePage == '/employees'}">
+                    <a href="employees" ng-click="nav.setPage(2)">Employees</a>
                 </li>
             </ul>
                 <log-out></log-out>

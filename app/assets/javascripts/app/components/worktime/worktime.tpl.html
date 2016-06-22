@@ -10,13 +10,26 @@
                     <h3> Remains to work out: <span class="label label-success">{{ worktimeCtrl.remainsWork }}</span> </h3>
                 </div>
                 <div class="worktime-footer">
-                    <div class="row">
-                        <p class="btn-pause col-lg-6">
-                            <button class="btn btn-primary">Pause</button>
+                    <div class="buttons">
+                        <p class="btn-pause">
+                            <button ng-show="worktimeCtrl.onlineUser" class="btn btn-primary"
+                                    ng-click="worktimeCtrl.pause()"
+                                    ng-class="{'btn-warning': worktimeCtrl.buttonContinue}">
+                                {{worktimeCtrl.buttonPause}}
+                            </button>
+                        </p>
+                        <p class="btn-move">
+                            <button ng-show="worktimeCtrl.onlineUser" class="btn btn-primary"
+                                    ng-click="worktimeCtrl.moveAway()">
+                                Move away
+                            </button>
                         </p>
 
-                        <p class="btn-move col-lg-3">
-                            <button class="btn btn-primary">Move away</button>
+                        <p class="btn-start">
+                            <button ng-show="!worktimeCtrl.onlineUser" class="btn btn-success"
+                                    ng-click="worktimeCtrl.startTime()">
+                                Start
+                            </button>
                         </p>
                     </div>
                 </div>

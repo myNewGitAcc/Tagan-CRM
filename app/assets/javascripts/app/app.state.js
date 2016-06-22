@@ -20,11 +20,11 @@ angular
                     controller: 'worktimeController',
                     controllerAs: 'worktimeCtrl'
                 })
-                .state('state1', {
-                    url: '/state1',
-                    templateUrl: 'assets/app/components/state1/state1.tpl.html',
-                    controller: 'state1Controller',
-                    controllerAs: 'state1Ctrl'
+                .state('employees', {
+                    url: '/employees',
+                    templateUrl: 'assets/app/components/employees/employees.tpl.html',
+                    controller: 'employeesController',
+                    controllerAs: 'employeesCtrl'
                 })
                 // .state('register', {
                 //     url: '/register',

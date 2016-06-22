@@ -49,6 +49,10 @@ GEM
       activesupport (>= 3.0.0)
       rack (>= 1.1.0)
     addressable (2.4.0)
+    angular-faye-rails (0.2.0)
+      angularjs-rails
+      faye
+    angularjs-rails (1.5.6)
     arel (6.0.3)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -254,6 +258,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_api (~> 0.4.2)
+  angular-faye-rails
   byebug
   coffee-rails (~> 4.1.0)
   devise

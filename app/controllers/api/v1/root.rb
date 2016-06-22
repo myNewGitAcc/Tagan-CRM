@@ -5,6 +5,7 @@ module API
       include API::Concern::Status
       include API::Concern::Session
       include API::Concern::Registration
+      include API::Concern::Peoples
 
       add_swagger_documentation(
           base_path: '/api',

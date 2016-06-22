@@ -1,9 +1,9 @@
 'use strict';
 
 class LogoutController {
-  constructor(LogoutFactory, $window) {
+  constructor() {
     this.logout = function (){
-      this.content = 'Do you logout?';
+      this.content = 'Do you want logout?';
       this.showPopUpDialog = true;
     }
 
@@ -12,10 +12,6 @@ class LogoutController {
     }
 
     this.close = function() {
-      LogoutFactory.logout().then(function (response) {
-          console.log(response.data);
-          $window.location.reload();
-        });
       this.showPopUpDialog = false;
     }
   }
