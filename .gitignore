@@ -11,5 +11,8 @@
 /log/*
 !/log/.keep
 /tmp
+/config/database.yml
 .idea/
-/vendor/assets/components*
+/vendor/assets/components/
+node_modules/
+/.vscode/*

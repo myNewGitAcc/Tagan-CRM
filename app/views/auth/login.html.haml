@@ -1,30 +1,33 @@
-/ Flip area
-.flip-mask
-  .flipper
-    / Flip front area
-    .clearfix.flip-slide.front-side
-      .small-12.medium-10.medium-push-1.large-8.large-push-2.column.form-box
-        %form.login-form.clearfix.validate-form.not-send-ajax{:action => "/access/login", :autocomplete => "off", :method => "post"}
-          %input{:style => "display:none", :type => "text"}/
-          %input{:style => "display:none", :type => "password"}/
-          .small-12.medium-9.large-9.column.input-holder
-            .small-12.medium-6.large-6.column.valid-row
-              %label.row.form-label{:for => "login"}
-                %span.label-text email
-                %input#login.required{:autocomplete => "off", :name => "user[email]", :type => "text"}/
-            .small-12.medium-6.large-6.column.last.valid-row
-              %label.row.form-label{:for => "password"}
-                %span.label-text.text-uppercase password
-                %input#password.required{:autocomplete => "off", :name => "user[password]", :type => "password"}/
-          .row.clearfix
-            .text-left.small-6.medium-6.large-6.column
-              %label.label-check{:for => "remember_me"}
-                %input#remember_me{:name => "user[remember_me]", :type => "checkbox"}/
-                %span.custom-check
-                %span.check-text Remember me
-            .text-right.small-6.medium-6.large-6.column
-              %label.label-check{:for => "forgot-password"}
+.row
+  .col-xs-12.col-sm-12.col-lg-12
+    %form.login-form.clearfix.validate-form.not-send-ajax{:action => "/access/login", :autocomplete => "off", :method => "post"}
+      %input{:style => "display:none", :type => "text"}/
+      %input{:style => "display:none", :type => "password"}/
+      .row
+        .bordered.col-xs-12.col-sm-8.col-lg-9
+
+          .col-xs-12.col-sm-12.col-lg-6.valid-row
+            %label.form-label{:for => "login"}
+              %span.label-text.text-uppercase email
+              %input#login.required{:autocomplete => "off", :name => "user[email]", :type => "text"}/
+
+          .col-xs-12.col-sm-12.col-lg-6.valid-row
+            %label.form-label{:for => "password"}
+              %span.label-text.text-uppercase password
+              %input#password.required{:autocomplete => "off", :name => "user[password]", :type => "password"}/
+
+        .col-xs-12.col-sm-8.col-lg-3
           %input.button.btn-login{:type => "submit", :value => "login"}/
+
+        .remember-me.col-xs-12.col-sm-12.col-lg-4
+          %label.label-check{:for => "remember_me"}
+            %input#remember_me{:name => "user[remember_me]", :type => "checkbox"}/
+            %span.custom-check
+            %span.check-text Remember me
+
+        .text-right.col-xs-6.col-sm-6.col-lg-6
+          %label.label-check{:for => "forgot-password"}
+
     .to-register-link
       = link_to 'to register', registration_path
 :javascript

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="xipsy">
+  <head>
+    <title>Xipsy</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <%= stylesheet_link_tag    'auth', media: 'all', 'data-turbolinks-track' => false %>
+    <%= javascript_include_tag 'auth', 'data-turbolinks-track' => false %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body class="auth-layout" auth-layout>
+    <div class="wrapper login-area text-center">
+      <!-- Main block -->
+      <main id="main" role="main" class="form-box row">
+        <!-- headings area -->
+        <header class="headings clearfix">
+          <div class="holder col-xs-12 col-sm-6 col-sm-push-3 col-lg-4 col-lg-push-4">
+            <!-- logo -->
+            <strong class="logo">
+              <a class="" href="#">
+                <img src="<%= asset_path('auth/logo.svg') %>" alt="Xipsy BETA">
+                <span class="text-beta">Beta</span>
+              </a>
+            </strong>
+            <p id="hidden-msg">A few words about the site. <br>Please <a class="login-link" href="<%= login_path %>">login</a> or <a class="registration-link" href="<%= registration_path %>">request an registration.</a></p>
+            <div id="thankyou-msg" class="frame row" style="display:none;">
+              <h1>Thank you for your interest in xipsy</h1>
+              <p>An email confirmation has been sent. <br>Please click the link to activate your account. </p>
+            </div>
+          </div>
+        </header>
+        <% flash.each do |key, value| %>
+          <div class="global-alert col-md-6 col-md-offset-3" style="color: #FD3E58;">
+            <div>
+              <%#= value %>
+            </div>
+          </div>
+        <% end %>
+        <%= yield  %>
+      </main>
+    </div>
+
+    <div class="popup-holder">
+      <div id="popup1" class="lightbox popup">
+        <div class="popup-content">
+          <p>It seems a request had already been sent.Please click the below to resend.</p>
+        </div>
+      </div>
+    </div>
+
+    <a id="popup_1" class="lightbox hide" href="#popup1"></a>
+  </body>
+</html>

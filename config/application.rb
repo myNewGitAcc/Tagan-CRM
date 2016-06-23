@@ -26,6 +26,22 @@ module SpaApp
 
     config.assets.precompile += %w( messages.css messages.js )
 
+    config.assets.precompile += %w( auth.css auth.js )
+
+    # Add additional asset pathes
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'components', 'bootstrap-sass-official', 'assets', 'fonts')
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')
+    # Precompile additional asset types
+    config.assets.precompile += %w( auth.css auth.js )
+
+    config.assets.precompile.push(Proc.new do |path|
+         File.extname(path).in? [
+           '.html', '.erb', '.haml',                 # Templates
+           '.png',  '.gif', '.jpg', '.jpeg', '.svg', # Images
+           '.eot',  '.otf', '.svc', '.woff', '.ttf', # Fonts
+         ]
+                                     end)
     config.middleware.insert_before 0, 'Rack::Cors' do
       allow do
         origins '*'

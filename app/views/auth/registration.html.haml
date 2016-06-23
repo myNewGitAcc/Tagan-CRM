@@ -1,28 +1,36 @@
-/ Flip back area
-.clearfix.flip-slide.back-side
-  .small-12.medium-10.medium-push-1.large-10.large-push-1.column.form-box
+.row
+  .col-xs-12.col-sm-12.col-lg-12
     %form.invitation-form.clearfix.validate-form{:action => "/access", :autocomplete => "off", "data-thank-page" => "true", :method => "post"}
       %input{:style => "display:none", :type => "text"}/
       %input{:style => "display:none", :type => "password"}/
-      .small-12.medium-8.medium-push-2.large-9.large-push-0.column.input-holder
-        .small-12.medium-12.large-6.column.valid-row
-          %label.row.form-label{:for => "email"}
-            %span.label-text.text-uppercase email address
-            %input#email.required-email{:name => "user[email]", :required => "", :type => "email"}/
-        .small-12.medium-6.large-3.column.valid-row
-          %label.row.form-label{:for => "password"}
-            %span.label-text.text-uppercase password
-            %input#password.required-password{:name => "user[password]", :required => "", :type => "password"}/
-        .small-12.medium-6.large-3.column.valid-row.last
-          %label.row.form-label{:for => "password_confirmation"}
-            %span.label-text.text-uppercase pass confirmation
-            %input#password_confirmation.required-password-confirmation{:name => "user[password_confirmation]", :required => "", :type => "password"}/
-      .small-12.medium-12.large-3.column
-        %button{:type => "submit"}
-          %span.text request registration
-    .to-login-link
-      = link_to 'to login', login_path
+      .row
+        .bordered.col-xs-12.col-sm-8.col-sm-push-2.col-lg-9.col-lg-push-0
+
+          .col-xs-12.col-sm-12.col-lg-6.valid-row
+            %label.form-label{:for => "email"}
+              %span.label-text.text-uppercase email address
+              %input#email.required-email{:name => "user[email]", :type => "email"}/
+
+          .col-xs-12.col-sm-6.col-lg-3.valid-row
+            %label.form-label{:for => "password"}
+              %span.label-text.text-uppercase password
+              %input#password.required-password{:name => "user[password]", :type => "password"}/
+
+          .col-xs-12.col-sm-6.col-lg-3.valid-row
+            %label.form-label{:for => "password_confirmation"}
+              %span.label-text.text-uppercase pass confirmation
+              %input#password_confirmation.required-password-confirmation{:name => "user[password_confirmation]", :type => "password"}/
+
+        .col-xs-12.col-sm-12.col-lg-3
+          %button{:type => "submit"}
+            %span.text request registration
+        .to-login-link.col-xs-12
+          = link_to 'to login', login_path
 :javascript
   $(function() {
     $('.registration-link').removeAttr('href').css('text-decoration', 'none');
   });
+
+
+
+
