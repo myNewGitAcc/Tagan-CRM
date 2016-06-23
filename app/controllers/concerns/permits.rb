@@ -3,6 +3,7 @@ module Permits
       :id,
       :email,
       :username,
+      :role_id,
       :password,
       :password_confirmation
   ]

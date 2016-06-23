@@ -4,7 +4,8 @@ angular
         'ngMessages',
         'ngAnimate',
         'angular-storage',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'ngResource'
         // 'ngTouch'
     ])
     .constant('CONFIG',

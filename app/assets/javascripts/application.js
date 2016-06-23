@@ -17,10 +17,12 @@
 //= require angular-messages
 //= require a0-angular-storage
 //= require angular-bootstrap
+//= require angular-resource
 
 
 
 // new components need include before
 //= require jquery_ujs
 //= require app/app.config
+//= require underscore
 //= require_tree ./app

@@ -5,15 +5,15 @@
   function worktimeFactoryService($http) {
 
     return {
-      starTimer: function () {
+      starTimer: ()=> {
         return ;
       },
 
-      pauseTimer: function () {
+      pauseTimer: ()=> {
         return ;
       },
 
-      continueTimer: function () {
+      continueTimer: ()=> {
         return ;
       }
     };
