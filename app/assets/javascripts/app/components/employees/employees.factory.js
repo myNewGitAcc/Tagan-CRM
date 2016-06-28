@@ -2,17 +2,11 @@
 
 (function() {
 
-    function employeesFactoryService($resource) {
+    function employeesFactoryService($http) {
       return {
-        queryUser: ()=> {
-          return $resource('/api/v1/users/users',{}, {
-            query: {
-              method: 'GET',
-              isArray: false
-            }
-          });
-        },
-
+        getUsers: ()=> {
+          return $http.get('/api/v1/users/users');
+          },
         filtered: (role_id, users)=> {
 
           return _.filter(users,

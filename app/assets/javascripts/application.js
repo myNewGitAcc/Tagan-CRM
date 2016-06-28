@@ -25,4 +25,7 @@
 //= require jquery_ujs
 //= require app/app.config
 //= require underscore
+//= require moment
+//= require moment-timezone
+//= require google-maps
 //= require_tree ./app

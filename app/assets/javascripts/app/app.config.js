@@ -6,7 +6,6 @@ angular
         'angular-storage',
         'ui.bootstrap',
         'ngResource'
-        // 'ngTouch'
     ])
     .constant('CONFIG',
         {

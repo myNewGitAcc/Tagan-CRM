@@ -5,8 +5,8 @@ class employeesController {
 
     var allUsers = null;
     this.activeTabs = 1;
-    employeesFactory.queryUser().query((response)=>{
-      allUsers = response.data;
+    employeesFactory.getUsers().then( (response)=>{
+      allUsers = response.data.data;
       this.users = employeesFactory.filtered(1, allUsers);
     });
     
