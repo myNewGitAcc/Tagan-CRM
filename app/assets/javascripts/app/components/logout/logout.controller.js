@@ -2,16 +2,16 @@
 
 class LogoutController {
   constructor() {
-    this.logout = function (){
+    this.logout = ()=>{
       this.content = 'Do you want logout?';
       this.showPopUpDialog = true;
     }
 
-    this.cancel = function() {
+    this.cancel = ()=> {
       this.showPopUpDialog = false;
     }
 
-    this.close = function() {
+    this.close = ()=> {
       this.showPopUpDialog = false;
     }
   }

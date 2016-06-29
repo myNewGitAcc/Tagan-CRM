@@ -26,11 +26,11 @@ angular
                     controller: 'employeesController',
                     controllerAs: 'employeesCtrl'
                 })
-                // .state('register', {
-                //     url: '/register',
-                //     templateUrl: 'assets/app/components/auth/register/reg.tpl.html',
-                //     controller: 'registerController',
-                //     controllerAs: 'regCtrl'
-                // });
+                .state('worldtime', {
+                    url: '/worldtime',
+                    templateUrl: 'assets/app/components/worldtime/worldtime.tpl.html',
+                    controller: 'worldtimeController',
+                    controllerAs: 'wtCtrl'
+                });
 
         }]);

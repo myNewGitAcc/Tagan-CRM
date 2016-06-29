@@ -1,9 +1,20 @@
 'use strict';
 
 class employeesController {
-    constructor() {
-    }
+  constructor(employeesFactory) {
 
+    var allUsers = null;
+    this.activeTabs = 1;
+    employeesFactory.getUsers().then( (response)=>{
+      allUsers = response.data.data;
+      this.users = employeesFactory.filtered(1, allUsers);
+    });
+    
+    this.setTabs = (n) => {
+      this.users = employeesFactory.filtered(n, allUsers);
+      this.activeTabs = n;
+    };
+  }
 }
 
 angular.module('ngSpaApp')

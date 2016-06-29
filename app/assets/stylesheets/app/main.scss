@@ -36,10 +36,10 @@
   }
 }
 
-.bordered {
+.worktime-bordered {
   margin: auto;
   border-radius: 4px;
-  border: 1px black solid;
+  border: 1px #b9b9b9 solid;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   width: 500px;
   height: 300px;
@@ -72,14 +72,55 @@
 
 .worktime-header, .employees-header {
   padding: 20px 0 0 5px;
-  border-bottom: 1px black solid;
-  height: 50px;
+  border-bottom: 1px #b9b9b9 solid;
 }
 
 .employees-bordered {
   border-radius: 4px;
-  border: 1px black solid;
+  border: 1px #b9b9b9 solid;
   .employees-body {
     margin-top: 20px;
+    .employees-tabs, .employees-table {
+      margin: 0 20px;
+      .table {
+        th, td {
+          text-align: center;
+        }
+      }
+    }
   }
 }
+
+.world-time {
+  margin-top: -20px;
+
+  #map {
+    height: 800px;
+    width: 100%;
+    position: absolute;
+  }
+  .time-container {
+    width: 150px;
+    margin-left: 10px;
+    position: absolute;
+    z-index: 1;
+
+    .local-time, .selected-time {
+      text-align: center;
+      padding: 5px;
+      border-radius: 5px;
+    }
+  }
+}
+
+
+
+//.time-container-fixed {
+//  width: 150px;
+//  margin-left: 10px;
+//  position: fixed;
+//  z-index: 1;
+//  top: 0px;
+//
+//}
+

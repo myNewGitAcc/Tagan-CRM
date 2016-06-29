@@ -17,10 +17,17 @@
 //= require angular-messages
 //= require a0-angular-storage
 //= require angular-bootstrap
+//= require angular-resource
 
 
 
 // new components need include before
 //= require jquery_ujs
+
+//= require underscore
+//= require moment
+//= require moment-timezone
+//= require google-maps
+//= require ngSticky
 //= require app/app.config
 //= require_tree ./app

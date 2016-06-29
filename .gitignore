@@ -8,11 +8,11 @@
 /.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
+/log/
 !/log/.keep
 /tmp
 /config/database.yml
-.idea/
+.idea/*
 /vendor/assets/components/
 node_modules/
-/.vscode/*
+/.vscode/

@@ -3,8 +3,8 @@
 class NavbarController {
   constructor($location) {
       this.activePage = $location.path();
-      this.setPage = function (n) {
-        this.activePage = n == 1 ? '/' : '/employees';
+      this.setPage = (n)=> {
+        this.activePage = n == 1 ? '/' : n== 2 ? '/employees' : '/worldtime';
       }
   }
 

@@ -1,13 +1,40 @@
-<div class="container employees-bordered">
-    <div class="employees-header">
-        <h4>Employees</h4>
+<div class="container">
+    <div class="employees-bordered">
+        <div class="employees-header">
+            <h4>Employees</h4>
+        </div>
+        <div class="employees-body">
+            <div class="employees-tabs">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 1}">
+                        <a href="#" ng-click="employeesCtrl.setTabs(1)">Management</a>
+                    </li>
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 2}">
+                        <a href="#" ng-click="employeesCtrl.setTabs(2)">Developers</a>
+                    </li>
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 3}">
+                        <a href="#" ng-click="employeesCtrl.setTabs(3)">Trainees</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="employees-table">
+                <table class="table table-bordered table-responsive">
+                    <thead>
+                        <th>POST</th>
+                        <th>Initials</th>
+                        <th>Hours worked</th>
+                        <th>status</th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="user in employeesCtrl.users">
+                            <td>{{user.email}}</td>
+                            <td>{{user.id}}</td>
+                            <td>{{user.role_id}}</td>
+                            <td>OK</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <div class="employees-body">
-        <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a href="#">Home</a></li>
-            <li role="presentation"><a href="#">Profile</a></li>
-            <li role="presentation"><a href="#">Messages</a></li>
-        </ul>
-    </div>
-
 </div>

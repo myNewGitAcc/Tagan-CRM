@@ -4,8 +4,9 @@ angular
         'ngMessages',
         'ngAnimate',
         'angular-storage',
-        'ui.bootstrap'
-        // 'ngTouch'
+        'ui.bootstrap',
+        'ngResource',
+        'sticky'
     ])
     .constant('CONFIG',
         {

@@ -7,10 +7,11 @@ module API
         params do
           requires :email, type: String, desc: "User email"
           requires :password, type: String, desc: "User password"
+          optional :role_id, type: Integer, desc: 'User role'
         end
         post do
           user_hash = params[:user]
-          user_hash = params.slice(:email, :password, :username) unless user_hash
+          user_hash = params.slice(:email, :password, :username, :role_id) unless user_hash
           user_hash[:password_confirmation] = user_hash[:password] if user_hash[:password_confirmation].blank?
 
           params[:user] = user_hash
