@@ -1,3 +1,2 @@
-https://github.com/heroku/heroku-buildpack-nodejs
-https://github.com/qnyp/heroku-buildpack-ruby-bower.git#run-bower
-https://github.com/heroku/heroku-buildpack-ruby
+heroku buildpacks:add https://github.com/heroku/heroku-buildpack-nodejs.git
+heroku buildpacks:add https://github.com/heroku/heroku-buildpack-ruby.git
