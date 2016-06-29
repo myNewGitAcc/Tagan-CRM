@@ -48,6 +48,8 @@ end
 group :production, :staging do
   gem 'heroku_rails_deflate'
   gem 'rails_12factor'
+  gem 'sprockets', '>= 3.0.0'
+  gem 'sprockets-es6'
 end
 
 gem "haml-rails", "~> 0.9"
