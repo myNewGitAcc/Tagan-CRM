@@ -5,7 +5,8 @@ angular
         'ngAnimate',
         'angular-storage',
         'ui.bootstrap',
-        'ngResource'
+        'ngResource',
+        'sticky'
     ])
     .constant('CONFIG',
         {

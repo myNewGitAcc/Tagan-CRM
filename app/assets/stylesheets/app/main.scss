@@ -91,33 +91,36 @@
   }
 }
 
-#map {
-  top: -20px;
-  height: 800px;
-  width: 100%;
+.world-time {
+  margin-top: -20px;
 
+  #map {
+    height: 800px;
+    width: 100%;
+    position: absolute;
+  }
+  .time-container {
+    width: 150px;
+    margin-left: 10px;
+    position: absolute;
+    z-index: 1;
 
+    .local-time, .selected-time {
+      text-align: center;
+      padding: 5px;
+      border-radius: 5px;
+    }
+  }
 }
 
-.time-container {
-  width: 150px;
-  margin-left: 10px;
-  position: absolute;
-  z-index: 1;
-  top: 65px;
-}
 
-.time-container-fixed {
-  width: 150px;
-  margin-left: 10px;
-  position: fixed;
-  z-index: 1;
-  top: 0px;
 
-}
+//.time-container-fixed {
+//  width: 150px;
+//  margin-left: 10px;
+//  position: fixed;
+//  z-index: 1;
+//  top: 0px;
+//
+//}
 
-.local-time, .selected-time {
-  text-align: center;
-  padding: 5px;
-  border-radius: 5px;
-}

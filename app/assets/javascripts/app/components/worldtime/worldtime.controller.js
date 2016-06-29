@@ -9,7 +9,6 @@ class worldtimeController {
     this.selectedTime = moment(date).format('MMMM Do YYYY, HH:mm:ss');
     this.localTime = moment(date).format('MMMM Do YYYY, HH:mm:ss');
     var timerStart;
-    var controllerThis = this;
 
     this.start = ()=> {
       this.localTime = moment(new Date()).format('MMMM Do YYYY, HH:mm:ss');
@@ -76,22 +75,6 @@ class worldtimeController {
 
       });
     }
-
-    controllerThis.boolChangeClass = false;
-
-    angular.element($window).bind("scroll", function() {
-      if (this.pageYOffset >= 27) {
-        controllerThis.boolChangeClass = true;
-        console.log(this.pageYOffset);
-      } else {
-        controllerThis.boolChangeClass = false;
-        console.log(this.pageYOffset);
-      }
-    });
-
-
-
-
   }
 
 }

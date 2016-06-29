@@ -45,6 +45,11 @@ group :development do
   gem 'spring'
 end
 
+group :production, :staging do
+  gem 'heroku_rails_deflate'
+  gem 'rails_12factor'
+end
+
 gem "haml-rails", "~> 0.9"
 
 gem 'grape', '~> 0.9.0'
@@ -59,3 +64,5 @@ gem 'acts_as_api', '~> 0.4.2'
 gem 'thin'
 gem 'faye'
 gem "angular-faye-rails"
+
+gem "browserify-rails"
