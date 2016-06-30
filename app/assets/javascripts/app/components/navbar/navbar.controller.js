@@ -10,5 +10,7 @@ class NavbarController {
 
 }
 
+NavbarController.$inject = ['$location'];
+
 angular.module('ngSpaApp')
   .controller('NavbarController', NavbarController);

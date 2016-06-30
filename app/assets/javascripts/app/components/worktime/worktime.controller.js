@@ -33,5 +33,7 @@ class worktimeController {
 
 }
 
+worktimeController.$inject = ['worktimeFactory'];
+
 angular.module('ngSpaApp')
   .controller('worktimeController', worktimeController);

@@ -79,5 +79,7 @@ class worldtimeController {
 
 }
 
+worldtimeController.$inject = ['$http', '$interval', '$window'];
+
 angular.module('ngSpaApp')
   .controller('worldtimeController', worldtimeController);

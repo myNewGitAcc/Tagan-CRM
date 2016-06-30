@@ -18,6 +18,7 @@
         
         
     }
+  employeesFactoryService.$inject = ['$http'];
 
     angular.module('ngSpaApp')
         .factory('employeesFactory', employeesFactoryService);

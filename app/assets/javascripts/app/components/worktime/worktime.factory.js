@@ -18,6 +18,7 @@
       }
     };
   }
+  worktimeFactoryService.$inject = ['$http'];
 
   angular.module('ngSpaApp')
     .factory('worktimeFactory', worktimeFactoryService);
