@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
     t.add :id
     t.add :email
     t.add :role
+    t.add :online
+    t.add :away
     t.add :created_at
   end
 

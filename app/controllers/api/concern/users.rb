@@ -32,8 +32,8 @@ module API
           optional :access_token, type: String, desc: 'User access token'
           optional :email, type: String, desc: 'User email'
           optional :role, type: Integer, desc: 'User role'
-          optional :online, type: String, desc: 'User is online'
-          optional :away, type: String, desc: 'User is away'
+          optional :online, type: Integer, desc: 'User is online'
+          optional :away, type: Integer, desc: 'User is away'
         end
         put ':id' do
           begin
