@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="worktime-bordered">
+                <div class="worktime-header">
+                    <h4>Worktime</h4>
+                </div>
+                <div class="worktime-body">
+                    <h3> Hours worked: <span class="label label-success">{{ worktimeCtrl.hoursWorked }}</span> </h3>
+                    <h3> Remains to work out: <span class="label label-success">{{ worktimeCtrl.remainsWork }}</span> </h3>
+                </div>
+                <div class="worktime-footer">
+                    <div class="buttons">
+                        <p class="btn-pause">
+                            <button ng-show="worktimeCtrl.onlineUser" class="btn btn-primary"
+                                    ng-click="worktimeCtrl.pause()"
+                                    ng-class="{'btn-warning': worktimeCtrl.buttonContinue}">
+                                {{worktimeCtrl.buttonPause}}
+                            </button>
+                        </p>
+                        <p class="btn-move">
+                            <button ng-show="worktimeCtrl.onlineUser" class="btn btn-primary"
+                                    ng-click="worktimeCtrl.moveAway()">
+                                Move away
+                            </button>
+                        </p>
+
+                        <p class="btn-start">
+                            <button ng-show="!worktimeCtrl.onlineUser" class="btn btn-success"
+                                    ng-click="worktimeCtrl.startTime()">
+                                Start
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
