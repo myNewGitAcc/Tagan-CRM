@@ -14,6 +14,8 @@ Bundler.require(*Rails.groups)
 
 module SpaApp
   class Application < Rails::Application
+
+    config.angular_templates.ignore_prefix  = %w(app/templates/)
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

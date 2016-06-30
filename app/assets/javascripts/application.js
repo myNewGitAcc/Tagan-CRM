@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require angular
+//= require angular-rails-templates
 //= require angular-ui-router
 //= require angular-animate
 //= require angular-messages
@@ -23,7 +24,6 @@
 
 // new components need include before
 //= require jquery_ujs
-
 //= require underscore
 //= require moment
 //= require moment-timezone
@@ -31,3 +31,4 @@
 //= require ngSticky
 //= require app/app.config
 //= require_tree ./app
+//= require_tree ./app/templates
