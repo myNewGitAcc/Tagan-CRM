@@ -67063,6 +67063,8 @@ class employeesController {
   }
 }
 
+employeesController.$inject = ['employeesFactory'];
+
 angular.module('ngSpaApp')
   .controller('employeesController', employeesController);
 'use strict';
@@ -67085,6 +67087,7 @@ angular.module('ngSpaApp')
         
         
     }
+  employeesFactoryService.$inject = ['$http'];
 
     angular.module('ngSpaApp')
         .factory('employeesFactory', employeesFactoryService);
@@ -67132,6 +67135,8 @@ class NavbarController {
 
 }
 
+NavbarController.$inject = ['$location'];
+
 angular.module('ngSpaApp')
   .controller('NavbarController', NavbarController);
 'use strict';
@@ -67178,6 +67183,8 @@ class worktimeController {
 
 }
 
+worktimeController.$inject = ['worktimeFactory'];
+
 angular.module('ngSpaApp')
   .controller('worktimeController', worktimeController);
 'use strict';
@@ -67200,6 +67207,7 @@ angular.module('ngSpaApp')
       }
     };
   }
+  worktimeFactoryService.$inject = ['$http'];
 
   angular.module('ngSpaApp')
     .factory('worktimeFactory', worktimeFactoryService);
@@ -67284,6 +67292,8 @@ class worldtimeController {
   }
 
 }
+
+worldtimeController.$inject = ['$http', '$interval', '$window'];
 
 angular.module('ngSpaApp')
   .controller('worldtimeController', worldtimeController);
