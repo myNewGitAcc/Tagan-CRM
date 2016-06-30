@@ -14,7 +14,7 @@
                         <p class="btn-pause">
                             <button ng-show="worktimeCtrl.onlineUser" class="btn btn-primary"
                                     ng-click="worktimeCtrl.pause()"
-                                    ng-class="{'btn-warning': worktimeCtrl.buttonContinue}">
+                                    ng-class="{'btn-warning': worktimeCtrl.buttonPause=='Continue'}">
                                 {{worktimeCtrl.buttonPause}}
                             </button>
                         </p>

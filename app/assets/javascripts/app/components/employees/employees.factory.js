@@ -7,11 +7,11 @@
         getUsers: ()=> {
           return $http.get('/api/v1/users/users');
           },
-        filtered: (role_id, users)=> {
+        filtered: (role, users)=> {
 
           return _.filter(users,
                           (user)=>{
-                            return user.role_id == role_id;
+                            return user.role == role;
                           });
         }
       };

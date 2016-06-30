@@ -6,10 +6,8 @@ class worktimeController {
         this.remainsWork = 0;
         this.onlineUser = false;
         this.buttonPause = 'Pause';
-        this.buttonContinue = false;
 
         this.pause = ()=> {
-            this.buttonContinue = !this.buttonContinue;
             if (this.buttonContinue) {
                 this.buttonPause = 'Continue'; 
                 worktimeFactory.pauseTimer();
@@ -22,7 +20,8 @@ class worktimeController {
         }
 
         this.moveAway = ()=> {
-            this.onlineUser = false;
+          this.buttonPause = 'Pause';
+          this.onlineUser = false;
         }
 
         this.startTime = ()=> {
