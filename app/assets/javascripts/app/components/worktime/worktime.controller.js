@@ -8,14 +8,14 @@ class worktimeController {
         this.buttonPause = 'Pause';
 
         this.pause = ()=> {
-            if (this.buttonContinue) {
-                this.buttonPause = 'Continue'; 
-                worktimeFactory.pauseTimer();
-            }
-            else {
-                this.buttonPause = 'Pause';  
-                worktimeFactory.continueTimer();
-            }
+          if (this.buttonPause == 'Pause') {
+            this.buttonPause = 'Continue';
+            worktimeFactory.pauseTimer();
+          }
+          else {
+            this.buttonPause = 'Pause';
+            worktimeFactory.continueTimer();
+          }
             
         }
 
