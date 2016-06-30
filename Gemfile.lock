@@ -299,7 +299,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring
-  sprockets (>= 3.0.0.beta)
+  sprockets (>= 3.0.0)
   sprockets-es6
   therubyracer
   thin
