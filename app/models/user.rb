@@ -7,10 +7,14 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token
   acts_as_api
 
+  enum role: [:admin, :management, :developers, :trainee]
+
   api_accessible :basic do |t|
     t.add :id
     t.add :email
-    t.add :role_id
+    t.add :role
+    t.add :online
+    t.add :away
     t.add :created_at
   end
 
