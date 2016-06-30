@@ -7,7 +7,6 @@ Rails.application.routes.draw do
 
   def shared_devise_path
     {
-        sign_up:  'register',
         sign_in:  'login',
         sign_out: 'logout'
     }
@@ -20,15 +19,9 @@ Rails.application.routes.draw do
                  passwords: 'access/passwords',
                  confirmations: 'access/confirmations',
                  sessions: 'access/sessions',
-                 registrations: 'access/registrations'
              }
 
   get '/login', to: 'auth#login'
-  get '/registration', to: 'auth#registration'
 
-  resources :messages
-
-
-  # match '*path' => redirect('/'), via: :get
   get '/*path' => 'auth#redirect'
 end
