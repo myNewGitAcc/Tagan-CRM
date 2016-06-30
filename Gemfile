@@ -68,3 +68,5 @@ gem 'faye'
 gem "angular-faye-rails"
 
 gem "browserify-rails"
+
+gem 'activeadmin', github: 'activeadmin'

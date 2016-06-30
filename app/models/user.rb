@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token
   acts_as_api
 
-  enum role: [:admin, :management, :devalopers, :trainee]
+  enum role: [:admin, :management, :developers, :trainee]
 
   api_accessible :basic do |t|
     t.add :id
