@@ -68,3 +68,5 @@ gem 'faye'
 gem "angular-faye-rails"
 
 gem "browserify-rails"
+
+gem 'angular-rails-templates'

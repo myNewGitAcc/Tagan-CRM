@@ -6,7 +6,8 @@ angular
         'angular-storage',
         'ui.bootstrap',
         'ngResource',
-        'sticky'
+        'sticky',
+        'templates'
     ])
     .constant('CONFIG',
         {
