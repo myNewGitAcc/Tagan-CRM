@@ -17,7 +17,7 @@ class employeesController {
   }
 }
 
-// employeesController.$inject = ['employeesFactory'];
+employeesController.$inject = ['employeesFactory'];
 
 angular.module('ngSpaApp')
   .controller('employeesController', employeesController);
