@@ -50,7 +50,21 @@
       vertical-align: bottom;
     }
   }
+
   .worktime-footer {
+    .animation {
+      -webkit-transition:all linear 0.8s;
+      -moz-transition:all linear 0.8s;
+      -ms-transition:all linear 0.8s;
+      -o-transition:all linear 0.8s;
+      transition:all linear 0.8s;
+      opacity:1;
+    }
+
+    .animation.ng-hide {
+      opacity:0;
+    }
+
     .buttons{
       margin: 0 auto;
       width: 200px;
@@ -83,6 +97,12 @@
     .employees-tabs, .employees-table {
       margin: 0 20px;
       .table {
+        .online {
+          color: green;
+        }
+        .offline {
+          color: red;
+        }
         th, td {
           text-align: center;
         }
@@ -112,15 +132,4 @@
     }
   }
 }
-
-
-
-//.time-container-fixed {
-//  width: 150px;
-//  margin-left: 10px;
-//  position: fixed;
-//  z-index: 1;
-//  top: 0px;
-//
-//}
 

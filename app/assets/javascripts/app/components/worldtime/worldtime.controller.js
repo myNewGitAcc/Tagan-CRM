@@ -1,7 +1,7 @@
 'use strict';
 
 class worldtimeController {
-  constructor($http, $interval, $window) {
+  constructor($http, $interval, $scope) {
 
     var key = 'AIzaSyD-WiMcT6mKg0Fs-YOymfUFNP0RFi7wOD0';
     this.markers = [];
@@ -79,7 +79,7 @@ class worldtimeController {
 
 }
 
-worldtimeController.$inject = ['$http', '$interval', '$window'];
+worldtimeController.$inject = ['$http', '$interval'];
 
 angular.module('ngSpaApp')
   .controller('worldtimeController', worldtimeController);

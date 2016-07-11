@@ -14,11 +14,12 @@ class ApplicationController < ActionController::Base
   private
 
   def auth_user!
-    exclusion_redirect = [login_path, registration_path].include?(request.fullpath)
+    exclusion_redirect = [login_path].include?(request.fullpath)
     if current_user
       current_user.validate_request!(request,params)
       current_user_valid = !current_user.errors.present?
       if exclusion_redirect
+
         redirect_to root_path if current_user_valid
       else
         warden.logout unless current_user_valid

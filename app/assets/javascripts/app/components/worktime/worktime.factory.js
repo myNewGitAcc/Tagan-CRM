@@ -5,17 +5,7 @@
   function worktimeFactoryService($http) {
 
     return {
-      starTimer: ()=> {
-        return ;
-      },
-
-      pauseTimer: ()=> {
-        return ;
-      },
-
-      continueTimer: ()=> {
-        return ;
-      }
+      
     };
   }
   worktimeFactoryService.$inject = ['$http'];

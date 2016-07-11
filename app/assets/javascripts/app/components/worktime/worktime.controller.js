@@ -1,38 +1,43 @@
 'use strict';
 
 class worktimeController {
-    constructor(worktimeFactory) {
-        this.hoursWorked = 0;
-        this.remainsWork = 0;
-        this.onlineUser = false;
+  constructor(worktimeFactory, $scope, users) {
+    this.hoursWorked = 0;
+    this.remainsWork = 0;
+    this.onlineUser = null;
+
+    users.getProfile().then( (response) => {
+      this.onlineUser = response.data.data.status;
+      this.buttonPause = this.onlineUser == 'away' ? 'Continue' : 'Pause';
+      this.btn = true;
+    });
+
+    this.pause = ()=> {
+      if (this.buttonPause == 'Pause') {
+        this.buttonPause = 'Continue';
+        users.userStatusUpdate($scope.currentUserId, 2);
+      }
+      else {
         this.buttonPause = 'Pause';
-
-        this.pause = ()=> {
-          if (this.buttonPause == 'Pause') {
-            this.buttonPause = 'Continue';
-            worktimeFactory.pauseTimer();
-          }
-          else {
-            this.buttonPause = 'Pause';
-            worktimeFactory.continueTimer();
-          }
-            
-        }
-
-        this.moveAway = ()=> {
-          this.buttonPause = 'Pause';
-          this.onlineUser = false;
-        }
-
-        this.startTime = ()=> {
-            this.onlineUser = true;
-            worktimeFactory.starTimer();
-        }
+        users.userStatusUpdate($scope.currentUserId, 1);
+      }
     }
+
+    this.moveAway = ()=> {
+      users.userStatusUpdate($scope.currentUserId, 0);
+      this.buttonPause = 'Pause';
+      this.onlineUser = 'offline';
+    }
+
+    this.startTime = ()=> {
+      users.userStatusUpdate($scope.currentUserId, 1);
+      this.onlineUser = 'online';
+    }
+  }
 
 }
 
-worktimeController.$inject = ['worktimeFactory'];
+worktimeController.$inject = ['worktimeFactory', '$scope', 'users'];
 
 angular.module('ngSpaApp')
   .controller('worktimeController', worktimeController);

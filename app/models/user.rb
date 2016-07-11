@@ -8,13 +8,14 @@ class User < ActiveRecord::Base
   acts_as_api
 
   enum role: [:admin, :management, :developers, :trainee]
+  enum status: [:offline, :online, :away]
 
   api_accessible :basic do |t|
     t.add :id
     t.add :email
     t.add :role
-    t.add :online
-    t.add :away
+    t.add :full_name
+    t.add :status
     t.add :created_at
   end
 
@@ -23,11 +24,11 @@ class User < ActiveRecord::Base
   end
 
   api_accessible :my_profile_mode, extend: :default_token do |t|
+    t.add :id
     t.add :sign_in_count
     t.add :current_sign_in_at
     t.add :current_sign_in_ip
     t.add :confirmed_at
-    t.add lambda{ |usr| usr.profile.as_api_response(:basic) rescue nil }, as: :profile
   end
 
   class << self
@@ -74,6 +75,10 @@ class User < ActiveRecord::Base
 
       update_columns(sign_in_attributes)
     end
+  end
+
+  def full_name
+    "#{self.first_name} #{self.last_name}"
   end
 
 

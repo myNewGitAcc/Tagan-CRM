@@ -33,4 +33,4 @@ angular
                     controllerAs: 'wtCtrl'
                 });
 
-        }]);
+    }]);

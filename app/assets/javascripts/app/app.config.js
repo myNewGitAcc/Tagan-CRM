@@ -12,4 +12,10 @@ angular
     .constant('CONFIG',
         {
             APIHost: 'http://localhost:3000'
-        });
+        })
+    .run(($rootScope, users)=>{
+      users.getProfile().then((response)=>{
+        $rootScope.currentUserId = response.data.data.id;
+      });
+  
+    });

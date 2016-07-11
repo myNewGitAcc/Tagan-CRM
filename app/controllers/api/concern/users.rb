@@ -32,13 +32,12 @@ module API
           optional :access_token, type: String, desc: 'User access token'
           optional :email, type: String, desc: 'User email'
           optional :role, type: Integer, desc: 'User role'
-          optional :online, type: Integer, desc: 'User is online'
-          optional :away, type: Integer, desc: 'User is away'
+          optional :status, type: Integer, desc: '0-> offline, 1->online, 2->away'
         end
         put ':id' do
           begin
             user = User.find_by_id params[:id]
-            user_params = ActionController::Parameters.new(params).permit(:email, :role, :online, :away)
+            user_params = ActionController::Parameters.new(params).permit(:email, :role, :status, :first_name, :last_name)
             user.update_attributes(user_params)
             success! user.as_api_response(:basic), 200
           rescue => e

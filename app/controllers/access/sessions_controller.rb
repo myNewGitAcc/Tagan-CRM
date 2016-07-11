@@ -31,6 +31,6 @@ class Access::SessionsController < Devise::SessionsController
   end
 
   def new
-    redirect_to login_path
+    redirect_to root_path
   end
 end

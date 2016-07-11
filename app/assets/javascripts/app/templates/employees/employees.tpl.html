@@ -6,31 +6,34 @@
         <div class="employees-body">
             <div class="employees-tabs">
                 <ul class="nav nav-tabs">
-                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 1}">
-                        <a href="#" ng-click="employeesCtrl.setTabs(1)">Management</a>
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'management'}">
+                        <a href="#" ng-click="employeesCtrl.setTabs('management')">Management</a>
                     </li>
-                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 2}">
-                        <a href="#" ng-click="employeesCtrl.setTabs(2)">Developers</a>
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'developers'}">
+                        <a href="#" ng-click="employeesCtrl.setTabs('developers')">Developers</a>
                     </li>
-                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 3}">
-                        <a href="#" ng-click="employeesCtrl.setTabs(3)">Trainees</a>
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'trainee'}">
+                        <a href="#" ng-click="employeesCtrl.setTabs('trainee')">Trainees</a>
                     </li>
                 </ul>
             </div>
             <div class="employees-table">
                 <table class="table table-bordered table-responsive">
                     <thead>
-                        <th>POST</th>
                         <th>Initials</th>
+                        <th>Email</th>
                         <th>Hours worked</th>
                         <th>status</th>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="user in employeesCtrl.users">
+                        <tr ng-repeat="user in employeesCtrl.users | filter:employeesCtrl.activeTabs">
+                            <td>{{user.full_name}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.id}}</td>
-                            <td>{{user.role_id}}</td>
-                            <td>OK</td>
+                            <td ng-class="{'online': user.status == 'online',
+                                            'offline': user.status == 'offline'}">
+                                {{user.status}}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
