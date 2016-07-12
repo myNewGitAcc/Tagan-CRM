@@ -2,7 +2,8 @@
 
 (function() {
 
-  function usersService($http) {
+  function usersService($http, FayeClient) {
+    this.userStatuses = ['offline', 'online', 'away']
 
     return {
       getProfile: ()=> {
@@ -16,19 +17,21 @@
       deleteUser: (id)=> {
         return $http.destroy('/api/v1/users/'+id);
       },
-      
+
       getUser: (id) => {
         return $http.get('/api/v1/users/'+id);
       },
 
-      userStatusUpdate: (id, thisStatus)=> {
+      userStatusUpdate: (id, thisStatus) => {
+        FayeClient.publish('/user_statuses', {status: this.userStatuses[thisStatus], user_id: id});
+
         return $http.put('/api/v1/users/'+id, {
           status: thisStatus
         });
       }
     };
   }
-  usersService.$inject = ['$http'];
+  usersService.$inject = ['$http', 'FayeClient'];
 
   angular.module('ngSpaApp')
     .factory('users', usersService);

@@ -5,7 +5,7 @@
   function worktimeFactoryService($http) {
 
     return {
-      
+
     };
   }
   worktimeFactoryService.$inject = ['$http'];

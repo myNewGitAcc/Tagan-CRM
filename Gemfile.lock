@@ -68,14 +68,10 @@ GEM
       activesupport (>= 3.0.0)
       rack (>= 1.1.0)
     addressable (2.4.0)
-    angular-faye-rails (0.2.0)
-      angularjs-rails
-      faye
     angular-rails-templates (1.0.0)
       railties (>= 4.2, < 6)
       sprockets (~> 3.0)
       tilt
-    angularjs-rails (1.5.6)
     arbre (1.0.3)
       activesupport (>= 3.0.0)
     arel (6.0.3)
@@ -118,7 +114,7 @@ GEM
       warden (~> 1.2.3)
     devise-token_authenticatable (0.5.1)
       devise (>= 4.0.0, < 4.2.0)
-    em-http-request (1.1.4)
+    em-http-request (1.1.5)
       addressable (>= 2.3.4)
       cookiejar (!= 0.3.1)
       em-socksify (>= 0.3)
@@ -128,9 +124,9 @@ GEM
       eventmachine (>= 1.0.0.beta.4)
     equalizer (0.0.11)
     erubis (2.7.0)
-    eventmachine (1.2.0.1)
+    eventmachine (1.0.9.1)
     execjs (2.7.0)
-    faye (1.2.1)
+    faye (1.1.2)
       cookiejar (>= 0.3.0)
       em-http-request (>= 0.3.0)
       eventmachine (>= 0.12.0)
@@ -138,6 +134,9 @@ GEM
       multi_json (>= 1.0.0)
       rack (>= 1.0.0)
       websocket-driver (>= 0.5.1)
+    faye-rails (2.0.3)
+      eventmachine (~> 1.0.0)
+      faye (= 1.1.2)
     faye-websocket (0.10.4)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
@@ -331,14 +330,13 @@ PLATFORMS
 DEPENDENCIES
   activeadmin!
   acts_as_api (~> 0.4.2)
-  angular-faye-rails
   angular-rails-templates
   browserify-rails
   byebug
   coffee-rails (~> 4.1.0)
   devise
   devise-token_authenticatable
-  faye
+  faye-rails (~> 2.0)
   grape (~> 0.9.0)
   grape-swagger (~> 0.8.0)
   grape-swagger-rails!

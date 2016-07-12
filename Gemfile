@@ -63,12 +63,12 @@ gem 'devise'
 gem 'devise-token_authenticatable'
 gem 'acts_as_api', '~> 0.4.2'
 
-gem 'thin'
-gem 'faye'
-gem "angular-faye-rails"
-
 gem "browserify-rails"
 
 gem 'activeadmin', github: 'activeadmin'
 
 gem 'angular-rails-templates'
+
+gem 'faye-rails', '~> 2.0'
+
+gem 'thin'

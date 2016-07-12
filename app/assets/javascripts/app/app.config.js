@@ -17,5 +17,9 @@ angular
       users.getProfile().then((response)=>{
         $rootScope.currentUserId = response.data.data.id;
       });
-  
-    });
+    })
+    .factory('FayeClient', [
+      function() {
+        return new Faye.Client('/faye')
+      }
+    ]);

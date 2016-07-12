@@ -30,5 +30,6 @@
 //= require google-maps
 //= require ngSticky
 //= require app/app.config
+//= require faye
 //= require_tree ./app
 //= require_tree ./app/templates

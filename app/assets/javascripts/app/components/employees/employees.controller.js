@@ -1,15 +1,19 @@
 'use strict';
 
 class employeesController {
-  constructor(employeesFactory, users) {
+  constructor(employeesFactory, users, FayeClient) {
 
-    var allUsers = null;
     this.activeTabs = 'management';
-    users.getUsers().then( (response)=>{
+
+    users.getUsers().then( (response) => {
       this.users = response.data.data;
      // this.users = employeesFactory.filtered('management', allUsers);
     });
-    
+
+    FayeClient.subscribe('/user_statuses', function(payload) {
+      console.log(payload);
+    });
+
     this.setTabs = (n) => {
      // this.users = employeesFactory.filtered(n, allUsers);
       this.activeTabs = n;
@@ -17,7 +21,7 @@ class employeesController {
   }
 }
 
-employeesController.$inject = ['employeesFactory', 'users'];
+employeesController.$inject = ['employeesFactory', 'users', 'FayeClient'];
 
 angular.module('ngSpaApp')
   .controller('employeesController', employeesController);
