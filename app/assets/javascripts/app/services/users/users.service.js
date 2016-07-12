@@ -3,7 +3,7 @@
 (function() {
 
   function usersService($http, FayeClient) {
-    this.userStatuses = ['offline', 'online', 'away']
+    this.userStatuses = ['offline', 'online', 'away'];
 
     return {
       getProfile: ()=> {
@@ -23,7 +23,7 @@
       },
 
       userStatusUpdate: (id, thisStatus) => {
-        FayeClient.publish('/user_statuses', {status: this.userStatuses[thisStatus], user_id: id});
+        FayeClient.publish('/user_statuses', {status: this.userStatuses[thisStatus], id: id});
 
         return $http.put('/api/v1/users/'+id, {
           status: thisStatus

@@ -2,20 +2,18 @@
 
 class employeesController {
   constructor(employeesFactory, users, FayeClient) {
-
+    var controllerThis = this;
     this.activeTabs = 'management';
 
     users.getUsers().then( (response) => {
       this.users = response.data.data;
-     // this.users = employeesFactory.filtered('management', allUsers);
     });
 
     FayeClient.subscribe('/user_statuses', function(payload) {
-      console.log(payload);
+      controllerThis.users = employeesFactory.filtered(payload, controllerThis.users);
     });
 
     this.setTabs = (n) => {
-     // this.users = employeesFactory.filtered(n, allUsers);
       this.activeTabs = n;
     };
   }
