@@ -5,12 +5,13 @@
   function employeesFactoryService() {
     return {
       filtered: (payload, users)=> {
-        var User =  _.filter(users,
-                                (user)=>{
-                                  return user.id == payload.id;
-                                });
-        User[0].status = payload.status;
-        return _.extend(users, User);
+        users.forEach((user)=>{
+          //user.status = user.id == payload.id ? payload.status: user.status;
+          if (user.id == payload.id) {
+            user.status = payload.status;
+          }
+        });
+        return users;
       }
     };
   }

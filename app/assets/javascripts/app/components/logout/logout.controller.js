@@ -18,5 +18,7 @@ class LogoutController {
 
 }
 
+
+LogoutController.$inject = [];
 angular.module('ngSpaApp')
   .controller('LogoutController', LogoutController);

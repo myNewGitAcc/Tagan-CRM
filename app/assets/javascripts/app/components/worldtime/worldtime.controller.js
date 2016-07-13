@@ -1,7 +1,7 @@
 'use strict';
 
 class worldtimeController {
-  constructor($http, $interval, $scope) {
+  constructor($http, $interval) {
 
     var key = 'AIzaSyD-WiMcT6mKg0Fs-YOymfUFNP0RFi7wOD0';
     this.markers = [];

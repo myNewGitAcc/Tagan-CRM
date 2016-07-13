@@ -1,7 +1,7 @@
 'use strict';
 
 class employeesController {
-  constructor(employeesFactory, users, FayeClient) {
+  constructor(employeesFactory, users, FayeClient, $scope) {
     var controllerThis = this;
     this.activeTabs = 'management';
 
@@ -10,7 +10,10 @@ class employeesController {
     });
 
     FayeClient.subscribe('/user_statuses', function(payload) {
-      controllerThis.users = employeesFactory.filtered(payload, controllerThis.users);
+      $scope.$apply(()=>{
+        controllerThis.users = employeesFactory.filtered(payload, controllerThis.users);
+      })
+
     });
 
     this.setTabs = (n) => {
@@ -19,7 +22,7 @@ class employeesController {
   }
 }
 
-employeesController.$inject = ['employeesFactory', 'users', 'FayeClient'];
+employeesController.$inject = ['employeesFactory', 'users', 'FayeClient', '$scope'];
 
 angular.module('ngSpaApp')
   .controller('employeesController', employeesController);

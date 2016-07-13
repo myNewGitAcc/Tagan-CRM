@@ -7,14 +7,15 @@ angular
         'ui.bootstrap',
         'ngResource',
         'sticky',
-        'templates'
+        'templates',
+        'luegg.directives'
     ])
-    .constant('CONFIG',
-        {
-            APIHost: 'http://localhost:3000'
-        })
+    .constant('CONFIG', {
+        APIHost: 'http://localhost:3000'
+    })
     .run(($rootScope, users)=>{
       users.getProfile().then((response)=>{
+        $rootScope.currentUserName = response.data.data.full_name;
         $rootScope.currentUserId = response.data.data.id;
       });
     })

@@ -30,9 +30,9 @@
     "google-maps": "^3.2.1",
     "moment": "^2.13.0",
     "moment-timezone": "^0.5.4",
-    "ngSticky": "^1.8.10"
+    "ngSticky": "^1.8.10",
+    "angular-scroll-glue": "^2.0.7"
   },
-
   "resolutions": {
     "angular": "1.5.5"
   }

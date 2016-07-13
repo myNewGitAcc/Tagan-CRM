@@ -1,0 +1,21 @@
+<div class="chats">
+    <div scroll-glue class="messages">
+        <ul>
+            <li  ng-repeat="comment in chatsCtrl.allMessages">
+                <div ng-class-odd="'odd'" ng-class-even="'even'">
+                    <div>
+                        <h4 class="author">{{comment.name}}</h4>
+                        <h6>{{comment.time}}</h6>
+                    </div>
+                    <h5 class="message">{{comment.message}}</h5>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="input-messages">
+        <textarea ng-keyup="$event.keyCode == 13 && chatsCtrl.sendMessage()"
+                  ng-model="chatsCtrl.message" placeholder="Please, enter your message">
+        </textarea>
+
+    </div>
+</div>

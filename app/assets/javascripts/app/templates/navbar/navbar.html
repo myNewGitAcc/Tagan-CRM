@@ -20,8 +20,11 @@
                 <li ng-class="{'active': nav.activePage == '/worldtime'}">
                     <a href="worldtime" ng-click="nav.setPage(3)">WorldTime</a>
                 </li>
+                <li ng-class="{'active': nav.activePage == '/chats'}">
+                    <a href="chats" ng-click="nav.setPage(4)">Chats</a>
+                </li>
             </ul>
-                <log-out></log-out>
+                <!--<log-out></log-out>-->
             <ul  class="nav navbar-nav navbar-right">
                 <li ><a id="logout" ng-click="log.logout()" href="#">Logout</a></li>
             </ul>

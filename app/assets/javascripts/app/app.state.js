@@ -9,7 +9,6 @@ angular
             $httpProvider,
             $locationProvider,
             $urlRouterProvider) {
-
             $locationProvider.html5Mode(true);
             $urlRouterProvider.otherwise('/');
 
@@ -31,6 +30,19 @@ angular
                     templateUrl: 'worldtime/worldtime.tpl.html',
                     controller: 'worldtimeController',
                     controllerAs: 'wtCtrl'
+                })
+                .state('chats', {
+                  url: '/chats',
+                  templateUrl: 'chats/chats.tpl.html',
+                  controller: 'chatsController',
+                  controllerAs: 'chatsCtrl',
+                  resolve: {
+                    getId: ($rootScope, users)=>{
+                      return users.getProfile().then((response)=>{
+                        $rootScope.currentUserId = response.data.data.id;
+                      });
+                    }
+                  }
                 });
 
     }]);

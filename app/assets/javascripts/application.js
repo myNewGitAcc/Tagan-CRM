@@ -24,6 +24,7 @@
 
 // new components need include before
 //= require jquery_ujs
+//= require angular-scroll-glue
 //= require underscore
 //= require moment
 //= require moment-timezone
