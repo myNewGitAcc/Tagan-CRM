@@ -4,7 +4,6 @@ class worktimeController {
   constructor(worktimeFactory, $scope, users) {
     this.hoursWorked = 0;
     this.remainsWork = 0;
-    this.onlineUser = null;
 
     users.getProfile().then( (response) => {
       this.onlineUser = response.data.data.status;

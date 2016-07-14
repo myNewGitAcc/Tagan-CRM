@@ -17,6 +17,7 @@ angular
     .run(($rootScope, users)=>{
       users.getProfile().then((response)=>{
         $rootScope.currentUserName = response.data.data.full_name;
+        $rootScope.currentUserId = response.data.data.id;
       });
     })
     .factory('FayeClient', [

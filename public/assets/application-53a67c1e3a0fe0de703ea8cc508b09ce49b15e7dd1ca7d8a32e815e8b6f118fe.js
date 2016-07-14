@@ -67338,6 +67338,7 @@ angular
     .run(($rootScope, users)=>{
       users.getProfile().then((response)=>{
         $rootScope.currentUserName = response.data.data.full_name;
+        $rootScope.currentUserId = response.data.data.id;
       });
     })
     .factory('FayeClient', [
@@ -67659,7 +67660,6 @@ class worktimeController {
   constructor(worktimeFactory, $scope, users) {
     this.hoursWorked = 0;
     this.remainsWork = 0;
-    this.onlineUser = null;
 
     users.getProfile().then( (response) => {
       this.onlineUser = response.data.data.status;
