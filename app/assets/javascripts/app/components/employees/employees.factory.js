@@ -6,7 +6,6 @@
     return {
       filtered: (payload, users)=> {
         users.forEach((user)=>{
-          //user.status = user.id == payload.id ? payload.status: user.status;
           if (user.id == payload.id) {
             user.status = payload.status;
           }

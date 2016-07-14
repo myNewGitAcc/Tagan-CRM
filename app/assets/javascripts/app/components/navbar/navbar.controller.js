@@ -3,9 +3,8 @@
 class NavbarController {
   constructor($location) {
       this.activePage = $location.path();
-      this.setPage = (n)=> {
-        console.log($location);
-        this.activePage = n == 1 ? '/' : n== 2 ? '/employees' : '/worldtime';
+      this.setPage = (event)=> {
+        this.activePage = event.target.pathname;
       }
   }
 

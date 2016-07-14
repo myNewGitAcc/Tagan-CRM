@@ -15,6 +15,9 @@
             FayeClient.publish('/private_chats/'+user[0].id, {name: full_name, message: message, time: time});
             FayeClient.publish('/private_chats/'+currentUserId, {name: full_name, message: message, time: time});
           }
+          else{
+            FayeClient.publish('/private_chats/'+currentUserId, {name: "Error", message: "No such user", time: time});
+          }
         } else {
           FayeClient.publish('/user_chats', {name: full_name, message: message, time: time});
         }
@@ -34,7 +37,8 @@
     }
 
     function searchUser(item, toSearch) {
-      return (item.full_name.toLowerCase().indexOf(toSearch.toLowerCase()) == 0)  ? true : false;
+      var name = item.full_name.split(' ');
+      return (name[0].toLowerCase().localeCompare(toSearch.toLowerCase()) == 0)  ? true : false;
     }
 
   }

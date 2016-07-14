@@ -3,7 +3,7 @@
 class employeesController {
   constructor(employeesFactory, users, FayeClient, $scope) {
     var controllerThis = this;
-    this.activeTabs = 'management';
+    this.activeTabs = 'Management';
 
     users.getUsers().then( (response) => {
       this.users = response.data.data;
@@ -16,8 +16,8 @@ class employeesController {
 
     });
 
-    this.setTabs = (n) => {
-      this.activeTabs = n;
+    this.setTabs = (event) => {
+      this.activeTabs = event.target.text;
     };
   }
 }

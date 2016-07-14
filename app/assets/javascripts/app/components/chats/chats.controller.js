@@ -1,7 +1,7 @@
 'use strict';
 
 class chatsController {
-  constructor(chats, $scope, FayeClient, users) {
+  constructor(chats, $scope, FayeClient, users, $notification) {
     this.message = "";
     this.allMessages = [];
     var controllerThis = this;
@@ -17,6 +17,12 @@ class chatsController {
 
     FayeClient.subscribe('/private_chats/'+$scope.currentUserId, function(payload) {
       $scope.$apply(()=>{
+        if (payload.name != $scope.currentUserName && payload.name != 'Error') {
+          $notification(payload.name, {
+            body: payload.message,
+            tag: payload.name
+          });
+        }
         controllerThis.allMessages.push({name: payload.name,
                                          message: payload.message,
                                          time: payload.time});
@@ -26,6 +32,12 @@ class chatsController {
     
     FayeClient.subscribe('/user_chats', function(payload) {
       $scope.$apply(()=>{
+        if (payload.name != $scope.currentUserName) {
+          $notification(payload.name, {
+            body: payload.message,
+            tag: payload.name
+          });
+        }
         controllerThis.allMessages.push({name: payload.name,
                                          message: payload.message,
                                          time: payload.time});
@@ -33,12 +45,16 @@ class chatsController {
 
     });
 
+    this.addressee = (author)=>{
+      author = author.split(' ');
+      this.message = '@' + author[0] + ':';
+    }
 
   }
 
 }
 
-chatsController.$inject = ['chats', '$scope', 'FayeClient', 'users'];
+chatsController.$inject = ['chats', '$scope', 'FayeClient', 'users', '$notification'];
 
 angular.module('ngSpaApp')
   .controller('chatsController', chatsController);

@@ -5,15 +5,15 @@
         </div>
         <div class="employees-body">
             <div class="employees-tabs">
-                <ul class="nav nav-tabs">
-                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'management'}">
-                        <a href="#" ng-click="employeesCtrl.setTabs('management')">Management</a>
+                <ul class="nav nav-tabs" ng-click="employeesCtrl.setTabs($event)">
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'Management'}">
+                        <a href="">Management</a>
                     </li>
-                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'developers'}">
-                        <a href="#" ng-click="employeesCtrl.setTabs('developers')">Developers</a>
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'Developers'}">
+                        <a href="">Developers</a>
                     </li>
-                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'trainee'}">
-                        <a href="#" ng-click="employeesCtrl.setTabs('trainee')">Trainees</a>
+                    <li role="presentation" ng-class="{'active': employeesCtrl.activeTabs == 'Trainees'}">
+                        <a href="">Trainees</a>
                     </li>
                 </ul>
             </div>
