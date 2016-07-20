@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_many :cars
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :token_authenticatable, :registerable,

@@ -21,7 +21,14 @@ module API
         get '/:id' do
           begin
             user = User.find_by_id params[:id]
-            success! user.as_api_response(:basic), 200
+            car = Car.where(users_id: params[:id])
+            a = success! user.as_api_response(:basic), 200
+            b = success! car.as_api_response(:basic), 200
+            if b[:data].size==0
+              return a
+            else
+              return a,"=====================This users cars========================",b
+            end
           rescue => e
             throw_error! 403, e.class.to_s, e.message
           end
@@ -52,6 +59,9 @@ module API
         delete ':id' do
           begin
             user = User.find_by_id params[:id]
+            car = Car.where(users_id: params[:id])
+
+            car.destroy_all
             user.destroy
             success! user.as_api_response(:basic), 200
           rescue => e
