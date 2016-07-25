@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
   has_many :cars
+  has_many :technologies
+  accepts_nested_attributes_for :technologies, allow_destroy: true
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :token_authenticatable, :registerable,
@@ -34,7 +36,8 @@ class User < ActiveRecord::Base
 
   class << self
     def authenticate(email_or_username, password)
-      user = where(["lower(email) = :value", { :value => email_or_username.downcase }]).first
+      user = User.where(["lower(email) = :value", { :value => email_or_username.downcase }]).first
+
       return nil unless user
       unless user.valid_password?(password)
         sign_in_attributes = {
@@ -44,8 +47,10 @@ class User < ActiveRecord::Base
         user.lock_access! if user.failed_attempts >= Devise.maximum_attempts
         return nil
       end
-      user.unlock_access! if user.access_locked? && user.locked_at < Devise.unlock_in.ago
-      user
+
+        user.unlock_access! if user.access_locked? && user.locked_at < Devise.unlock_in.ago
+        user
+
     end
 
     def find_for_database_authentication(warden_conditions)

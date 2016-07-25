@@ -49,6 +49,7 @@ group :production, :staging do
   gem 'heroku_rails_deflate'
   gem 'rails_12factor'
   gem 'sprockets', '>= 3.0.0'
+  gem 'sprockets-rails', '~> 2'
   gem 'sprockets-es6'
 end
 
@@ -72,3 +73,9 @@ gem 'angular-rails-templates'
 gem 'faye-rails', '~> 2.0'
 
 gem 'thin'
+
+gem 'rspec-rails', '~> 3.5.0'
+gem "factory_girl_rails", "~> 4.0"
+gem 'shoulda-matchers', '~> 2.4'
+gem 'capybara'
+gem 'database_cleaner'

@@ -14,7 +14,7 @@ module API
 
         desc "Add new cars"
         params do
-          optional :users_id, type: Integer, desc: "User id"
+          optional :user_id, type: Integer, desc: "User id"
           requires :name, type: String, desc: 'Cars name'
           requires :is_stock, type: String, desc: 'Car is stock?'
           requires :max_speed, type: Integer, desc: 'Cars max speed'
@@ -22,8 +22,7 @@ module API
         end
 
         post do
-          car_hash = params[:car]
-          car_hash = params.slice(:name, :is_stock, :max_speed, :price, :users_id)# unless car_hash
+          car_hash = params.slice(:name, :is_stock, :max_speed, :price, :user_id)# unless car_hash
 
           params[:car] = car_hash
           permitted_params = permit_params(:car, Permits.controller(Car.name))
@@ -34,17 +33,22 @@ module API
 
         desc "Delete cars"
         params do
-          optional :users_id, type: Integer, desc: 'Cars foreign key'
+          optional :user_id, type: Integer, desc: 'Cars foreign key'
         end
 
         delete ':id' do
-          car = Car.where(users_id: params[:users_id])
-          car.delete_all
+          begin
+            car = Car.find_by_id params[:id]
+            car.destroy
+            success! car.as_api_response(:basic), 200
+          rescue => e
+            throw_error! 403, e.class.to_s, e.message
+          end
         end
 
         desc "Update cars"
         params do
-          optional :users_id, type: Integer, desc: "User id"
+          optional :user_id, type: Integer, desc: "User id"
           optional :name, type: String, desc: 'Cars name'
           optional :is_stock, type: String, desc: 'Car is stock?'
           optional :max_speed, type: Integer, desc: 'Cars max speed'
@@ -53,7 +57,7 @@ module API
 
         put ':id' do
             car = Car.find_by_id params[:id]
-            car_params = ActionController::Parameters.new(params).permit(:name, :is_stock, :max_speed, :price, :users_id)
+            car_params = ActionController::Parameters.new(params).permit(:name, :is_stock, :max_speed, :price, :user_id)
             car.update_attributes(car_params)
             success! car.as_api_response(:basic), 200
         end

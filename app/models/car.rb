@@ -8,7 +8,7 @@ class Car < ActiveRecord::Base
     t.add :is_stock
     t.add :max_speed
     t.add :price
-    t.add :users_id
+    t.add :user_id
     t.add :created_at
   end
 end

@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
+
+
+
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
 
   root to: 'application#show'
 
@@ -23,7 +24,10 @@ Rails.application.routes.draw do
                  sessions: 'access/sessions',
              }
 
+  ActiveAdmin.routes(self)
+
   get '/login', to: 'auth#login'
 
   get '/*path' => 'auth#redirect'
+
 end
