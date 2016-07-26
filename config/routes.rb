@@ -28,6 +28,8 @@ Rails.application.routes.draw do
 
   get '/login', to: 'auth#login'
 
+  get '/maps', to: 'maps#index'
+
   get '/*path' => 'auth#redirect'
 
 end

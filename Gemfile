@@ -79,3 +79,4 @@ gem "factory_girl_rails", "~> 4.0"
 gem 'shoulda-matchers', '~> 2.4'
 gem 'capybara'
 gem 'database_cleaner'
+gem 'active_admin_datetimepicker'

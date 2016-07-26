@@ -6,7 +6,7 @@ ActiveAdmin.register User do
     selectable_column
     id_column
     column :full_name do |user|
-      "#{user.first_name} #{user.last_name} #{user.patronumic}"
+      "#{user.first_name} #{user.patronumic} #{user.last_name}"
     end
     column :email
     column :role
@@ -22,9 +22,9 @@ ActiveAdmin.register User do
   form do |f|
     f.inputs "User Details" do
       f.input :first_name
-      f.input :last_name
       f.input :patronumic
-      f.input :birthday
+      f.input :last_name
+      f.input :birthday, as: :date_picker, :input_html => { :max => "#{Date.today}" }
       f.input :city_of_birth
       f.input :city_of_residence
       f.input :email
@@ -45,7 +45,20 @@ ActiveAdmin.register User do
     attributes_table do
       row :id
       row :first_name
+      row :patronumic
       row :last_name
+      row 'AGE' do
+        now = Time.now.utc.to_date
+        birthday = user.birthday
+        now.year - birthday.year - (birthday.to_date.change(:year => now.year) > now ? 1 : 0)
+      end
+      row 'City of birth' do
+        link_to "#{user.city_of_birth}",     "/employees"
+        # :city_of_birth
+      end
+      row 'City of residence' do
+        link_to "#{user.city_of_residence}", maps_path
+      end
       row :email
       row :role
       row :password
@@ -61,6 +74,6 @@ ActiveAdmin.register User do
   end
 
 end
-ActiveAdmin.register Technology do
-  belongs_to :user, optional: true
-end
+# ActiveAdmin.register Technology do
+#   belongs_to :user, optional: true
+# end
