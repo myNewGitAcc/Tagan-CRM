@@ -18,7 +18,7 @@ module API
           permitted_params = permit_params(:user, Permits.controller(User.name))
 
           user = User.create(permitted_params)
-          after_save(user, status, "Your account is registered successfully", :default_token)
+          after_save(user, 201, "Your account is registered successfully", :default_token)
         end
       end
 

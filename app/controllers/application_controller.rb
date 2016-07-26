@@ -28,4 +28,19 @@ class ApplicationController < ActionController::Base
       redirect_to login_path if !exclusion_redirect
     end
   end
+
+  def authenticate_admin_user!
+    exclusion_redirect = [admin_root_path].include?(request.fullpath)
+    if exclusion_redirect
+      redirect_to root_path  unless current_user.admin
+    end
+  end
+
+  def current_admin_user
+    if current_user && !current_user.admin
+      redirect_to root_path
+    end
+    current_user
+  end
+
 end

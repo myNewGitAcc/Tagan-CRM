@@ -72,3 +72,10 @@ gem 'angular-rails-templates'
 gem 'faye-rails', '~> 2.0'
 
 gem 'thin'
+
+gem 'rspec-rails', '~> 3.5.0'
+
+group :test do
+  gem 'factory_girl_rails', '~> 4.7.0'
+  gem 'database_cleaner', '~> 1.5.3'
+end

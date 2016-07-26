@@ -7,12 +7,13 @@ module API
       include API::Concern::Registration
       include API::Concern::UserProfile
       include API::Concern::Users
+      include API::Concern::Articles
 
 
       add_swagger_documentation(
-          base_path: '/api',
-          hide_documentation_path: true,
-          api_version: 'v1'
+        base_path: '/api',
+        hide_documentation_path: true,
+        api_version: 'v1'
       )
     end
   end

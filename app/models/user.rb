@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token
   acts_as_api
 
+  has_many :articles, dependent: :destroy
+
   enum role: [:admin, :management, :developers, :trainees]
   enum status: [:offline, :online, :away]
 
@@ -16,6 +18,7 @@ class User < ActiveRecord::Base
     t.add :role
     t.add :full_name
     t.add :status
+    t.add :admin
     t.add :created_at
   end
 
@@ -37,7 +40,7 @@ class User < ActiveRecord::Base
       return nil unless user
       unless user.valid_password?(password)
         sign_in_attributes = {
-            failed_attempts: user.failed_attempts.to_i + 1
+          failed_attempts: user.failed_attempts.to_i + 1
         }
         user.update_columns(sign_in_attributes)
         user.lock_access! if user.failed_attempts >= Devise.maximum_attempts
@@ -45,6 +48,7 @@ class User < ActiveRecord::Base
       end
       user.unlock_access! if user.access_locked? && user.locked_at < Devise.unlock_in.ago
       user
+
     end
 
     def find_for_database_authentication(warden_conditions)
@@ -60,17 +64,17 @@ class User < ActiveRecord::Base
   def validate_request!(request, params)
     if access_locked?
       errors.add(:account,'is locked please contact us')
-    # elsif !confirmed?
-    #   errors.add(:email,'is not confirmed yet')
+      # elsif !confirmed?
+      #   errors.add(:email,'is not confirmed yet')
     elsif timedout?(current_sign_in_at)
       errors.add(:session, 'expired. Please make re-login.')
     else
       sign_in_attributes = {
-          current_sign_in_ip: request.env['REMOTE_ADDR'],
-          current_sign_in_at: DateTime.now,
-          last_sign_in_at: DateTime.now,
-          last_sign_in_ip: request.env['REMOTE_ADDR'],
-          sign_in_count:   (sign_in_count.to_i + 1)
+        current_sign_in_ip: request.env['REMOTE_ADDR'],
+        current_sign_in_at: DateTime.now,
+        last_sign_in_at: DateTime.now,
+        last_sign_in_ip: request.env['REMOTE_ADDR'],
+        sign_in_count:   (sign_in_count.to_i + 1)
       }
 
       update_columns(sign_in_attributes)

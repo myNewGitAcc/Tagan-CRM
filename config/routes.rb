@@ -2,15 +2,14 @@ Rails.application.routes.draw do
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
+  #devise_for :admin_users, ActiveAdmin::Devise.config
 
   root to: 'application#show'
 
   def shared_devise_path
     {
-        sign_in:  'login',
-        sign_out: 'logout'
+      sign_in:  'login',
+      sign_out: 'logout'
     }
   end
 
@@ -18,10 +17,12 @@ Rails.application.routes.draw do
              path: 'access',
              path_names: shared_devise_path,
              controllers: {
-                 passwords: 'access/passwords',
-                 confirmations: 'access/confirmations',
-                 sessions: 'access/sessions',
+               passwords: 'access/passwords',
+               confirmations: 'access/confirmations',
+               sessions: 'access/sessions',
              }
+
+  ActiveAdmin.routes(self)
 
   get '/login', to: 'auth#login'
 
