@@ -33,9 +33,10 @@ ActiveAdmin.register User do
       f.input :last_name
       f.input :first_name
       f.input :middle_name
-      f.input :date_of_birth
+      f.input :date_of_birth, as: :date_picker, input_html: {min: "1950-01-01", max: "#{Date.today}" }
       f.input :place_of_birth
       f.input :live_in_city
+      render :layouts => false, :template => "map/map.html.erb"
       f.input :email
       f.input :role
       f.input :admin
@@ -51,9 +52,11 @@ ActiveAdmin.register User do
       row :last_name
       row :first_name
       row :middle_name
-      row("Age"){ user.date_of_birth}
+      row("Age"){ Time.new.year - user.date_of_birth.year }
       row :place_of_birth
-      row :live_in_city
+      row "City" do
+        render :layouts => false, :template => "map/map.html.erb"
+      end
       row :email
       row :role
       row :admin

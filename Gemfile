@@ -80,4 +80,8 @@ group :test do
   gem 'database_cleaner', '~> 1.5.3'
 end
 
-#gem 'sprockets', '3.6.3'
+
+gem 'sprockets', '3.6.3'
+
+gem 'active_admin_datetimepicker'
+
