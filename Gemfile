@@ -79,3 +79,5 @@ group :test do
   gem 'factory_girl_rails', '~> 4.7.0'
   gem 'database_cleaner', '~> 1.5.3'
 end
+
+#gem 'sprockets', '3.6.3'
