@@ -1,21 +1,47 @@
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB68HxZhd4Pxdsya_JvIT1qLSqzXWpWEI4&signed_in=true&libraries=places">-->
+<!--</script>-->
+<script >
+//  $(document).ready(function() {
+//    $('#new_user').keydown(function(event){
+//      if(event.keyCode == 13) {
+//        event.preventDefault();
+//        return false;
+//      }
+//    });
+//
+//    var placeSearch, autocomplete;
+//    var componentForm = {
+//      street_number: 'short_name',
+//      route: 'long_name',
+//      locality: 'long_name',
+//      administrative_area_level_1: 'short_name',
+//      country: 'long_name',
+//      postal_code: 'short_name'
+//    };
+//
+//    autocomplete = new google.maps.places.Autocomplete(
+//        (document.getElementById('user_live_in_city')),
+//        {types: ['geocode']});
+//
+//
+//    autocomplete.addListener('place_changed', fillInAddress);
+//
+//
+//    function fillInAddress() {
+//
+//      var place = autocomplete.getPlace();
+//      // console.log(place);
+//      for (var i = 0; i < place.address_components.length; i++) {
+//        var addressType = place.address_components[i].types[0];
+//        if (document.getElementById('user_live_in_city').value) {
+//          var val = place.address_components[i][componentForm[addressType]];
+//          console.log(componentForm[addressType]);
+//          //document.getElementById(addressType).value = val;
+//        }
+//      }
+//    }
+//
+//  });
 
-<input id="pac-input" class="controls" type="text" placeholder="Enter a location"
-       autocomplete="off" style="z-index: 0; position: absolute; left: 125px; top: 0px;">
-<div id="type-selector" class="controls">
-  <input type="radio" name="type" id="changetype-all" checked="checked">
-  <label for="changetype-all">All</label>
+</script>
 
-  <input type="radio" name="type" id="changetype-establishment">
-  <label for="changetype-establishment">Establishments</label>
-
-  <input type="radio" name="type" id="changetype-address">
-  <label for="changetype-address">Addresses</label>
-
-  <input type="radio" name="type" id="changetype-geocode">
-  <label for="changetype-geocode">Geocodes</label>
-</div>
-<div id="map"></div>
-
-
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-WiMcT6mKg0Fs-YOymfUFNP0RFi7wOD0"></script>

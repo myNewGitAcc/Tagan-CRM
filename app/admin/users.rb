@@ -36,7 +36,7 @@ ActiveAdmin.register User do
       f.input :date_of_birth, as: :date_picker, input_html: {min: "1950-01-01", max: "#{Date.today}" }
       f.input :place_of_birth
       f.input :live_in_city
-      render :layouts => false, :template => "map/map.html.erb"
+      # render :layouts => false, :template => "map/map.html.erb"
       f.input :email
       f.input :role
       f.input :admin
