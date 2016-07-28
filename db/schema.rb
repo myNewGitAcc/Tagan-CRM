@@ -67,14 +67,15 @@ ActiveRecord::Schema.define(version: 20160719113557) do
     t.integer  "role"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
-    t.boolean  "admin",                  default: false
+    t.string   "first_name"
+    t.string   "last_name"
+    t.integer  "status",                 default: 0
+    t.boolean  "admin",                  default: false, null: false
+    t.string   "middle_name"
     t.date     "date_of_birth"
     t.string   "place_of_birth"
     t.string   "live_in_city"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "middle_name"
-    t.integer  "status",                 default: 0
+    t.string   "place_id"
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
@@ -83,4 +84,5 @@ ActiveRecord::Schema.define(version: 20160719113557) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
+  add_foreign_key "articles", "users", name: "articles_user_id_fkey"
 end

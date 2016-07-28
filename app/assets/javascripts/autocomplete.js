@@ -1,26 +1,41 @@
  $(document).ready(function() {
-   $('#new_user').keydown(function(event){
-     if(event.keyCode == 13) {
-       event.preventDefault();
-       return false;
+
+   if ($('#edit_user').length > 0) {
+
+     console.log('ss');
+     $('#new_user').keydown(function (event) {
+       if (event.keyCode == 13) {
+         event.preventDefault();
+         return false;
+       }
+     });
+
+     var autocomplete, userPlaceOfBirth;
+
+     autocomplete = new google.maps.places.Autocomplete(
+         (document.getElementById('user_live_in_city')),
+         {types: ['geocode']});
+
+     userPlaceOfBirth = new google.maps.places.Autocomplete(
+         (document.getElementById('user_place_of_birth')),
+         {types: ['geocode']});
+
+     autocomplete.addListener('place_changed', fillInAddress);
+     userPlaceOfBirth.addListener('place_changed', fillInAddress);
+
+
+     function fillInAddress() {
+
+       var place = autocomplete.getPlace();
+       console.log(place.place_id);
+       $('#user_live_id').val(place.place_id)
      }
-   });
 
-   var autocomplete;
+       function fillInAddressU() {
 
-   autocomplete = new google.maps.places.Autocomplete(
-       (document.getElementById('user_live_in_city')),
-       {types: ['geocode']});
-
-
-   autocomplete.addListener('place_changed', fillInAddress);
-
-
-   function fillInAddress() {
-
-     var place = autocomplete.getPlace();
-    console.log(place.place_id);
-     $('#user_last_name').val(place.place_id)
-   }
-
+         var place = userPlaceOfBirth.getPlace();
+         console.log(place.place_id);
+         $('#user_place_id').val(place.place_id)
+       }
+     }
  });

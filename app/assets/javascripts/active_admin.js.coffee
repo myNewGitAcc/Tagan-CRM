@@ -1,3 +1,4 @@
-#= require googleMaps.js
+#= require googleMaps
 #= require active_admin/base
-#= require autocomplete.js
+#= require autocomplete
+#= require bootstrap

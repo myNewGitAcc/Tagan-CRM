@@ -1,47 +1,52 @@
-<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB68HxZhd4Pxdsya_JvIT1qLSqzXWpWEI4&signed_in=true&libraries=places">-->
-<!--</script>-->
-<script >
-//  $(document).ready(function() {
-//    $('#new_user').keydown(function(event){
-//      if(event.keyCode == 13) {
-//        event.preventDefault();
-//        return false;
-//      }
-//    });
-//
-//    var placeSearch, autocomplete;
-//    var componentForm = {
-//      street_number: 'short_name',
-//      route: 'long_name',
-//      locality: 'long_name',
-//      administrative_area_level_1: 'short_name',
-//      country: 'long_name',
-//      postal_code: 'short_name'
-//    };
-//
-//    autocomplete = new google.maps.places.Autocomplete(
-//        (document.getElementById('user_live_in_city')),
-//        {types: ['geocode']});
-//
-//
-//    autocomplete.addListener('place_changed', fillInAddress);
-//
-//
-//    function fillInAddress() {
-//
-//      var place = autocomplete.getPlace();
-//      // console.log(place);
-//      for (var i = 0; i < place.address_components.length; i++) {
-//        var addressType = place.address_components[i].types[0];
-//        if (document.getElementById('user_live_in_city').value) {
-//          var val = place.address_components[i][componentForm[addressType]];
-//          console.log(componentForm[addressType]);
-//          //document.getElementById(addressType).value = val;
-//        }
-//      }
-//    }
-//
-//  });
+<a href="#" id="maps" >
+<%= @user.live_in_city %></a>
+
+<!-- Large modal -->
+<div class="modal fade" id="maps-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div id="map">
+      </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary">Сохранить изменения</button>
+    </div>
+  </div>
+</div>
+
+<script  type="text/javascript" charset="utf-8">
+  $('#maps').on('click', function () {
+
+    $('#maps-modal').modal('show');
+    setTimeout(initMap,1000);
+
+  })
+
+ function initMap() {
+   var map = new google.maps.Map(document.getElementById('map'), {
+     center: {lat: 0, lng: 0},
+     zoom: 2
+   });
+
+   var service = new google.maps.places.PlacesService(map);
+       service.getDetails({
+         placeId: '<%= @user.place_id%>'
+       }, function(place, status) {
+         if (status === google.maps.places.PlacesServiceStatus.OK) {
+           var marker = new google.maps.Marker({
+             map: map,
+             position: place.geometry.location
+           });
+           google.maps.event.addListener(marker, 'click', function() {
+             infowindow.setContent(place.name);
+             infowindow.open(map, this);
+           });
+         }
+       });
+
+
+ }
 
 </script>
 

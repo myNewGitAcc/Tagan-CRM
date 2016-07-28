@@ -83,3 +83,5 @@ end
 gem 'active_admin_datetimepicker'
 
 gem 'sprockets', '3.6.3'
+
+gem 'bootstrap-sass'
