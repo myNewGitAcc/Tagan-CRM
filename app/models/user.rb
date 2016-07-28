@@ -2,10 +2,12 @@ class User < ActiveRecord::Base
   has_many :cars
   has_many :technologies
   accepts_nested_attributes_for :technologies, allow_destroy: true
+  validate :valid_date?
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :token_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :timeoutable
+
 
   before_save :ensure_authentication_token
   acts_as_api
@@ -101,4 +103,12 @@ class User < ActiveRecord::Base
       break token unless User.where(authentication_token: token).first
     end
   end
+
+
+  def valid_date?
+    if self.birthday>Date.today
+      errors.add(:birthday, "is missing or invalid")
+    end
+  end
+
 end

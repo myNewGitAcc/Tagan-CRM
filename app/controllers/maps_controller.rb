@@ -1,6 +1,10 @@
 class MapsController < ApplicationController
   layout 'maps'
-  def index
-   puts "hi"
+  def cor
+
+  end
+
+  def cob
+
   end
 end

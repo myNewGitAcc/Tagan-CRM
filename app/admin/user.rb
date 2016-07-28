@@ -1,7 +1,6 @@
 ActiveAdmin.register User do
   permit_params :email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :patronumic, :birthday, :city_of_birth, :city_of_residence,
                 technologies_attributes: [:id, :title, :comment, :_destroy]
-
   index do
     selectable_column
     id_column
@@ -24,7 +23,7 @@ ActiveAdmin.register User do
       f.input :first_name
       f.input :patronumic
       f.input :last_name
-      f.input :birthday, as: :date_picker, :input_html => { :max => "#{Date.today}" }
+      f.input :birthday, as: :date_picker, :input_html => { max: Date.today, :size=> '5'}
       f.input :city_of_birth
       f.input :city_of_residence
       f.input :email
@@ -43,6 +42,7 @@ ActiveAdmin.register User do
 
   show do
     attributes_table do
+      render :layouts => true, :template=> 'layouts/maps'
       row :id
       row :first_name
       row :patronumic
@@ -53,11 +53,10 @@ ActiveAdmin.register User do
         now.year - birthday.year - (birthday.to_date.change(:year => now.year) > now ? 1 : 0)
       end
       row 'City of birth' do
-        link_to "#{user.city_of_birth}",     "/employees"
-        # :city_of_birth
+        render :layouts => true, :template=> 'maps/cob'
       end
       row 'City of residence' do
-        link_to "#{user.city_of_residence}", maps_path
+        render :layouts => false, :template=> 'maps/cor'
       end
       row :email
       row :role
