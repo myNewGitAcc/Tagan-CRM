@@ -2,11 +2,13 @@
 
 require 'capistrano/setup'
 require 'capistrano/deploy'
+# require 'capistrano/local_precompile'
 
 require 'capistrano/rails'
 require 'capistrano/bundler'
 require 'capistrano/npm'
 require 'capistrano/bower'
+
 require 'capistrano/rvm'
 require 'capistrano/puma'
 

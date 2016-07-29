@@ -1,12 +1,13 @@
 # Change these
 server '95.85.29.66', roles: [:web, :app, :db], primary: true
+set :use_sudo, false
 
 set :repo_url,        'git@github.com:TaganTeam/Tagan-CRM.git'
 set :application,     'Tagan-CRM'
 set :user,            'nikolay'
 set :puma_threads,    [4, 16]
 set :puma_workers,    0
-
+set :ssh_options, {:forward_agent => true}
 # Don't change these unless you know what you're doing
 set :pty,             true
 set :use_sudo,        false
@@ -22,6 +23,12 @@ set :ssh_options,     { forward_agent: true, user: fetch(:user), keys: %w(~/.ssh
 set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
+set :repository,  "/home/#{:user}/repositories/#{:application}"
+set :local_repository, "ssh://#{:user}@95.85.29.66/home/#{:user}/repositories/#{:application}"
+
+
+
+# set :precompile_cmd             # default: bundle exec rake assets:precompile
 
 # set :npm_target_path, -> { release_path.join('subdir') } # default not set
 set :npm_flags, '--production --silent --no-progress'    # default
@@ -30,7 +37,7 @@ set :npm_env_variables, {}                               # default
 
 set :bower_flags, '--quiet --config.interactive=false'
 set :bower_roles, :web
-set :bower_target_path, nil
+# set :bower_target_path, nil
 set :bower_bin, :bower
 
 
@@ -84,6 +91,7 @@ namespace :deploy do
     end
   end
 
+
   desc 'Initial Deploy'
   task :initial do
     on roles(:app) do
@@ -105,6 +113,7 @@ namespace :deploy do
   after  :finishing,    :restart
 
 end
+
 
 # ps aux | grep puma    # Get puma pid
 # kill -s SIGUSR2 pid   # Restart puma
