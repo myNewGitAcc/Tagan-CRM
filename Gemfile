@@ -89,3 +89,4 @@ gem 'geocoder'
 
 gem 'puma'
 gem 'capistrano-npm'
+gem 'capistrano-copy-files'
