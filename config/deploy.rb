@@ -23,6 +23,11 @@ set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
 
+set :npm_target_path, -> { release_path.join('subdir') } # default not set
+set :npm_flags, '--production --silent --no-progress'    # default
+set :npm_roles, :all                                     # default
+set :npm_env_variables, {}                               # default
+
 ## Defaults:
 # set :scm,           :git
 set :branch,        '26-07-TaganCRM'

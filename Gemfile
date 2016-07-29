@@ -88,3 +88,4 @@ gem 'bootstrap-sass'
 gem 'geocoder'
 
 gem 'puma'
+gem 'capistrano-npm'
