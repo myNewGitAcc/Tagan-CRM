@@ -1,17 +1,7 @@
 ActiveAdmin.register User do
-  permit_params   :email,
-                  :role,
-                  :password,
-                  :password_confirmation,
-                  :first_name,
-                  :last_name,
-                  :admin,
-                  :middle_name,
-                  :date_of_birth,
-                  :place_of_birth,
-                  :live_in_city,
-                  :place_id,
-                  :live_id
+  permit_params   :email,    :role, :password, :password_confirmation, :first_name, :last_name, :admin, :middle_name, :date_of_birth,
+                  :place_of_birth, :live_in_city, :place_id, :live_id,
+                  technologies_attributes: [:id, :title, :comment]
 
 
   index do
@@ -23,7 +13,7 @@ ActiveAdmin.register User do
     column :email
     column :role
     column :status
-    # column :admin
+    column :admin
     column :created_at
     actions
   end
@@ -38,10 +28,13 @@ ActiveAdmin.register User do
       f.input :date_of_birth, as: :date_picker, input_html: {min: "1950-01-01", max: "#{Date.today}"}
       f.input :place_of_birth
       f.input :live_in_city
-      # render :layouts => false, :template => "map/map.html.erb"
       f.input :email
       f.input :role
       f.input :admin
+      f.has_many :technologies do |item|
+        item.input :title
+        item.input :comment
+        end
       # f.input :password
       # f.input :password_confirmation
       f.input :place_id
@@ -57,14 +50,20 @@ ActiveAdmin.register User do
       row :first_name
       row :middle_name
       row("Age"){ Time.new.year - user.date_of_birth.year }
-      row :place_of_birth
+      row ("Place Of Birth") do
+        render :layouts => false, :template => "map/map.html.erb"
+      end
       row ("City") do
         render :layouts => false, :template => "map/map.html.erb"
       end
       row :email
       row :role
       row :admin
-      rows "Technology"
+      row :status
+      table_for user.technologies do
+        column "Technologies",   :title
+        column "Comment",        :comment
+      end
     end
     end
 

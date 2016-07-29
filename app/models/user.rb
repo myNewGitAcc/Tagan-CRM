@@ -5,12 +5,18 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :timeoutable
 
   before_save :ensure_authentication_token
+
+  validate :valid_date?
+
   acts_as_api
 
   has_many :articles, dependent: :destroy
+  has_many :technologies, dependent: :destroy
+  accepts_nested_attributes_for :technologies, allow_destroy: true
 
   enum role: [:admin, :management, :developers, :trainees]
   enum status: [:offline, :online, :away]
+
 
   api_accessible :basic do |t|
     t.add :id
@@ -99,4 +105,11 @@ class User < ActiveRecord::Base
       break token unless User.where(authentication_token: token).first
     end
   end
+
+  def valid_date?
+    if self.date_of_birth>Date.today
+      errors.add(:date_of_birth, "the date is invalid")
+    end
+  end
+
 end

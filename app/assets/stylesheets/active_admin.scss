@@ -24,6 +24,7 @@ form input[type=date] {
 
 #user_place_id_input, #user_live_id_input {
   visibility: hidden;
+  display: none !important;
 }
 
 #map {
@@ -33,4 +34,32 @@ form input[type=date] {
 .modal-content{
   height: 400px;
   width: 600px;
+}
+
+.modal-body {
+  height: 70%;
+  overflow: auto;
+}
+
+h1,h2 {
+  color: #000000 ;
+}
+
+.label {
+  color: #000000 ;
+  font-size: 12px;
+  text-align: left;
+}
+
+form input[type=date] {
+  width: 150px;
+}
+
+#maps {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#maps:hover, #map:focus {
+  text-decoration: underline;
 }

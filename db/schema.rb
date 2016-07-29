@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160719113557) do
+ActiveRecord::Schema.define(version: 20160729075555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,14 +33,22 @@ ActiveRecord::Schema.define(version: 20160719113557) do
 
   create_table "articles", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "subject"
-    t.string   "body"
+    t.string   "subject",    null: false
+    t.string   "body",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "messages", force: :cascade do |t|
     t.text     "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "technologies", force: :cascade do |t|
+    t.string   "title",      null: false
+    t.string   "comment",    null: false
+    t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -71,11 +79,12 @@ ActiveRecord::Schema.define(version: 20160719113557) do
     t.string   "last_name"
     t.integer  "status",                 default: 0
     t.boolean  "admin",                  default: false, null: false
-    t.string   "middle_name"
-    t.date     "date_of_birth"
-    t.string   "place_of_birth"
-    t.string   "live_in_city"
-    t.string   "place_id"
+    t.string   "middle_name",                            null: false
+    t.date     "date_of_birth",                          null: false
+    t.string   "place_of_birth",                         null: false
+    t.string   "live_in_city",                           null: false
+    t.string   "place_id",                               null: false
+    t.string   "live_id",                                null: false
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
@@ -85,4 +94,5 @@ ActiveRecord::Schema.define(version: 20160719113557) do
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
   add_foreign_key "articles", "users", name: "articles_user_id_fkey"
+  add_foreign_key "technologies", "users", name: "technologies_user_id_fkey"
 end
