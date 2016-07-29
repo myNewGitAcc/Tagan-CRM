@@ -106,11 +106,11 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
+    capistrano-bower (1.1.0)
+      capistrano (~> 3.0)
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
-    capistrano-copy-files (0.0.1)
-      capistrano (>= 3.0.0)
     capistrano-harrow (0.5.3)
     capistrano-npm (1.0.2)
       capistrano (>= 3.0.0)
@@ -414,8 +414,8 @@ DEPENDENCIES
   browserify-rails
   byebug
   capistrano
+  capistrano-bower
   capistrano-bundler
-  capistrano-copy-files
   capistrano-npm
   capistrano-rails
   capistrano-rvm

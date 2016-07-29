@@ -28,7 +28,10 @@ set :npm_flags, '--production --silent --no-progress'    # default
 set :npm_roles, :all                                     # default
 set :npm_env_variables, {}                               # default
 
-set :copy_files, ['vendor']
+set :bower_flags, '--quiet --config.interactive=false'
+set :bower_roles, :web
+set :bower_target_path, nil
+set :bower_bin, :bower
 
 
 ## Defaults:
