@@ -1,5 +1,5 @@
 # Change these
-server '128.199.54.79', roles: [:web, :app, :db], primary: true
+server '95.85.29.66', roles: [:web, :app, :db], primary: true
 
 set :repo_url,        'git@github.com:TaganTeam/Tagan-CRM.git'
 set :application,     'Tagan-CRM'
@@ -25,11 +25,26 @@ set :puma_init_active_record, true  # Change to false when not using ActiveRecor
 
 ## Defaults:
 # set :scm,           :git
-# set :branch,        :master
+set :branch,        '26-07-TaganCRM'
 # set :format,        :pretty
 # set :log_level,     :debug
 # set :keep_releases, 5
+set(:config_files, %w(
+  nginx.conf
+  database.yml
+  log_rotation
+  monit
+  unicorn.rb
+  unicorn_init.sh
+))
 
+# which config files should be made executable after copying
+# by deploy:setup_config
+set(:executable_config_files, %w(
+  unicorn_init.sh
+))
+
+set :linked_files, %w{config/database.yml config/secrets.yml}
 ## Linked Files & Directories (Default None):
 # set :linked_files, %w{config/database.yml}
 # set :linked_dirs,  %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -50,11 +65,11 @@ namespace :deploy do
   desc "Make sure local git is in sync with remote."
   task :check_revision do
     on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse origin/master`
-        puts "WARNING: HEAD is not the same as origin/master"
-        puts "Run `git push` to sync changes."
-        exit
-      end
+      # unless `git rev-parse HEAD` == `git rev-parse origin/master`
+      #   puts "WARNING: HEAD is not the same as origin/master"
+      #   puts "Run `git push` to sync changes."
+      #   exit
+      # end
     end
   end
 
@@ -77,6 +92,7 @@ namespace :deploy do
   after  :finishing,    :compile_assets
   after  :finishing,    :cleanup
   after  :finishing,    :restart
+
 end
 
 # ps aux | grep puma    # Get puma pid
