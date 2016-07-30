@@ -1,10 +1,8 @@
-# Change these
-server '95.85.29.66', roles: [:web, :app, :db], primary: true
-set :use_sudo, false
 
 set :repo_url,        'git@github.com:TaganTeam/Tagan-CRM.git'
 set :application,     'Tagan-CRM'
 set :user,            'nikolay'
+set :use_sudo, false
 set :puma_threads,    [4, 16]
 set :puma_workers,    0
 
@@ -21,8 +19,7 @@ set :ssh_options,     { forward_agent: true, user: fetch(:user), keys: File.join
 set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
-set :repository,  "/home/#{:user}/repositories/#{:application}"
-set :local_repository, "ssh://#{:user}@95.85.29.66/home/#{:user}/repositories/#{:application}"
+
 
 
 
@@ -60,7 +57,7 @@ set(:executable_config_files, %w(
   unicorn_init.sh
 ))
 
-set :linked_files, %w{config/database.yml config/secrets.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml public/manifest.yml}
 ## Linked Files & Directories (Default None):
 # set :linked_files, %w{config/database.yml}
 # set :linked_dirs,  %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}

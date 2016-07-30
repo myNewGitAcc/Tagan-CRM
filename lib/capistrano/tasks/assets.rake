@@ -4,7 +4,7 @@ namespace :deploy do
   namespace :assets do
     desc 'Precompile assets locally and then rsync to remote servers'
     task :precompile do
-      local_manifest_path = %x{ls public/assets/manifest.yml}.strip
+      local_manifest_path = %x{ls public/manifest.yml}.strip
 
       %x{bundle exec rake assets:precompile assets:clean}
 
