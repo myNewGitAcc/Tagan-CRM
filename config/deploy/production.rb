@@ -8,7 +8,7 @@
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 # Change these
-server '95.85.29.66', roles: [:web, :app, :db], primary: true
+server '95.85.29.66', user: 'nikolay',roles: [:web, :app, :db], primary: true
 
 
 
