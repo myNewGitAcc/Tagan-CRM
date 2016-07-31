@@ -48,9 +48,11 @@ ActiveAdmin.register User do
       row :patronumic
       row :last_name
       row 'AGE' do
-        now = Time.now.utc.to_date
-        birthday = user.birthday
-        now.year - birthday.year - (birthday.to_date.change(:year => now.year) > now ? 1 : 0)
+        unless self.birthday == nil
+          now = Time.now.utc.to_date
+          birthday = user.birthday
+          now.year - birthday.year - (birthday.to_date.change(:year => now.year) > now ? 1 : 0)
+        end
       end
       row 'City of birth' do
         render :layouts => true, :template=> 'maps/cob'
