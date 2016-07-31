@@ -1,14 +1,14 @@
 ActiveAdmin.register User do
-  permit_params   :email,    :role, :password, :password_confirmation, :first_name, :last_name, :admin, :middle_name, :date_of_birth,
-                  :place_of_birth, :live_in_city, :place_id, :live_id,
-                  technologies_attributes: [:id, :title, :comment]
+  permit_params   :email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :middle_name, :date_of_birth,
+                  :place_of_birth, :location, :place_id, :location_id,
+                  technologies_attributes: [:id,:title, :comment, :_destroy]
 
 
   index do
     selectable_column
     id_column
     column :full_name do |user|
-      "#{user.first_name} #{user.last_name}"
+      "#{user.first_name} #{user.middle_name} #{user.last_name}"
     end
     column :email
     column :role
@@ -22,39 +22,41 @@ ActiveAdmin.register User do
 
   form do |f|
     f.inputs "User Details" do
+      render :template => "map/loadScript"
       f.input :last_name
       f.input :first_name
       f.input :middle_name
       f.input :date_of_birth, as: :date_picker, input_html: {min: "1950-01-01", max: "#{Date.today}"}
       f.input :place_of_birth
-      f.input :live_in_city
+      f.input :location
       f.input :email
       f.input :role
       f.input :admin
-      f.has_many :technologies do |item|
+      f.has_many :technologies, heading: 'Technology', allow_destroy: true do |item|
         item.input :title
         item.input :comment
         end
-      # f.input :password
-      # f.input :password_confirmation
+      f.input :password
+      f.input :password_confirmation
       f.input :place_id
-      f.input :live_id
+      f.input :location_id
     end
     f.actions
   end
 
   show do
     attributes_table_for user do
+      render :template => "map/modal"
       row :id
       row :last_name
       row :first_name
       row :middle_name
       row("Age"){ Time.new.year - user.date_of_birth.year }
       row ("Place Of Birth") do
-        render :layouts => false, :template => "map/map.html.erb"
+        render :template => "map/placeOfBirth.html.erb"
       end
       row ("City") do
-        render :layouts => false, :template => "map/map.html.erb"
+        render :template => "map/location.html.erb"
       end
       row :email
       row :role

@@ -9,10 +9,17 @@ $(document).ready(function() {
      }
    });
 
+   $('#edit_user').keydown(function (event) {
+     if (event.keyCode == 13) {
+       event.preventDefault();
+       return false;
+     }
+   });
+
    var autocomplete, userPlaceOfBirth;
 
    autocomplete = new google.maps.places.Autocomplete(
-       (document.getElementById('user_live_in_city')),
+       (document.getElementById('user_location')),
        {types: ['geocode']});
 
    userPlaceOfBirth = new google.maps.places.Autocomplete(
@@ -26,14 +33,12 @@ $(document).ready(function() {
    function fillInAddress() {
 
      var place = autocomplete.getPlace();
-     //console.log(place.place_id);
-     $('#user_live_id').val(place.place_id)
+     $('#user_location_id').val(place.place_id)
    }
 
      function fillInAddressU() {
 
        var place = userPlaceOfBirth.getPlace();
-       //console.log(place.place_id);
        $('#user_place_id').val(place.place_id)
      }
    }

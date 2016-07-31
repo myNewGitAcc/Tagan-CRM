@@ -1,0 +1,46 @@
+form input[type=date] {
+    width: 120px;
+}
+
+#user_place_id_input, #user_location_id_input {
+    visibility: hidden;
+    display: none !important;
+}
+
+#map {
+    height: 100%;
+}
+
+.modal-content{
+    height: 400px;
+    width: 600px;
+}
+
+.modal-body {
+    height: 70%;
+    overflow: auto;
+}
+
+h1,h2 {
+    color: #000000 ;
+}
+
+.label {
+    color: #000000 ;
+    font-size: 12px;
+    text-align: left;
+}
+
+form input[type=date] {
+    width: 150px;
+}
+
+#maps-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#maps-link:hover, #maps-link:focus {
+    text-decoration: underline;
+    cursor: pointer;
+}

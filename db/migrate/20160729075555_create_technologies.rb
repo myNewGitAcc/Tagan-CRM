@@ -3,7 +3,7 @@ class CreateTechnologies < ActiveRecord::Migration
     create_table :technologies do |t|
       t.string :title,    null: false
       t.string :comment,  null: false
-      t.integer :user_id, null: false
+      t.belongs_to :user, index: true
 
       t.timestamps null: false
     end

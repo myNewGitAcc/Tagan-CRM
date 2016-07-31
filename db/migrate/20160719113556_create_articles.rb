@@ -1,7 +1,7 @@
 class CreateArticles < ActiveRecord::Migration
   def change
     create_table :articles do |t|
-      t.integer :user_id
+      t.belongs_to :user, index: true
       t.string :subject,  null: false
       t.string :body,     null: false
 

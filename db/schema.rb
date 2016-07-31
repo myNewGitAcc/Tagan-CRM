@@ -39,6 +39,8 @@ ActiveRecord::Schema.define(version: 20160729075555) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "articles", ["user_id"], name: "index_articles_on_user_id", using: :btree
+
   create_table "messages", force: :cascade do |t|
     t.text     "content"
     t.datetime "created_at", null: false
@@ -52,6 +54,8 @@ ActiveRecord::Schema.define(version: 20160729075555) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "technologies", ["user_id"], name: "index_technologies_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
@@ -75,16 +79,16 @@ ActiveRecord::Schema.define(version: 20160729075555) do
     t.integer  "role"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
+    t.boolean  "admin",                  default: false
+    t.date     "date_of_birth"
+    t.string   "place_of_birth"
+    t.string   "location"
     t.string   "first_name"
     t.string   "last_name"
+    t.string   "middle_name"
+    t.string   "place_id"
+    t.string   "location_id"
     t.integer  "status",                 default: 0
-    t.boolean  "admin",                  default: false, null: false
-    t.string   "middle_name",                            null: false
-    t.date     "date_of_birth",                          null: false
-    t.string   "place_of_birth",                         null: false
-    t.string   "live_in_city",                           null: false
-    t.string   "place_id",                               null: false
-    t.string   "live_id",                                null: false
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
@@ -93,6 +97,4 @@ ActiveRecord::Schema.define(version: 20160729075555) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
-  add_foreign_key "articles", "users", name: "articles_user_id_fkey"
-  add_foreign_key "technologies", "users", name: "technologies_user_id_fkey"
 end

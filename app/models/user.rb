@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
   end
 
   def full_name
-    "#{self.first_name} #{self.last_name}"
+    "#{self.first_name} #{self.middle_name} #{self.last_name}"
   end
 
 
@@ -107,9 +107,11 @@ class User < ActiveRecord::Base
   end
 
   def valid_date?
-    if self.date_of_birth>Date.today
-      errors.add(:date_of_birth, "the date is invalid")
-    end
+    # if self.date_of_birth
+      if self.date_of_birth>Date.today
+        errors.add(:date_of_birth, "the date is invalid")
+      end
+    # end
   end
 
 end

@@ -48,6 +48,7 @@ end
 group :production, :staging do
   gem 'heroku_rails_deflate'
   gem 'rails_12factor'
+  gem 'sprockets', '3.6.3'
   # gem 'sprockets', '>= 3.0.0'
   gem 'sprockets-es6'
 end
@@ -81,7 +82,5 @@ group :test do
 end
 
 gem 'active_admin_datetimepicker'
-
-gem 'sprockets', '3.6.3'
 
 gem 'bootstrap-sass'
