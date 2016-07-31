@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
-  has_many :cars
-  has_many :technologies
+  has_many :technologies, dependent: :destroy
   accepts_nested_attributes_for :technologies, allow_destroy: true
   validate :valid_date?
   # Include default devise modules. Others available are:

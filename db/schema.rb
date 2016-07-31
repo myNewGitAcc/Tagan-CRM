@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160725130445) do
+ActiveRecord::Schema.define(version: 20160731145230) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,4 +84,5 @@ ActiveRecord::Schema.define(version: 20160725130445) do
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
   add_foreign_key "technologies", "users", name: "technologies_user_id_fkey"
+  add_foreign_key "technologies", "users", on_delete: :cascade
 end
