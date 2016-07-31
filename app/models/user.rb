@@ -106,8 +106,10 @@ class User < ActiveRecord::Base
 
 
   def valid_date?
-    if self.birthday > Date.today
-      errors.add(:birthday, "is missing or invalid")
+    unless self.birthday == nil?
+      if self.birthday > Date.today
+        errors.add(:birthday, "is missing or invalid")
+      end
     end
   end
 
