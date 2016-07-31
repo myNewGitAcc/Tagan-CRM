@@ -1,4 +1,10 @@
 class User < ActiveRecord::Base
+
+  has_many :articles, dependent: :destroy
+  has_many :technologies,  dependent: :destroy
+  accepts_nested_attributes_for :technologies, allow_destroy: true
+  validate :valid_date?, :empty_request?
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :token_authenticatable, :registerable,
@@ -6,13 +12,7 @@ class User < ActiveRecord::Base
 
   before_save :ensure_authentication_token
 
-  validate :valid_date?
-
   acts_as_api
-
-  has_many :articles, dependent: :destroy
-  has_many :technologies, dependent: :destroy
-  accepts_nested_attributes_for :technologies, allow_destroy: true
 
   enum role: [:admin, :management, :developers, :trainees]
   enum status: [:offline, :online, :away]
@@ -107,11 +107,35 @@ class User < ActiveRecord::Base
   end
 
   def valid_date?
-    # if self.date_of_birth
-      if self.date_of_birth>Date.today
-        errors.add(:date_of_birth, "the date is invalid")
-      end
-    # end
+    if self.date_of_birth
+        if self.date_of_birth>Date.today
+          errors.add(:date_of_birth, "the date is invalid")
+        end
+    else
+      errors.add(:date_of_birth, "the date is invalid")
+    end
+  end
+
+  def empty_request?
+    if self.last_name == ''
+      errors.add(:last_name, "enter last name")
+    end
+
+    if self.first_name == ''
+      errors.add(:first_name, "enter first name")
+    end
+
+    if self.middle_name == ''
+      errors.add(:middle_name, "enter middle name")
+    end
+
+    if self.place_of_birth == ''
+      errors.add(:place_of_birth, "enter place of birth name")
+    end
+
+    if self.location == ''
+      errors.add(:location, "enter location name")
+    end
   end
 
 end

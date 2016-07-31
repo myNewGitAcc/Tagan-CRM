@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   permit_params   :email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :middle_name, :date_of_birth,
                   :place_of_birth, :location, :place_id, :location_id,
-                  technologies_attributes: [:id,:title, :comment, :_destroy]
+                  technologies_attributes: [:id, :title, :comment, :_destroy]
 
 
   index do
@@ -32,10 +32,10 @@ ActiveAdmin.register User do
       f.input :email
       f.input :role
       f.input :admin
-      f.has_many :technologies, heading: 'Technology', allow_destroy: true do |item|
+      f.has_many :technologies, heading: "Technology", allow_destroy: true do |item|
         item.input :title
         item.input :comment
-        end
+      end
       f.input :password
       f.input :password_confirmation
       f.input :place_id

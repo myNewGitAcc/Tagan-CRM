@@ -44,3 +44,6 @@ form input[type=date] {
     text-decoration: underline;
     cursor: pointer;
 }
+.has_many_add{
+    color:  red;
+}
