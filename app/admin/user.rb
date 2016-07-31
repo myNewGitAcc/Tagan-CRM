@@ -48,7 +48,7 @@ ActiveAdmin.register User do
       row :patronumic
       row :last_name
       row 'AGE' do
-        unless self.birthday == nil
+        unless user.birthday == nil
           now = Time.now.utc.to_date
           birthday = user.birthday
           now.year - birthday.year - (birthday.to_date.change(:year => now.year) > now ? 1 : 0)
