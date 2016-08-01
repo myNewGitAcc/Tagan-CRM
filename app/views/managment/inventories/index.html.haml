@@ -23,10 +23,12 @@
           %td= item.avatar
           %td= link_to 'Show', managment_inventory_path(item), type: "button"
           %td= link_to 'Edit',  edit_managment_inventory_path(item), type: "button"
-          %td= link_to 'Delete', managment_inventory_path(item), method: :delete,data: { confirm: 'Are you sure?' }, type: "button"
+          %td= link_to "Delete", managment_inventory_path(item), method: :delete, data: {confirm: "This can not be undone"}
+
+
 
 
 .btn-group{"aria-label" => "...", :role => "group"}
   = link_to 'New', new_managment_inventory_path, type: "button"
 
-
+= javascript_include_tag :all

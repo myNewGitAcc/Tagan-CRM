@@ -16,13 +16,23 @@ class Managment::InventoriesController < AppManagmentController
       render action: 'new'
     end
   end
+
   def show
     # @inventory = Inventory.find(params[:id])
   end
+
   def inventory_params
     params.require(:inventory).permit(:user_id, :inventory_id, :title, :receipt_date, :qtty_in_stock,
     :qtty_of_employees, :avatar)
   end
 
+  def destroy
+    @inventory = Inventory.find(param[:id])
+    @inventory.destroy
+    redirect_to managment_inventories_path
+    # respond_to do |format|
+    #   format.html { redirect_to managment_inventories_path, notice: 'Profile was successfully destroyed.' }
+    # end
+  end
 end
 
