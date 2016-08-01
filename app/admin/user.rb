@@ -1,6 +1,6 @@
 ActiveAdmin.register User do
-  permit_params :id,:user_id, :email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :patronumic, :birthday, :city_of_birth, :city_of_residence,
-                technologies_attributes: [:id,:user_id, :title, :comment, :_destroy]
+  permit_params :email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :patronumic, :birthday, :city_of_birth, :city_of_residence,
+                technologies_attributes: [:id, :title, :comment, :_destroy]
   index do
     selectable_column
     id_column
@@ -28,8 +28,9 @@ ActiveAdmin.register User do
       f.input :city_of_residence
       f.input :email
       f.input :role
-      f.has_many :technologies, heading: 'Technology', allow_destroy: true do |item|
+      f.has_many :technologies, heading: 'Technology', allow_destroy: true, dup: false do |item|
         item.input :title
+        item.input :comment
       end
       f.input :password
       f.input :password_confirmation
