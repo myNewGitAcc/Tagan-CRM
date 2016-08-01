@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   has_many :articles, dependent: :destroy
   has_many :technologies,  dependent: :destroy
   accepts_nested_attributes_for :technologies, allow_destroy: true
-  validate :valid_date?, :empty_request?
+  validate :valid_date?
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -113,28 +113,6 @@ class User < ActiveRecord::Base
         end
     else
       errors.add(:date_of_birth, "the date is invalid")
-    end
-  end
-
-  def empty_request?
-    if self.last_name == ''
-      errors.add(:last_name, "enter last name")
-    end
-
-    if self.first_name == ''
-      errors.add(:first_name, "enter first name")
-    end
-
-    if self.middle_name == ''
-      errors.add(:middle_name, "enter middle name")
-    end
-
-    if self.place_of_birth == ''
-      errors.add(:place_of_birth, "enter place of birth name")
-    end
-
-    if self.location == ''
-      errors.add(:location, "enter location name")
     end
   end
 

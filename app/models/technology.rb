@@ -20,5 +20,4 @@ class Technology < ActiveRecord::Base
          errors.add(:comment, "can't be blank")
     end
   end
-
 end
