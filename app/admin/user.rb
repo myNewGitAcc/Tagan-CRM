@@ -1,6 +1,4 @@
 ActiveAdmin.register User do
-  permit_params :email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :patronumic, :birthday, :city_of_birth, :city_of_residence,
-                technologies_attributes: [:id, :title, :comment, :_destroy]
   index do
     selectable_column
     id_column
@@ -28,10 +26,14 @@ ActiveAdmin.register User do
       f.input :city_of_residence
       f.input :email
       f.input :role
-      f.has_many :technologies, heading: 'Technology', allow_destroy: true, dup: false do |item|
-        item.input :title
-        item.input :comment
-      end
+    end
+    f.inputs 'Technology' do
+        f.has_many :technologies, heading: false, allow_destroy: true, dup: false do |item|
+          item.input :title
+          item.input :comment
+        end
+    end
+    f.inputs 'Password' do
       f.input :password
       f.input :password_confirmation
       f.input :admin, :label => "Administrator"
@@ -74,6 +76,34 @@ ActiveAdmin.register User do
     end
   end
 
+  controller do
+    def create
+      @user = User.new(user_params)
+      if @user.valid?
+        @user.save
+        redirect_to admin_user_path(@user)
+      else
+        render action: 'new'
+      end
+    end
+
+    def update
+      @user = User.find(params[:id])
+      if @user.update(user_params)
+        redirect_to admin_user_path(@user)
+      else
+        render action: 'edit'
+      end
+    end
+
+    private
+
+    def user_params
+      params.require(:user).permit(:email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :middle_name, :date_of_birth,
+                                   :place_of_birth, :location, :place_id, :location_id,
+                                   technologies_attributes: [:id, :title, :comment, :_destroy])
+    end
+  end
 end
 # ActiveAdmin.register Technology do
 #   belongs_to :user, optional: true
