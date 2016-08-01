@@ -1,0 +1,20 @@
+%form{:action => "/managment/inventories", :method => "POST"}
+  %input{:name => "inventory[inventories_input]", :type => "hidden", :value => "#{@inventory_input}"}/
+  .form-group
+    %label User id
+    %br/
+    %input.form-control{:name => "inventory[user_id]", :placeholder => "User id", :type => "integer"}/
+    %br/
+  .form-group
+    %label Title
+    %br/
+    %input.form-control{:name => "inventory[title]", :placeholder => "Title", :type => "text"}/
+    %br/
+  .form-group
+    %label Receipt date
+    %br/
+    %textarea.form-control{:name => "inventory[receipt_date]", :placeholder => "Receipt date", :type => "date"}
+    %br/
+  %button.btn.btn-success.btn-lg{:type => "submit"} Place this order
+  %button.btn.btn-danger.btn-lg{:onclick => "return cancel_order()"} Cancel
+

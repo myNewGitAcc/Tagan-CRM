@@ -96,5 +96,6 @@ ActiveRecord::Schema.define(version: 20160801153624) do
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
   add_foreign_key "inventories", "users", name: "inventories_user_id_fkey"
+  add_foreign_key "technologies", "users", name: "technologies_user_id_fkey"
   add_foreign_key "technologies", "users", on_delete: :cascade
 end

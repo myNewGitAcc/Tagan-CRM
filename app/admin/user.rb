@@ -100,8 +100,8 @@ ActiveAdmin.register User do
     private
 
     def user_params
-      params.require(:user).permit(:email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :middle_name, :date_of_birth,
-                                   :place_of_birth, :location, :place_id, :location_id,
+      params.require(:user).permit(:email, :role, :password, :password_confirmation, :first_name, :last_name, :admin, :patronumic, :birthday,
+                                   :city_of_birth, :city_of_residence,
                                    technologies_attributes: [:id, :title, :comment, :_destroy])
     end
   end

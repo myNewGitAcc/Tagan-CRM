@@ -1,0 +1,32 @@
+%table.table.table-striped
+  %thead
+    %tr
+      %th #
+      %th User id
+      %th Inventory id
+      %th Title
+      %th Receipt date
+      %th Quantity in stock
+      %th Quantity of employees
+      %th Image
+  %tbody
+    - @tech.each do |item|
+      %tr
+        %th{:scope => "row"}
+          = item.id
+          %td= item.user_id
+          %td= item.inventory_id
+          %td= item.title
+          %td= item.receipt_date
+          %td= item.qtty_in_stock
+          %td= item.qtty_of_employees
+          %td= item.avatar
+          %td= link_to 'Show', managment_inventory_path(item), type: "button"
+          %td= link_to 'Edit',  edit_managment_inventory_path(item), type: "button"
+          %td= link_to 'Delete', managment_inventory_path(item), method: :delete,data: { confirm: 'Are you sure?' }, type: "button"
+
+
+.btn-group{"aria-label" => "...", :role => "group"}
+  = link_to 'New', new_managment_inventory_path, type: "button"
+
+
