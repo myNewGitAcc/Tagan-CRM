@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
-
+  # namespace :admin do
+  #   resources :admin_user # Have the admin manage them here.
+  # end
   root to: 'application#show'
 
   def shared_devise_path
@@ -27,7 +29,7 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   get '/login', to: 'auth#login'
-
+  get '/inventory'=> 'app_managment/inventory#inventory'
   get '/*path' => 'auth#redirect'
 
 end
