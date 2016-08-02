@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   acts_as_api
 
-  enum role: [:admin, :management, :developers, :trainees]
+  enum role: [:admin, :managment, :developers, :trainees]
   enum status: [:offline, :online, :away]
 
 

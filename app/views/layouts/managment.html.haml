@@ -1,0 +1,11 @@
+
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Inventories
+    = stylesheet_link_tag    'managment', media: 'all'
+    = csrf_meta_tags
+  %body
+    .app-content
+      = yield

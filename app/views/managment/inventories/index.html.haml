@@ -1,0 +1,24 @@
+%div.container.mt50
+  %div.row
+    %table.table-bordered.col-md-12.table-striped.table-hover
+      %thead
+        %tr
+          %th #
+          %th User_Id
+          %th Inventory_Id
+          %th Title
+          %th Date of Receipt
+          %th Quantity in Stock
+          %th Quantity of Employees
+      %tbody
+        - @tech.each do |item|
+          %tr
+            %td= item.id
+            %td= item.user_id
+            %td= item.inventory_id
+            %td= item.title
+            %td= item.date_of_receipt
+            %td= item.guantity_in_stock
+            %td= item.quantity_of_employees
+
+

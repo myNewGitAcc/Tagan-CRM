@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160729075555) do
+ActiveRecord::Schema.define(version: 20160802081404) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,17 @@ ActiveRecord::Schema.define(version: 20160729075555) do
   end
 
   add_index "articles", ["user_id"], name: "index_articles_on_user_id", using: :btree
+
+  create_table "inventories", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "inventory_id"
+    t.string   "title"
+    t.date     "date_of_receipt"
+    t.integer  "guantity_in_stock"
+    t.integer  "quantity_of_employees"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
 
   create_table "messages", force: :cascade do |t|
     t.text     "content"

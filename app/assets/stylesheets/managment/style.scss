@@ -1,0 +1,23 @@
+.mt50 {
+  margin-top: 50px;
+}
+
+.container {
+  .row {
+    .table-bordered {
+      thead {
+        th {
+          padding:10px;
+        }
+      }
+      tbody {
+        tr {
+          td {
+            width: 100px;
+            padding:10px;
+          }
+        }
+      }
+    }
+  }
+}

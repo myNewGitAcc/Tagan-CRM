@@ -23,9 +23,13 @@ Rails.application.routes.draw do
              }
 
   ActiveAdmin.routes(self)
-    get '/inventory', to: 'management#management'
+
 
   get '/login', to: 'auth#login'
+
+  namespace :managment do
+    resources :inventories
+  end
 
   get '/*path' => 'auth#redirect'
 end
