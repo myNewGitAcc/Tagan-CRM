@@ -101,5 +101,6 @@ ActiveRecord::Schema.define(version: 20160803132145) do
 
   add_foreign_key "inventories", "types", name: "inventories_type_id_fkey"
   add_foreign_key "inventories", "users", name: "inventories_user_id_fkey"
+  add_foreign_key "technologies", "users", name: "technologies_user_id_fkey"
   add_foreign_key "technologies", "users", on_delete: :cascade
 end
