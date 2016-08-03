@@ -1,27 +1,33 @@
-%form.form-horizontal{:action => "/managment/inventories", :method => "POST"}
-  .form-group
-    %label.col-sm-2.control-label{:for => "user_id"} User_ID
-    .col-sm-10
-      %input.form-control{:name => "inventory[user_id]", :placeholder => "User_ID", :type => "integer"}/
-  .form-group
-    %label.col-sm-2.control-label{:for => "inventory_id"} Inventory_ID
-    .col-sm-10
-      %input.form-control{:name => "inventory[inventory_id]", :placeholder => "Inventory_ID", :type => "integer"}/
-  .form-group
-    %label.col-sm-2.control-label{:for => "title"} Title
-    .col-sm-10
-      %input.form-control{:name => "inventory[title]", :placeholder => "Title", :type => "text"}/
-  .form-group
-    %label.col-sm-2.control-label{:for => "date_of_receipt"} Date_Of_Receipt
-    .col-sm-10
-      %input.form-control{:name => "inventory[date_of_receipt]", :placeholder => "Date_Of_Receipt", :type => "date"}/
-  .form-group
-    %label.col-sm-2.control-label{:for => "quantity_in_stock"} Quantity_In_Stock
-    .col-sm-10
-      %input.form-control{:name => "inventory[quantity_in_stock]", :placeholder => "Quantity_In_Stock", :type => "integer"}/
-  .form-group
-    %label.col-sm-2.control-label{:for => "quantity_of_employees"} Quantity_Of_Employees
-    .col-sm-10
-      %input.form-control{:name => "inventory[quantity_of_employees]", :placeholder => "Quantity_Of_Employees", :type => "integer"}/
-
-    %button.btn.btn-default{:type => "submit"} Add
+CREATE
+-##inventory-modal.modal.fade
+-#  .modal-dialog
+-#    .modal-content
+-#      %form.form-horizontal{:action => "/managment/inventories", :method => "POST"}
+-#        .form-group
+-#          %label.col-sm-2.control-label{:for => "user_id"} User_ID
+-#          .col-sm-10
+-#            %input.form-control{:name => "inventory[user_id]", :placeholder => "User_ID", :type => "integer"}/
+-#        .form-group
+-#          %label.col-sm-2.control-label{:for => "inventory_id"} Inventory_ID
+-#          .col-sm-10
+-#            %input.form-control{:name => "inventory[inventory_id]", :placeholder => "Inventory_ID", :type => "integer"}/
+-#        .form-group
+-#          %label.col-sm-2.control-label{:for => "title"} Title
+-#          .col-sm-10
+-#            %input.form-control{:name => "inventory[title]", :placeholder => "Title", :type => "text"}/
+-#        .form-group
+-#          %label.col-sm-2.control-label{:for => "date_of_receipt"} Date_Of_Receipt
+-#          .col-sm-10
+-#            %input.form-control{:name => "inventory[date_of_receipt]", :placeholder => "Date_Of_Receipt", :type => "date"}/
+-#        .form-group
+-#          %label.col-sm-2.control-label{:for => "quantity_in_stock"} Quantity_In_Stock
+-#          .col-sm-10
+-#            %input.form-control{:name => "inventory[quantity_in_stock]", :placeholder => "Quantity_In_Stock", :type => "integer"}/
+-#        .form-group
+-#          %label.col-sm-2.control-label{:for => "quantity_of_employees"} Quantity_Of_Employees
+-#          .col-sm-10
+-#            %input.form-control{:name => "inventory[quantity_of_employees]", :placeholder => "Quantity_Of_Employees", :type => "integer"}/
+-#
+-#          %button.btn.btn-default{:type => "submit"} Add
+-#  .modal-footer
+-#    %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Закрыть

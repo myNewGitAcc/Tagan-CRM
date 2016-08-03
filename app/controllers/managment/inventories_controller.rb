@@ -19,7 +19,7 @@ class Managment::InventoriesController < ManagmentController
   end
 
   def update
-    @inventory  = Inventory.find(params[:id])
+    @inventory  = Invntory.find(params[:id])
     if inventory_param
         @inventory.update(inventory_params)
         redirect_to managment_inventories_path

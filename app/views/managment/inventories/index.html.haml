@@ -21,10 +21,48 @@
             %td= item.quantity_in_stock
             %td= item.quantity_of_employees
             %td= link_to 'Show', managment_inventory_path(item), type: "button"
-            %td= link_to 'Edit',  edit_managment_inventory_path(item), type: "button"
+            %td
+              %a.inventory-link{:onclick => "editInvertory(#{item.user_id})"} Edit
             %td= link_to "Delete", managment_inventory_path(item), method: :delete, data: {confirm: "This can not be undone"}
 
+%a.inventory-link{:onclick => "newInvertory()"} New
 
-.btn-group{"aria-label" => "...", :role => "group"}
-  = link_to 'New', new_managment_inventory_path, type: "button"
+.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+        %h4.modal-title New nventory or Edit inventory
+      .modal-body
+        %form.form-horizontal{:id => 'form'}
+          .form-group
+            %label.col-sm-2.control-label{:for => "user_id"} User_ID
+            .col-sm-10
+              %input.form-control{:id => 'user_id',:name => "inventory[user_id]", :placeholder => "User_ID", :type => "integer"}/
+          .form-group
+            %label.col-sm-2.control-label{:for => "inventory_id"} Inventory_ID
+            .col-sm-10
+              %input.form-control{:id => 'inventory_id', :name => "inventory[inventory_id]", :placeholder => "Inventory_ID", :type => "integer"}/
+          .form-group
+            %label.col-sm-2.control-label{:for => "title"} Title
+            .col-sm-10
+              %input.form-control{:name => "inventory[title]", :placeholder => "Title", :type => "text"}/
+          .form-group
+            %label.col-sm-2.control-label{:for => "date_of_receipt"} Date_Of_Receipt
+            .col-sm-10
+              %input.form-control{:name => "inventory[date_of_receipt]", :placeholder => "Date_Of_Receipt", :type => "date"}/
+          .form-group
+            %label.col-sm-2.control-label{:for => "quantity_in_stock"} Quantity_In_Stock
+            .col-sm-10
+              %input.form-control{:name => "inventory[quantity_in_stock]", :placeholder => "Quantity_In_Stock", :type => "integer"}/
+          .form-group
+            %label.col-sm-2.control-label{:for => "quantity_of_employees"} Quantity_Of_Employees
+            .col-sm-10
+              %input.form-control{:name => "inventory[quantity_of_employees]", :placeholder => "Quantity_Of_Employees", :type => "integer"}/
+            -#%button.btn.btn-primary{:type => "submit"} Add New
+          .modal-footer
+            %button.btn.btn-primary{:id => 'create',:type => "submit"} Add New
+
+
+
 
