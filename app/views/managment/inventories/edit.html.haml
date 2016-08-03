@@ -1,0 +1,27 @@
+%form.form-horizontal{:action => "/managment/inventories", :method => "put"}
+  .form-group
+    %label.col-sm-2.control-label{:for => @tech.user_id} User_ID
+    .col-sm-10
+      %input.form-control{:name => "inventory[user_id]", :type => "integer", :value => @tech.user_id}/
+  .form-group
+    %label.col-sm-2.control-label{:for => "inventory_id"} Inventory_ID
+    .col-sm-10
+      %input.form-control{:name => "inventory[inventory_id]", :type => "integer", :value => @tech.inventory_id}/
+  .form-group
+    %label.col-sm-2.control-label{:for => "title"} Title
+    .col-sm-10
+      %input.form-control{:name => "inventory[title]", :type => "text", :value => @tech.title}/
+  .form-group
+    %label.col-sm-2.control-label{:for => "date_of_receipt"} Date_Of_Receipt
+    .col-sm-10
+      %input.form-control{:name => "inventory[date_of_receipt]", :type => "date", :value => @tech.date_of_receipt}/
+  .form-group
+    %label.col-sm-2.control-label{:for => "quantity_in_stock"} Quantity_In_Stock
+    .col-sm-10
+      %input.form-control{:name => "inventory[quantity_in_stock]", :type => "integer", :value => @tech.quantity_in_stock}/
+  .form-group
+    %label.col-sm-2.control-label{:for => "quantity_of_employees"} Quantity_Of_Employees
+    .col-sm-10
+      %input.form-control{:name => "inventory[quantity_of_employees]", :type => "integer", :value => @tech.quantity_of_employees}/
+
+  %button.btn.btn-default{:type => "submit"} Add

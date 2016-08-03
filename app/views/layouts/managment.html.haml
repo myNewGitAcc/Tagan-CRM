@@ -5,6 +5,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title Inventories
     = stylesheet_link_tag    'managment', media: 'all'
+    = javascript_include_tag 'managment', 'data-turbolinks-track' => false
     = csrf_meta_tags
   %body
     .app-content

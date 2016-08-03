@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20160802081404) do
     t.integer  "inventory_id"
     t.string   "title"
     t.date     "date_of_receipt"
-    t.integer  "guantity_in_stock"
+    t.integer  "quantity_in_stock"
     t.integer  "quantity_of_employees"
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false

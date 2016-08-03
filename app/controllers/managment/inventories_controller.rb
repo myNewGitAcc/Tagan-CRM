@@ -8,18 +8,41 @@ class Managment::InventoriesController < ManagmentController
     @inventory = Inventory.new(inventory_params)
      if @inventory.valid?
       @inventory.save
-      redirect_to admin_user_path(@inventory)
+      redirect_to managment_inventories_path
      else
        render action: 'new'
      end
   end
 
+  def edit
+    @tech = Inventory.find(params[:id])
+  end
+
+  def update
+    @inventory  = Inventory.find(params[:id])
+    if inventory_param
+        @inventory.update(inventory_params)
+        redirect_to managment_inventories_path
+    else
+      render action: 'edit'
+    end
+
+  end
+
+  def destroy
+    @inventory = Inventory.find(params[:id])
+    @inventory.destroy
+    redirect_to managment_inventories_path
+
+  end
+
   def show
-    Inventory.all
+
   end
 
   def inventory_params
-    params.require(:inventory).permit(:user_id, :invented_id, :date_of_receipt, :guantity_in_stock, :quantity_of_emploees)
+    params.require(:inventory).permit(:user_id, :title, :inventory_id, :date_of_receipt, :quantity_in_stock, :quantity_of_employees)
   end
+
 
 end

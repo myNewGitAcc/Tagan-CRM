@@ -18,7 +18,13 @@
             %td= item.inventory_id
             %td= item.title
             %td= item.date_of_receipt
-            %td= item.guantity_in_stock
+            %td= item.quantity_in_stock
             %td= item.quantity_of_employees
+            %td= link_to 'Show', managment_inventory_path(item), type: "button"
+            %td= link_to 'Edit',  edit_managment_inventory_path(item), type: "button"
+            %td= link_to "Delete", managment_inventory_path(item), method: :delete, data: {confirm: "This can not be undone"}
 
+
+.btn-group{"aria-label" => "...", :role => "group"}
+  = link_to 'New', new_managment_inventory_path, type: "button"
 
