@@ -8,7 +8,9 @@
   .form-group
     %label Title
     %br/
-    %input.form-control{:name => "inventory[title]", :placeholder => "Title", :type => "text"}/
+    = collection_select(:inventory, :type_id, Type.all, :id, :name, :prompt => 'Please select inventory type')
+    %a.btn{:onclick => 'addType()'} Add new type
+
     %br/
   .form-group
     %label Receipt date
@@ -18,3 +20,14 @@
   %button.btn.btn-success.btn-lg{:type => "submit"} Place this order
   %button.btn.btn-danger.btn-lg{:onclick => "return cancel_order()"} Cancel
 
+.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+        %h4.modal-title Add new inventory type
+      .modal-body
+        %label Enter new type
+        %input.form-control{id: :types_v, :name => "type[name]", :placeholder => "Type name", :type => "string"}/
+      .modal-footer
+        %button.btn.btn-success.btn-lg{id: :create, :onclick => "create"} Save

@@ -30,7 +30,7 @@ Rails.application.routes.draw do
 
   get '/login', to: 'auth#login'
   namespace :managment do
-    resources :inventories
+    resources :inventories, :types
   end
 
   get '/*path' => 'auth#redirect'

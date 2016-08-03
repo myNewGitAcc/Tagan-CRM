@@ -2,33 +2,26 @@
   %thead
     %tr
       %th #
-      %th User id
-      %th Inventory id
       %th Title
       %th Receipt date
       %th Quantity in stock
       %th Quantity of employees
       %th Image
   %tbody
-    - @tech.each do |item|
+    - @invent.each_with_index do |item,i|
       %tr
         %th{:scope => "row"}
-          = item.id
-          %td= item.user_id
-          %td= item.inventory_id
-          %td= item.title
+          = i += 1
+          %td= Type.find(item.type_id).name
           %td= item.receipt_date
-          %td= item.qtty_in_stock
-          %td= item.qtty_of_employees
+          %td
+          %td
           %td= item.avatar
-          %td= link_to 'Show', managment_inventory_path(item), type: "button"
-          %td= link_to 'Edit',  edit_managment_inventory_path(item), type: "button"
-          %td= link_to "Delete", managment_inventory_path(item), method: :delete, data: {confirm: "This can not be undone"}
+
+
 
 
 
 
 .btn-group{"aria-label" => "...", :role => "group"}
   = link_to 'New', new_managment_inventory_path, type: "button"
-
-= javascript_include_tag :all

@@ -1,11 +1,8 @@
 !!!
 %html
   %head
-    %script{:crossorigin => "anonymous", :integrity => "sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", :src => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"}
     = stylesheet_link_tag    'app_managment', media: 'all', 'data-turbolinks-track' => false
     = javascript_include_tag 'app_managment', 'data-turbolinks-track' => false
-    = csrf_meta_tags
-
   %body
     .content
       = yield

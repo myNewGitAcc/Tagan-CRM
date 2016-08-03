@@ -1,10 +1,11 @@
 class Managment::InventoriesController < AppManagmentController
   def index
-    @tech = Inventory.all
+    @invent = Inventory.all
+    @type = Type.new
   end
 
   def new
-
+    @type = Type.all
   end
 
   def create
@@ -22,17 +23,15 @@ class Managment::InventoriesController < AppManagmentController
   end
 
   def inventory_params
-    params.require(:inventory).permit(:user_id, :inventory_id, :title, :receipt_date, :qtty_in_stock,
-    :qtty_of_employees, :avatar)
+    params.require(:inventory).permit(:user_id,:type_id, :inventory_id, :receipt_date, :avatar)
   end
 
   def destroy
-    @inventory = Inventory.find(param[:id])
+    @inventory = Inventory.find(params[:id])
     @inventory.destroy
-    redirect_to managment_inventories_path
-    # respond_to do |format|
-    #   format.html { redirect_to managment_inventories_path, notice: 'Profile was successfully destroyed.' }
-    # end
+    respond_to do |format|
+      format.html { redirect_to managment_inventories_path, notice: 'Inventory was successfully destroyed.' }
+    end
   end
 end
 
