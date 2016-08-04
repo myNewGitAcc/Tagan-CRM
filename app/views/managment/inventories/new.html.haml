@@ -1,33 +1,39 @@
-%form{:action => "/managment/inventories", :method => "POST"}
-  %input{:name => "inventory[inventories_input]", :type => "hidden", :value => "#{@inventory_input}"}/
-  .form-group
-    %label User id
-    %br/
-    %input.form-control{:name => "inventory[user_id]", :placeholder => "User id", :type => "integer"}/
-    %br/
-  .form-group
-    %label Title
-    %br/
-    = collection_select(:inventory, :type_id, Type.all, :id, :name, :prompt => 'Please select inventory type')
-    %a.btn{:onclick => 'addType()'} Add new type
-
-    %br/
-  .form-group
-    %label Receipt date
-    %br/
-    %textarea.form-control{:name => "inventory[receipt_date]", :placeholder => "Receipt date", :type => "date"}
-    %br/
-  %button.btn.btn-success.btn-lg{:type => "submit"} Place this order
-  %button.btn.btn-danger.btn-lg{:onclick => "return cancel_order()"} Cancel
-
-.modal.fade
+.modal.fade#inventoriesmodal
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "inventoriesmodal", :type => "button"} ×
+        %h4.modal-title New nventory or Edit inventory
+      .modal-body
+        %form.form-horizontal.inv_form
+          .form-group
+            %label Type
+            %br/
+            = collection_select(:inventory, :type_id, Type.all, :id, :name, :prompt => 'Please select inventory type')
+            %a.btn{:onclick => 'addType()'} Add new type
+            %br/
+          .form-group
+            %label Receipt date
+            %br/
+            %textarea.form-control{:name => "inventory[receipt_date]", :placeholder => "Receipt date", :type => "date"}
+            %br/
+            %label Count inventories
+            %br/
+            %input{:min => "1", :id => "count_inv",name: :count_inv,:type => "integer", :value => "1"}
+            %br/
+          .modal-footer
+            %button.btn.btn-success.btn-lg{id: :createInventories} Save
+
+
+
+.modal.fade#typemodal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "typemodal", :type => "button"} ×
         %h4.modal-title Add new inventory type
       .modal-body
         %label Enter new type
         %input.form-control{id: :types_v, :name => "type[name]", :placeholder => "Type name", :type => "string"}/
       .modal-footer
-        %button.btn.btn-success.btn-lg{id: :create, :onclick => "create"} Save
+        %button.btn.btn-success.btn-lg{id: :createType} Save

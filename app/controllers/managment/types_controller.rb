@@ -4,7 +4,7 @@ class Managment::TypesController < AppManagmentController
     if  @type.valid?
       @type.save
     else
-      puts "Midinhjfvuhiebgeiuogtr"
+      render action: 'new'
     end
   end
 

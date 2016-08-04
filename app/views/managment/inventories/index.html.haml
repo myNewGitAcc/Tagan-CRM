@@ -1,27 +1,25 @@
-%table.table.table-striped
-  %thead
-    %tr
-      %th #
-      %th Title
-      %th Receipt date
-      %th Quantity in stock
-      %th Quantity of employees
-      %th Image
-  %tbody
-    - @invent.each_with_index do |item,i|
-      %tr
-        %th{:scope => "row"}
-          = i += 1
-          %td= Type.find(item.type_id).name
-          %td= item.receipt_date
-          %td
-          %td
-          %td= item.avatar
-
-
-
+%div.container.mt50
+  %div.row
+    %table.table.table-bordered.col-md-12.table-hover
+      %thead.table-inverse
+        %tr
+          %th #
+          %th Title
+          %th Quantity
+          %th Amount of free
+      %tbody
+        - i = 0
+        - @groupedList.each do |key|
+          %tr
+            %th{:scope => "row"}
+              = i += 1
+              %td= key
+              %td= @counts[key]
+              %td= @countsfree[key]
 
 
 
 .btn-group{"aria-label" => "...", :role => "group"}
-  = link_to 'New', new_managment_inventory_path, type: "button"
+  %a.btn{:onclick => 'addInventories()'} New Inventory
+
+= render template: "managment/inventories/new"
