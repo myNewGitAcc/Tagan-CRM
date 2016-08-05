@@ -1,17 +1,17 @@
 class Managment::InventoriesController < ManagmentController
 
   def index
-    @tech = Inventory.all
+    @tech = Inventory.all.order(:id)
   end
 
   def create
-    @inventory = Inventory.new(inventory_params)
-     if @inventory.valid?
+    @inventory = Inventory.find_by_inventory_name("#{params[:inventory][:inventory_name]}" )
+    if @inventory.nil?
+      @inventory = Inventory.new(inventory_params)
       @inventory.save
-      redirect_to managment_inventories_path
-     else
-       render action: 'new'
-     end
+    else
+      @inventory.update(quantity_in_stock: "#{params[:inventory][:quantity_in_stock].to_i+@inventory.quantity_in_stock}")
+    end
   end
 
   def edit
@@ -19,7 +19,7 @@ class Managment::InventoriesController < ManagmentController
   end
 
   def update
-    @inventory  = Invntory.find(params[:id])
+    @inventory  = Inventory.find(params[:id])
     if inventory_param
         @inventory.update(inventory_params)
         redirect_to managment_inventories_path
@@ -41,7 +41,7 @@ class Managment::InventoriesController < ManagmentController
   end
 
   def inventory_params
-    params.require(:inventory).permit(:user_id, :title, :inventory_id, :date_of_receipt, :quantity_in_stock, :quantity_of_employees)
+    params.require(:inventory).permit(:inventory_name, :quantity_in_stock)
   end
 
 

@@ -2,6 +2,7 @@
  * Created by user on 03.08.16.
  */
 $(document).ready(function() {
+  
   newInvertory = function () {
     $('.modal').modal('show');
     destroy();
@@ -23,8 +24,7 @@ $('#create').on('click', function (e) {
   $.ajax('/managment/inventories', {
     type: 'POST',
     data: $('form').serialize(),
-    success: function (response) {
-      console.log(response);
+    success: function () {
       $('.modal').modal('hide');
     }
   });
