@@ -27,24 +27,45 @@ class Managment::InventoriesController < AppManagmentController
   end
 
   def create
-
     c = params[:count_inv].to_i
     c.times do
       @inventory = Inventory.new(inventory_params)
-      if  @inventory.valid?
-        @inventory.save
-      else
-        render action: 'new'
+      respond_to do |format|
+        if  @inventory.save
+          format.json {
+            render json: @inventory.as_api_response(:basic)
+          }
+        end
       end
     end
   end
 
+  def edit
+    @inventory = Inventory.find(params[:id])
+  end
+
+  def all
+    @inventories = Inventory.all
+    typeList = Type.all
+    @typedList = {}
+    typeList.each do |item|
+      @typedList[item.id] = item.name
+    end
+  end
+
   def show
-    # @inventory = Inventory.find(params[:id])
+    @inventory = Inventory.find(params[:id])
+
+    respond_to do |format|
+      format.html { render "managment/inventories/show" }
+      format.json {
+        render json: @inventory.as_api_response(:basic)
+      }
+    end
   end
 
   def inventory_params
-    params.require(:inventory).permit(:user_id,:type_id, :inventory_id, :receipt_date, :avatar)
+    params.require(:inventory).permit(:user_id,:type_id, :inventory_id, :receipt_date, :avatar, :image)
   end
 
   def destroy

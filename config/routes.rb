@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   get '/login', to: 'auth#login'
+  get '/managment/inventories/all', to: 'managment/inventories#all'
   namespace :managment do
     resources :inventories, :types
   end

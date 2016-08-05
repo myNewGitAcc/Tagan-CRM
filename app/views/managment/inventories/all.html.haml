@@ -1,0 +1,23 @@
+%div#inventories-list.container.mt50
+  %div.row
+    %table.table.table-bordered.col-md-12.table-hover
+      %thead.table-inverse
+        %tr
+          %th id
+          %th Type
+          %th Part number
+          %th Receipt date
+          %th Image
+          %th User id
+      %tbody
+        - @inventories.each do |item|
+          %tr.link_to{:href=> managment_inventory_path(item.id)}
+            %th{:scope => "row"}
+              = item.id
+              %td= @typedList[item.type_id]
+              %td= item.inventory_id
+              %td= item.receipt_date
+              %td= item.avatar
+              %td= item.user_id
+
+=render :template => '/managment/inventories/show'
