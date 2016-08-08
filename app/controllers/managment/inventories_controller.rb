@@ -9,8 +9,14 @@ class Managment::InventoriesController < ManagmentController
     if @inventory.nil?
       @inventory = Inventory.new(inventory_params)
       @inventory.save
+      respond_to do |format|
+        format.json {render json: { result: 'create'} }
+      end
     else
       @inventory.update(quantity_in_stock: "#{params[:inventory][:quantity_in_stock].to_i+@inventory.quantity_in_stock}")
+      respond_to do |format|
+        format.json {render json: { inventory_name: params[:inventory][:inventory_name] } }
+      end
     end
   end
 
@@ -19,13 +25,6 @@ class Managment::InventoriesController < ManagmentController
   end
 
   def update
-    @inventory  = Inventory.find(params[:id])
-    if inventory_param
-        @inventory.update(inventory_params)
-        redirect_to managment_inventories_path
-    else
-      render action: 'edit'
-    end
 
   end
 
