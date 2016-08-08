@@ -34,21 +34,23 @@
 .circle-mini {
   margin-right: 100px;
   display: inline-block;
-  border-left-color: #854747;
-  border-bottom-color: #B00100;
-  border-right-color: #E90000;
-  border-top-color: #550000;
   width: 37px;
   height: 37px;
   cursor: pointer;
   border-radius: 50%;
-
-  box-shadow: 0 3px 20px rgba(0,0,0,.25),
-  inset 0 2px 0 rgba(255,255,255,.6),
-  0 2px 0 rgba(0,0,0,.1),
-  inset 0 0 20px rgba(0,0,0,.1);
+;
 }
 
 .btn-add {
-  background: url(http://www.defaulticon.com/images/icons32x32/add.png) center center no-repeat;
+  background: url(http://www.defaulticon.com/images/icons32x32/add.png?itok=sIL2bSuC) center center no-repeat;
+}
+.btn-delete {
+  background: url(http://www.defaulticon.com/images/icons32x32/delete.png?itok=zIkyZPyc) center center no-repeat;
+}
+
+.visible-button {
+  visibility: collapse;
+}
+.visible-buttonn {
+  visibility: visible;
 }

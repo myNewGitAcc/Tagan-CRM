@@ -83,4 +83,17 @@ $(document).ready ->
         console.log(e)
         return
 
+  $('#lineLink td').on 'click', (e) ->
+    e.preventDefault()
+    delete_url = $(@).attr('href')
+    $.ajax delete_url,
+      type: 'DELETE'
+      dataType: "json"
+      data: {"_method":"delete"}
+      success: (r) ->
+        console.log(r)
+      error: (e) ->
+        console.log(e)
+        return
+
   return
