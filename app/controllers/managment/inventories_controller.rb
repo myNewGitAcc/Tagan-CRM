@@ -64,8 +64,17 @@ class Managment::InventoriesController < AppManagmentController
     end
   end
 
-  def inventory_params
-    params.require(:inventory).permit(:user_id,:type_id, :inventory_id, :receipt_date, :avatar, :image)
+  def upload
+    data = params[:data]
+    filename = params[:filename]
+
+    ## Decode the image
+    data_index = data.index('base64') + 7
+    filedata = data.slice(data_index, data.length)
+
+    decoded_image = Base64.decode64(filedata)
+    ## Write the file to the system
+    File.open("public/uploads/#{filename}", "w+") {|f| f.write(decoded_image.force_encoding("UTF-8")) }
   end
 
   def destroy
@@ -75,5 +84,24 @@ class Managment::InventoriesController < AppManagmentController
       format.html { redirect_to managment_inventories_path, notice: 'Inventory was successfully destroyed.' }
     end
   end
+
+  def update
+    @inventory = Inventory.find(params[:id])
+    puts '==========================='
+
+    puts '============================'
+    if @inventory.update(inventory_params)
+      respond_to do |format|
+        format.json {
+          render json: @inventory.as_api_response(:basic)
+        }
+      end
+    end
+  end
+
+  def inventory_params
+    params.require(:inventory).permit(:user_id, :type_id, :inventory_id, :receipt_date, :avatar)
+  end
+
 end
 

@@ -1,6 +1,8 @@
-%div.container.mt50
+.btn-group{"aria-label" => "...", :role => "group"}
+  %a.btn.circle.btn-add{:onclick => 'addInventories()'}
+%div.container
   %div.row
-    %table.table.table-bordered.col-md-12.table-hover
+    %table.table.table-bordered.col-md-12.table-hover.gorizontal
       %thead.table-inverse
         %tr
           %th #
@@ -19,7 +21,6 @@
 
 
 
-.btn-group{"aria-label" => "...", :role => "group"}
-  %a.btn{:onclick => 'addInventories()'} New Inventory
+
 
 = render template: "managment/inventories/new"

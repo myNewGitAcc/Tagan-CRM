@@ -5,7 +5,7 @@
         %button.close{"aria-hidden" => "true", "data-dismiss" => "inventoriesmodal", :type => "button"} ×
         %h4.modal-title New nventory or Edit inventory
       .modal-body
-        %form.form-horizontal.inv_form
+        %form.form-horizontal#inv_form
           .form-group
             %label Type
             %br/
@@ -31,6 +31,7 @@
             %label Image
             %br/
             %input.form-control{:id=> 'add_img',:name=> "inventory[avatar]", :type=> 'file', :accept=>".txt,image/*"}
+            %button{:id=> 'upload_button'} Upload
             %br/
           .modal-footer
             %button.btn.btn-success.btn-lg{id: :createInventories} Save

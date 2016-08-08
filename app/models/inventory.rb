@@ -1,7 +1,7 @@
 class Inventory < ActiveRecord::Base
   belongs_to :type
   belongs_to :user
-  mount_uploader :avatar, AvatarUploader
+  # mount_uploader :avatar, AvatarUploader
 
   acts_as_api
 

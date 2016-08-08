@@ -4,12 +4,51 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-.mt50 {
- margin-top: 50px;
-  background-color: #D2E0E6;
+.gorizontal {
+ margin-top: -50px;
 }
 
 .table-inverse {
   background-color: dodgerblue;
 }
+.del-button {
+  margin-top: 36px;
+}
+.circle {
+  margin-right: 100px;
+  display: inline-block;
+  border-left-color: #a0d3e8;
+  border-bottom-color: #0a0045;
+  border-right-color: #00b3ee;
+  border-top-color: #0000FF;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 50%;
 
+  box-shadow: 0 3px 20px rgba(0,0,0,.25),
+  inset 0 2px 0 rgba(255,255,255,.6),
+  0 2px 0 rgba(0,0,0,.1),
+  inset 0 0 20px rgba(0,0,0,.1);
+}
+.circle-mini {
+  margin-right: 100px;
+  display: inline-block;
+  border-left-color: #854747;
+  border-bottom-color: #B00100;
+  border-right-color: #E90000;
+  border-top-color: #550000;
+  width: 37px;
+  height: 37px;
+  cursor: pointer;
+  border-radius: 50%;
+
+  box-shadow: 0 3px 20px rgba(0,0,0,.25),
+  inset 0 2px 0 rgba(255,255,255,.6),
+  0 2px 0 rgba(0,0,0,.1),
+  inset 0 0 20px rgba(0,0,0,.1);
+}
+
+.btn-add {
+  background: url(http://www.defaulticon.com/images/icons32x32/add.png) center center no-repeat;
+}

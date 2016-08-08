@@ -7,13 +7,13 @@ $(document).ready ->
       type: 'GET'
       dataType: "json"
       success: (r) ->
-        console.log r
         $('#edit_id').val(r.id)
         $('#inventory_type_id').val(r.type.id)
         unless r.user == null
           $('#inventory_user_id').val(r.user.id)
         $('#edit_part').val(r.inventory_id)
-
+        $('#receipt_id').val(r.receipt_date)
+        $('#edit_img').val('r.avatar')
         $('#edit_inventories').modal 'show'
       error: (e) ->
         console.log(e)
@@ -44,38 +44,43 @@ $(document).ready ->
       error: (e) ->
         console.log(e)
     return
+    
+  file = []
+  prepareUpload =(e) ->
+    file = e.target.files
+
+  $('input[type=file]').change (event) ->
+    prepareUpload(event)
 
   $('#createInventories').on 'click', (e) ->
     e.preventDefault()
-    $('#add_img').fileupload
-      dataType: 'json'
-      add: (e, data) ->
-        data.context = $('<button/>').text('Upload').appendTo(document.body).click(->
-          data.context = $('<p/>').text('Uploading...').replaceAll($(this))
-          data.submit()
-          return
-        )
+    ggg = $('#inv_form').serialize()
+    if file == []
+      data = (ggg + '&inventory%5Bavatar%5D=/public/uploads/unknown.png')
+    else
+      data = (ggg + '&inventory%5Bavatar%5D=' + '/public/uploads/' + file[0].name)
+    $.ajax '/managment/inventories',
+      type: 'POST'
+      dataType: "json"
+      data: data
+      success: () ->
+        $('#inventoriesmodal').modal 'hide'
+      error: (e) ->
+        console.log(e)
         return
-      done: (e, data) ->
-        data.context.text 'Upload finished.'
-        return
-
-
-#  $('#createInventories').on 'click', (e) ->
-#    e.preventDefault()
-#    data = $('.inv_form').serialize()
-#    $.ajax '/managment/inventories',
-#      type: 'POST'
-#      dataType: "json"
-#      data: data
-#      success: () ->
-#        $('#inventoriesmodal').modal 'hide'
-#      error: (e) ->
-#        console.log(e)
-#        return
 
   $('#updateInventories').on 'click', (e) ->
     e.preventDefault()
-    console.log('updateInventories')
+    id = $('#edit_id').val()
+    data = $('.edit_form').serialize()
+    $.ajax '/managment/inventories/' + id,
+      type: 'PUT'
+      dataType: "json"
+      data: data
+      success: () ->
+        $('#edit_inventories').modal 'hide'
+      error: (e) ->
+        console.log(e)
+        return
 
   return

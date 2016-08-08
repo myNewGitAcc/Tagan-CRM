@@ -1,23 +1,35 @@
-%div#inventories-list.container.mt50
+.btn-group{"aria-label" => "...", :role => "group"}
+  %a.btn.circle.btn-add{:onclick => 'addInventories()'}
+%div#inventories-list.container.gorizontal
   %div.row
-    %table.table.table-bordered.col-md-12.table-hover
-      %thead.table-inverse
-        %tr
-          %th id
-          %th Type
-          %th Part number
-          %th Receipt date
-          %th Image
-          %th User id
-      %tbody
-        - @inventories.each do |item|
-          %tr.link_to{:href=> managment_inventory_path(item.id)}
-            %th{:scope => "row"}
-              = item.id
-              %td= @typedList[item.type_id]
-              %td= item.inventory_id
-              %td= item.receipt_date
-              %td= item.avatar
-              %td= item.user_id
+    .col-md-9
+      %table.table.table-bordered.table-hover
+        %thead.table-inverse
+          %tr
+            %th id
+            %th Type
+            %th Part number
+            %th Receipt date
+            %th Image
+            %th User id
+        %tbody
+          - @inventories.each do |item|
+            %tr#lineLink.link_to{:href=> managment_inventory_path(item.id)}
+              %th{:scope => "row"}
+                = item.id
+                %td= @typedList[item.type_id]
+                %td= item.inventory_id
+                %td= item.receipt_date
+                %td= item.avatar
+                %td= item.user_id
+    .col-md-3
+      %table.del-button
+        %thead
+          %tr
+        %tbody
+          - @inventories.each do |btn|
+            %tr
+              %td.btn.circle-mini.hidden#delButton
 
 =render :template => '/managment/inventories/show'
+=render template: 'managment/inventories/new'

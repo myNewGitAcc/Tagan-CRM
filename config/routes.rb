@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   namespace :managment do
     resources :inventories, :types
   end
+  match '/managment/inventories/upload', to: 'managment/inventories#upload', via: :post
 
   get '/*path' => 'auth#redirect'
 
