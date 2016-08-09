@@ -2,13 +2,12 @@
   %div.row
     %table.table-bordered.col-md-12.table-striped.table-hover
       %a.inventory-link{:onclick => "newInvertory()"} New
-      %a.inventory-link{:href => "namagment/employees"} All Emploees
       %thead
         %tr
           %th #
           %th Inventory_Name
           %th Quantity in Stock
-          -#%th Quantity of Employees
+      -#%th Quantity of Employees
       %tbody
         - @tech.each do |item|
           %tr

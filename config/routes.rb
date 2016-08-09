@@ -31,5 +31,7 @@ Rails.application.routes.draw do
 
   post 'managment/inventories', to: 'managment/inventories#create'
 
+  get 'managment/employees', to: 'managment/employees#index'
+
   get '/*path' => 'auth#redirect'
 end
