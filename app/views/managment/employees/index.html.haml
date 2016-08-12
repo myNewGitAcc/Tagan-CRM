@@ -5,14 +5,14 @@
       %thead
         %tr
           %th #
-          %th Inventory_Name
-          %th Quantity in Stock
-      -#%th Quantity of Employees
-      %tbody
-        - @tech.each do |item|
+          %th id
+          %th Employee
+      %tbody#tbody
+        - @user.each do |item|
           %tr
+            %td.spoiler
             %td= item.id
-            %td= item.inventory_name
-            %td= item.quantity_in_stock
+            %td= item.first_name
 
-=render template: 'managment/inventories/inventoryModal'
+
+=render template: 'managment/employees/employeeModal'

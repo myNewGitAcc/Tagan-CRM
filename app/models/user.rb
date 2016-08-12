@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
 
   has_many :articles, dependent: :destroy
   has_many :technologies,  dependent: :destroy
+  has_many :employees,  dependent: :destroy
+
   accepts_nested_attributes_for :technologies, allow_destroy: true
   validate :valid_date?
 

@@ -33,5 +33,9 @@ Rails.application.routes.draw do
 
   get 'managment/employees', to: 'managment/employees#index'
 
+  get 'managment/insert_data', to: 'managment/employees#insert_data'
+
+  post 'managment/employees', to: 'managment/employees#create'
+
   get '/*path' => 'auth#redirect'
 end

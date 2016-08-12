@@ -1,0 +1,26 @@
+.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+        %h4.modal-title New inventory employee
+      .modal-body
+        %form.form-horizontal{:id => 'form'}
+          .form-group
+            %label.col-sm-3.control-label{:for => "user_id"} User ID
+            .col-sm-5
+              = collection_select(:employee,:user_id, @user, :id, :full_name, :prompt => ' ')
+          .form-group
+            %label.col-sm-3.control-label{:for => "inventory_id"} Inventory ID
+            .col-sm-5
+              = collection_select(:employee,:inventory_id, Inventory.all.order([:id]), :id, :inventory_name,  :prompt => ' ')
+          .form-group
+            %label.col-sm-3.control-label{:for => "date_of_receipt"} Date Of Receipt
+            .col-sm-5
+              %input.form-control{:id => 'date_of_receipt' ,:name => "employee[date_of_receipt]", :placeholder => "Date_Of_Receipt", :type => "date"}/
+          .form-group
+            %label.col-sm-3.control-label{:for => "quantity"} Quantity
+            .col-sm-5
+              %input.form-control{id: 'quantity', :name => "employee[quantity]", :placeholder => "Quantity", :type => "integer"}/
+          .modal-footer
+            %button.btn.btn-primary{:id => 'employee',:type => "submit"} Add New

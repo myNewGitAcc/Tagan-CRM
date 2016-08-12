@@ -6,7 +6,6 @@ class Managment::InventoriesController < ManagmentController
 
   def create
     @inventory = Inventory.find_by(inventory_name: params[:inventory][:inventory_name])
-    puts(@inventory)
     if @inventory.nil?
       @inventory = Inventory.new(inventory_params)
       @inventory.save

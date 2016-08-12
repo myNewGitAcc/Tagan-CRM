@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20160805150456) do
   create_table "employees", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "inventory_id"
-    t.string   "employee"
     t.date     "date_of_receipt"
     t.integer  "quantity"
     t.datetime "created_at",      null: false
@@ -112,5 +111,7 @@ ActiveRecord::Schema.define(version: 20160805150456) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
-  add_foreign_key "technologies", "users", name: "technologies_user_id_fkey"
+  add_foreign_key "articles", "users", name: "articles_user_id_fkey"
+  add_foreign_key "employees", "inventories", name: "employees_inventory_id_fkey"
+  add_foreign_key "employees", "users", name: "employees_user_id_fkey"
 end
