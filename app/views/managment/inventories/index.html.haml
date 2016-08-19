@@ -1,19 +1,21 @@
 %div.container.mt50
   %div.row
-    %table.table-bordered.col-md-12.table-striped.table-hover
-      %a.inventory-link{:onclick => "newInvertory()"} New
-      %a.inventory-link{:href => "namagment/employees"} All Emploees
+    %table.table-bordered.col-md-12.table-hover
       %thead
         %tr
           %th #
           %th Inventory_Name
           %th Quantity in Stock
-          -#%th Quantity of Employees
+          %th Quantity of Free
       %tbody
         - @tech.each do |item|
           %tr
             %td= item.id
             %td= item.inventory_name
             %td= item.quantity_in_stock
+            %td= item.quantity_of_free
+    %a.col-md-1.col-md-offset-1{onclick: "newInvertory()", class: 'btn btn-primary setting_buttons_1'} Add new Inventory
+    %a.col-md-1.col-md-offset-1{id: 'removeInv',onclick: "deleteInvertory()", class: 'btn btn-primary setting_buttons_2 disabled'} Remove Inventory
 
-=render template: 'managment/inventories/inventoryModal'
+=render template: 'managment/inventories/newInventory'
+=render template: 'managment/inventories/deleteInventory'

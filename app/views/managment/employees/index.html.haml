@@ -1,18 +1,21 @@
 %div.container.mt50
   %div.row
-    %table.table-bordered.col-md-12.table-striped.table-hover
-      %a.inventory-link{:onclick => "newInvertory()"} New
+    %table.table-bordered.col-md-10.table-hover
       %thead
         %tr
-          %th #
           %th id
           %th Employee
+          %th Role
       %tbody#tbody
         - @user.each do |item|
           %tr
-            %td.spoiler
-            %td= item.id
-            %td= item.first_name
+            %td
+              %span.spoiler
+              = item.id
+            %td= item.full_name
+            %td= item.role
+    %a.col-md-1.col-md-offset-1{onclick: "newInvertory()", class: 'btn btn-primary setting_buttons_1'} Add new Inventory to Employee
+    %a.col-md-1.col-md-offset-1{onclick: "newInvertory()", class: 'btn btn-primary setting_buttons_2'} Remove Inventory Employee
 
 
 =render template: 'managment/employees/employeeModal'

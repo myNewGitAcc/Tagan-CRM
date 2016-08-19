@@ -19,32 +19,31 @@ $(document).ready(function() {
     });
   });
 
-  $('.spoiler').prepend('<img class="plus" src="http://www.iconsearch.ru/ajax/download.php?icon_id=24753&size=1&format=png"> ');
-
   $(document).on('click', '.active', function () {
-    $(this).closest('#tbody').find('.insert').slideToggle(300);
+    $(this).closest('tr').next('.inventory').remove();
     $(this).removeClass('active');
     $(this).addClass('spoiler');
   });
 
   $(document).on('click','.spoiler', function (e) {
     e.preventDefault();
-    var id = +$(this).next().text();
+    var id = +$(this).closest('td').text();
     var pos = $(this);
-
     $.ajax('/managment/insert_data', {
       type: 'GET',
       datatype: 'json',
       contenType: 'application/json',
       data: {"user_id": id},
       success: function (data) {
-        console.log(pos.closest('#tbody').find('.insert').remove());
-          $(data.result).each(function (i) {
-            var x = $('<tr class="insert"><td>'+(data.result[i].inventory_id)+
-              '</td><td>'+(data.result[i].date_of_receipt)+'</td><td>'+
-              (data.result[i].quantity)+'</td></tr>');
-            pos.closest('tr').after(x);
-          });
+        var table = $('<tr class="inventory"><td class="fistTd"></td><td colspan="2"><table class="table-bordered col-md-12">' +
+          '<thead><th>Inventory</th><th>Data of Receipt</th><th>Quantity</th></thead><tbody></tbody></table></td></tr>');
+        pos.closest('tr').after(table);
+        $(data.result).each(function (i) {
+          var insertInventory = $('<tr><td>'+(data.result[i].inventory_name)+
+            '</td><td>'+(data.result[i].date_of_receipt)+'</td><td>'+
+            (data.result[i].quantity)+'</td></tr>');
+          pos.closest('tr').next('.inventory').find('tbody').append(insertInventory)
+        });
         pos.removeClass('spoiler');
         pos.addClass('active');
       },

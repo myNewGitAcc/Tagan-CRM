@@ -1,0 +1,16 @@
+.modal.fade.deleteModal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden":  "true", "data-dismiss": "modal", type: "button"} ×
+        %h4.modal-title Delete Inventory
+      .modal-body
+        %form.form-horizontal{id: 'form'}
+          .form-group
+            %label.col-sm-3.control-label{for: "quantity"} Quantity
+            .col-sm-5
+              %input.form-control{id: 'quantity', name: "inventory[quantity]", placeholder: "Quantity", type: "integer"}/
+          .modal-footer
+            %button.btn.btn-danger{type: "submit"} Delete
+            %button.btn.btn-danger{id: 'delete_button',type: "submit"} Delete all Inventory
+            %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Close

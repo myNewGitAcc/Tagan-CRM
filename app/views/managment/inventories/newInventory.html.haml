@@ -1,0 +1,20 @@
+.modal.fade.newModal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden":  "true", "data-dismiss": "modal", type: "button"} ×
+        %h4.modal-title Add new Inventory
+      .modal-body
+        %form.form-horizontal{id: 'form'}
+          .form-group
+            %label.col-sm-3.control-label{for: "inventory_name"} Inventory Name
+            .col-sm-5
+              %input.form-control{id: 'inventory_name', name: "inventory[inventory_name]", placeholder: "Inventory_name", type: "text"}/
+          .form-group
+            %label.col-sm-3.control-label{for: "quantity_in_stock"} Quantity In Stock
+            .col-sm-5
+              %input.form-control{id: 'quantity_in_stock', name: "inventory[quantity_in_stock]", placeholder: "Quantity_In_Stock", type: "integer"}/
+          .form-group
+            %input.form-control{id: 'quantity_of_free', name: "inventory[quantity_of_free]"  }/
+          .modal-footer
+            %button.btn.btn-primary{id: 'create',type: "submit"} Add New

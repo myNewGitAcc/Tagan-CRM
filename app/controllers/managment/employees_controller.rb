@@ -21,7 +21,7 @@ class Managment::EmployeesController < ManagmentController
   end
 
   def employee_params
-    params.require(:employee).permit(:user_id, :inventory_id, :date_of_receipt, :quantity)
+    params.require(:employee).permit(:user_id, :inventory_id, :date_of_receipt, :quantity, :inventory_name)
   end
 
 

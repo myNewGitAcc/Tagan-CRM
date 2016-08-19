@@ -8,16 +8,71 @@
       thead {
         th {
           padding:10px;
+          text-align: center;
         }
       }
       tbody {
         tr {
-          td {
+          td{
+            text-align: center;
+          }
+          td:first-child {
             width: 100px;
             padding:10px;
+            span.spoiler {
+              background: url(http://www.iconsearch.ru/ajax/download.php?icon_id=24753&size=1&format=png) no-repeat;
+              width:16px;
+              height:16px;
+              display: block;
+              float: left;
+            }
+            span.active {
+              background: url(http://www.iconsearch.ru/ajax/download.php?icon_id=24754&size=1&format=png) no-repeat;
+              width:16px;
+              height:16px;
+              display: block;
+              float: left;
+            }
+          }
+          .fistTd {
+            border: 2px solid white;
+            border-right: 2px solid #dddddd;
+            background-color: white;
+          }
+          .fistTd:first-child {
+            border-top: 2px solid #dddddd;
           }
         }
       }
     }
   }
 }
+
+.setting_buttons_1{
+  position: fixed;
+  width: 230px;
+  top: 20%;
+}
+.setting_buttons_2{
+  position: fixed;
+  width: 230px;
+  top: 25%;
+}
+
+#quantity_of_free {
+  visibility: hidden;
+  display: none !important;
+}
+
+.selected{
+  background: silver;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: silver;
+}
+
+//table {
+//  background-color: #C0C0A3;
+//}
+

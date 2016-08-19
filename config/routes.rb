@@ -31,6 +31,10 @@ Rails.application.routes.draw do
 
   post 'managment/inventories', to: 'managment/inventories#create'
 
+  delete 'managment/inventories', to: 'managment/inventories#destroy_inventory'
+
+  delete 'inventories', to: 'managment/inventories#destroy_quantity'
+
   get 'managment/employees', to: 'managment/employees#index'
 
   get 'managment/insert_data', to: 'managment/employees#insert_data'
