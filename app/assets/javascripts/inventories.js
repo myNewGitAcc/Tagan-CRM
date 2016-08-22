@@ -5,28 +5,22 @@ $(document).ready(function() {
   
   newInvertory = function () {
     $('.newModal').modal('show');
-    destroy();
   };
 
   deleteInvertory = function () {
     $('.deleteModal').modal('show');
-    destroy();
+    
   };
 
-  function destroy() {
-    document.getElementById('form').reset();
-  }
-
-  $('#create').on('click', function (e) {
+  $('#createInventories').on('click', function (e) {
     $('#quantity_of_free').attr("value", $('#quantity_in_stock').val());
     e.preventDefault();
-    $.ajax('/managment/inventories', {
+    $.ajax('/inventories/create', {
      type: 'POST',
      datatype: 'json',
      contenType: 'application/json',
      data: $('#form').serialize(),
      success: function (data) {
-       console.log(data);
       var number_id =+ $('tbody').find('tr').last().find('td').first().text();
       if (data.result == 'create')
       {
@@ -66,28 +60,42 @@ $(document).ready(function() {
     }
   });
 
-  $('#delete_button').click( function (e) {
-    var deleteStr = $('.selected').find('td').first().text();
-    Delete(deleteStr,e);
-  });
-
-  function Delete(deleteStr, e){
-    
+  $('#deleteInventory').click( function (e) {
+    var pos = $('.selected')
+    var id = $('.selected').find('td').first().text();
     e.preventDefault();
-    $.ajax('/managment/inventories', {
+    $.ajax('/inventories/destroy_inventory', {
       type: 'DELETE',
       datatype: 'json',
       contenType: 'application/json',
-      data:{ "id": deleteStr
-      },
-      success: function(data) {
-        console.log(pos);
+      data:{ "id": id },
+      success: function() {
+        pos.remove();
         $('.modal').modal('hide');
       },
       error: function (e) {
         console.log(e);
       }
     });
-  }
+  });
+
+  $('#deleteQuantity').click( function (e) {
+    var pos = $('.selected')
+    var id = $('.selected').find('td').first().text();
+    e.preventDefault();
+    $.ajax('/inventories/destroy_quantity', {
+      type: 'DELETE',
+      datatype: 'json',
+      contenType: 'application/json',
+      data:{ "id": id, "quantity": $('#quantity').val() },
+      success: function(data) {
+        pos.find('td').last().prev().text(data.quantity_in_stock);
+        $('.modal').modal('hide');
+      },
+      error: function (e) {
+        console.log(e);
+      }
+    });
+  });
 
 });

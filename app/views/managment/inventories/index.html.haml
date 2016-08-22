@@ -4,7 +4,7 @@
       %thead
         %tr
           %th #
-          %th Inventory_Name
+          %th Inventory Name
           %th Quantity in Stock
           %th Quantity of Free
       %tbody
@@ -15,7 +15,7 @@
             %td= item.quantity_in_stock
             %td= item.quantity_of_free
     %a.col-md-1.col-md-offset-1{onclick: "newInvertory()", class: 'btn btn-primary setting_buttons_1'} Add new Inventory
-    %a.col-md-1.col-md-offset-1{id: 'removeInv',onclick: "deleteInvertory()", class: 'btn btn-primary setting_buttons_2 disabled'} Remove Inventory
+    %a.col-md-1.col-md-offset-1{id: 'removeInv', onclick: "deleteInvertory()", class: 'btn btn-primary setting_buttons_2 disabled'} Remove Inventory
 
 =render template: 'managment/inventories/newInventory'
 =render template: 'managment/inventories/deleteInventory'

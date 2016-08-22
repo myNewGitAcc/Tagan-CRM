@@ -13,17 +13,17 @@ class Managment::InventoriesController < ManagmentController
   end
 
   def create
-    @inventory = Inventory.find_by(inventory_name: params[:inventory_name])
-    if @inventory.nil?
-      @inventory = Inventory.new(inventory_params)
-      @inventory.save
+    inventory = Inventory.find_by(inventory_name: params[:inventory_name])
+    if inventory.nil?
+      inventory = Inventory.new(inventory_params)
+      inventory.save
       Employee.where(inventory_name: params[:inventory][:inventory_name]).update_all(inventory_id: @inventory.id)
-      quantity = Employee.where(inventory_id: @inventory.id).sum(:quantity)
+      quantity = Employee.where(inventory_id: inventory.id).sum(:quantity)
       respond_to do |format|
-        format.json {render json: { result: 'create', id: @inventory.id, quantity_in_stock: @inventory.quantity_in_stock, quantity: quantity} }
+        format.json {render json: { result: 'create', id: inventory.id, quantity_in_stock: inventory.quantity_in_stock, quantity: quantity} }
       end
     else
-      @inventory.update(quantity_in_stock: "#{params[:inventory][:quantity_in_stock].to_i+@inventory.quantity_in_stock}")
+      inventory.update(quantity_in_stock: "#{params[:inventory][:quantity_in_stock].to_i+inventory.quantity_in_stock}")
       respond_to do |format|
         format.json {render json: { inventory_name: params[:inventory][:inventory_name], quantity: params[:inventory][:quantity_in_stock] } }
       end
@@ -31,17 +31,20 @@ class Managment::InventoriesController < ManagmentController
   end
 
   def destroy_inventory
-    @inventory = Inventory.find(params[:id])
-    # @employees = Employee.where(inventory_id: params[:inventory_id])
+    inventory = Inventory.find(params[:id])
     Employee.where(inventory_id: params[:id]).update_all(inventory_id: nil)
-     @inventory.destroy
+     inventory.destroy
     respond_to do |format|
-      format.json {render json: @inventory  }
+      format.json {render json: inventory  }
     end
   end
 
   def destroy_quantity
-    efewgweg
+    inventory = Inventory.find(params[:id])
+    inventory.update(quantity_in_stock: "#{inventory.quantity_in_stock - params[:quantity].to_i}")
+    respond_to do |format|
+      format.json {render json: inventory  }
+    end
   end
 
   def inventory_params

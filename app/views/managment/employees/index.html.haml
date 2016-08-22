@@ -14,8 +14,9 @@
               = item.id
             %td= item.full_name
             %td= item.role
-    %a.col-md-1.col-md-offset-1{onclick: "newInvertory()", class: 'btn btn-primary setting_buttons_1'} Add new Inventory to Employee
-    %a.col-md-1.col-md-offset-1{onclick: "newInvertory()", class: 'btn btn-primary setting_buttons_2'} Remove Inventory Employee
+    %a.col-md-1.col-md-offset-1{onclick: "newEmployee()", class: 'btn btn-primary setting_buttons_1'} Add new Inventory to Employee
+    %a.col-md-1.col-md-offset-1{id: "removeInv", onclick: "deleteEmployee()", class: 'btn btn-primary setting_buttons_2 disabled'} Remove Inventory Employee
 
 
-=render template: 'managment/employees/employeeModal'
+=render template: 'managment/employees/newInventory'
+=render template: 'managment/employees/deleteInventory'

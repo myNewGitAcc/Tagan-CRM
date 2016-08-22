@@ -29,17 +29,23 @@ Rails.application.routes.draw do
 
   get 'managment/inventories', to: 'managment/inventories#index'
 
-  post 'managment/inventories', to: 'managment/inventories#create'
+  post 'inventories/create', to: 'managment/inventories#create'
 
-  delete 'managment/inventories', to: 'managment/inventories#destroy_inventory'
+  delete 'inventories/destroy_inventory', to: 'managment/inventories#destroy_inventory'
 
-  delete 'inventories', to: 'managment/inventories#destroy_quantity'
+  delete 'inventories/destroy_quantity', to: 'managment/inventories#destroy_quantity'
 
   get 'managment/employees', to: 'managment/employees#index'
 
-  get 'managment/insert_data', to: 'managment/employees#insert_data'
+  get 'employees/insert_data', to: 'managment/employees#insert_data'
 
-  post 'managment/employees', to: 'managment/employees#create'
+  get 'employees/select', to: 'managment/employees#select'
+
+  post 'employees/create', to: 'managment/employees#create'
+
+  delete 'employees/destroy_employee', to: 'managment/employees#destroy_employee'
+
+  delete 'employees/destroy_quantity', to: 'managment/employees#destroy_quantity'
 
   get '/*path' => 'auth#redirect'
 end
