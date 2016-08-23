@@ -11,7 +11,6 @@ $(document).ready(function() {
   deleteEmployee = function () {
     $('.deleteModal').modal('show');
     destroy();
-    option();
   };
 
   function destroy() {
@@ -52,15 +51,16 @@ $(document).ready(function() {
       contenType: 'application/json',
       data: {"user_id": id},
       success: function (data) {
-        var table = $('<tr class="inventory"><td class="fistTd"></td><td colspan="2"><table class="table-bordered col-md-12">' +
-          '<thead><th>Inventory</th><th>Data of Receipt</th><th>Quantity</th></thead><tbody></tbody></table></td></tr>');
+        if(data.result.length > 0){
+        var table = $('<tr class="inventory"><td class="fistTd"></td><td colspan="2"><table class="table-bordered col-md-12 table-hover">' +
+          '<thead><th>#</th><th>Inventory</th><th>Data of Receipt</th><th>Quantity</th></thead><tbody></tbody></table></td></tr>');
         pos.closest('tr').after(table);
         $(data.result).each(function (i) {
-          var insertInventory = $('<tr><td>'+(data.result[i].inventory_name)+
+          var insertInventory = $('<tr  id="selected"><td>'+(data.result[i].id)+'</td><td>'+(data.result[i].inventory_name)+
             '</td><td>'+(data.result[i].date_of_receipt)+'</td><td>'+
             (data.result[i].quantity)+'</td></tr>');
           pos.closest('tr').next('.inventory').find('tbody').append(insertInventory)
-        });
+        });}
         pos.removeClass('spoiler');
         pos.addClass('active');
       },
@@ -70,26 +70,26 @@ $(document).ready(function() {
     });
   });
 
-   function option() {
-     var id = +$('.selected').find('td').first().text();
-     $.ajax('/employees/select', {
-       type: 'GET',
-       datatype: 'json',
-       contenType: 'application/json',
-       data: {"user_id": id},
-       success: function (data) {
-         $('select').append($('<option></option>'));
-         $(data.result).each(function (i) {
-           $('select').append($('<option>' + data.result[i].inventory_name + '</option>'));
-         });
-       },
-       error: function (e) {
-         console.log(e);
-       }
-     });
-   };
+   // function option() {
+   //   var id = +$('.selected').find('td').first().text();
+   //   $.ajax('/employees/select', {
+   //     type: 'GET',
+   //     datatype: 'json',
+   //     contenType: 'application/json',
+   //     data: {"user_id": id},
+   //     success: function (data) {
+   //       $('select#employee_inventory').append($('<option></option>'));
+   //       $(data.result).each(function (i) {
+   //         $('select#employee_inventory').append($('<option>' + data.result[i].inventory_name + '</option>'));
+   //       });
+   //     },
+   //     error: function (e) {
+   //       console.log(e);
+   //     }
+   //   });
+   // };
 
-  $('#deleteEmployee').click( function (e) {
+  $('#deleteAll').click( function (e) {
     var pos = $('.selected')
     var user_id = +$('.selected').find('td').first().text();
     e.preventDefault();
@@ -97,9 +97,8 @@ $(document).ready(function() {
       type: 'DELETE',
       datatype: 'json',
       contenType: 'application/json',
-      data:{ "user_id": user_id },
+      data:{ "id": id },
       success: function() {
-        // pos.remove();
         $('.modal').modal('hide');
       },
       error: function (e) {
@@ -116,10 +115,16 @@ $(document).ready(function() {
       type: 'DELETE',
       datatype: 'json',
       contenType: 'application/json',
-      data:{ "id": id, "quantity": $('#quantity').val() },
+      data:{ "id": id, "quantity": $('#quantityDelete').val() },
       success: function(data) {
-
-        $('.modal').modal('hide');
+        console.log(data);
+        if (data.qtt > 0) {
+          var x = +pos.find('td').last().text();
+          pos.find('td').last().text(x - data.quantity);
+          $('.modal').modal('hide');
+        }else{
+          pos.remove(); 
+        }
       },
       error: function (e) {
         console.log(e);

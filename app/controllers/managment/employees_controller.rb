@@ -27,20 +27,28 @@ class Managment::EmployeesController < ManagmentController
     end
   end
 
-  def destroy_employee
-    employee = Employee.where(user_id: "#{params[:user_id]}")
-    employee.destroy_all
-    respond_to do |format|
-      format.json {render json: employee  }
-    end
-  end
+  # def destroy_employee
+  #   employee = Employee.where(user_id: "#{params[:user_id]}")
+  #   qtt = employee.sum(:quantity)
+  #   employee.destroy_all
+  #   respond_to do |format|
+  #     format.json {render json: employee, quantity: qtt  }
+  #   end
+  # end
 
   def destroy_quantity
-    inventory = Inventory.find(params[:id])
-    inventory.update(quantity_in_stock: "#{inventory.quantity_in_stock - params[:quantity].to_i}")
-    respond_to do |format|
-      format.json {render json: inventory  }
-    end
+    employee = Employee.find(params[:id])
+     if employee.quantity > params[:quantity].to_i
+      employee.update(quantity: "#{employee.quantity - params[:quantity].to_i}")
+      respond_to do |format|
+        format.json {render json: {"qtt": employee.quantity, "inventory_name": employee.inventory_name, "quantity": params[:quantity].to_i } }
+      end
+     else
+       employee.destroy
+       respond_to do |format|
+         format.json {render json: {"qtt": employee.quantity, "inventory_name": employee.inventory_name, "quantity": params[:quantity].to_i }   }
+       end
+     end
   end
 
   def employee_params

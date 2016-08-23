@@ -9,7 +9,7 @@
           %th Quantity of Free
       %tbody
         - @tech.each do |item|
-          %tr
+          %tr#selected
             %td= item.id
             %td= item.inventory_name
             %td= item.quantity_in_stock

@@ -1,4 +1,4 @@
-class ManagmentController < ActionController::Base
+class ManagmentController < ApplicationController
 
  layout 'managment'
 

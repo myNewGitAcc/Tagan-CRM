@@ -48,7 +48,7 @@ $(document).ready(function() {
     });
   });
 
-  $('tbody').on( 'click', 'tr', function () {
+  $('tbody').on( 'click', '#selected', function () {
     if ( $(this).hasClass('selected') ) {
       $(this).removeClass('selected');
       $('#removeInv').addClass('disabled');
@@ -90,6 +90,9 @@ $(document).ready(function() {
       data:{ "id": id, "quantity": $('#quantity').val() },
       success: function(data) {
         pos.find('td').last().prev().text(data.quantity_in_stock);
+        var free = +pos.find('td').last().text();
+        console.log(free);
+        pos.find('td').last().text(free - data.free);
         $('.modal').modal('hide');
       },
       error: function (e) {

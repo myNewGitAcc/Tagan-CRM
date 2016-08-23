@@ -1,10 +1,15 @@
 'use strict';
 
 class LogoutController {
-  constructor() {
+  constructor($window) {
     this.logout = ()=>{
       this.content = 'Do you want logout?';
       this.showPopUpDialog = true;
+    }
+   
+    this.toManagment = ()=>{
+      console.log('here')
+      $window.location.href='/managment/inventories'
     }
 
     this.cancel = ()=> {
@@ -19,6 +24,6 @@ class LogoutController {
 }
 
 
-LogoutController.$inject = [];
+LogoutController.$inject = [ '$window'];
 angular.module('ngSpaApp')
   .controller('LogoutController', LogoutController);
