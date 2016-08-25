@@ -7,6 +7,7 @@ class Managment::EmployeesController < ManagmentController
   def create
     employee = Employee.new(employee_params)
     if employee.save
+      inventory = Inventory.find(inventory_id: employee.inventory_id)
      respond_to do |format|
        format.json {render json: { result: 'create'} }
      end
@@ -27,15 +28,6 @@ class Managment::EmployeesController < ManagmentController
     end
   end
 
-  # def destroy_employee
-  #   employee = Employee.where(user_id: "#{params[:user_id]}")
-  #   qtt = employee.sum(:quantity)
-  #   employee.destroy_all
-  #   respond_to do |format|
-  #     format.json {render json: employee, quantity: qtt  }
-  #   end
-  # end
-
   def destroy_quantity
     employee = Employee.find(params[:id])
      if employee.quantity > params[:quantity].to_i
@@ -46,7 +38,7 @@ class Managment::EmployeesController < ManagmentController
      else
        employee.destroy
        respond_to do |format|
-         format.json {render json: {"qtt": employee.quantity, "inventory_name": employee.inventory_name, "quantity": params[:quantity].to_i }   }
+         format.json {render json: {"qtt": "0", "inventory_name": employee.inventory_name, "quantity": params[:quantity].to_i }   }
        end
      end
   end

@@ -8,5 +8,20 @@
     = javascript_include_tag 'managment', 'data-turbolinks-track' => false
     = csrf_meta_tags
   %body
+    .navbar.navbar-default.navbar-static-top
+      .container{"ng-controller" => "LogoutController "}
+        .navbar-header
+          %button.navbar-toggle{"ng-click" => "nav.isCollapsed = !nav.isCollapsed", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/", "ng-click" => "nav.setPage($event)"} TaganTeam
+        #navbar-main.navbar-collapse.collapse{"uib-collapse" => "nav.isCollapsed"}
+          %ul.nav.navbar-nav{"ng-click" => "nav.setPage($event)"}
+            %li{"ng-class" => "{'active': nav.activePage == '/inventories'}"}
+              %a{:href => "inventories"} Inventories
+            %li{"ng-class" => "{'active': nav.activePage == '/employees'}"}
+              %a{:href => "employees"} Employees
     .app-content
       = yield

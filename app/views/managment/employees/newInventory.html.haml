@@ -13,7 +13,7 @@
           .form-group
             %label.col-sm-3.control-label{for: "inventory_id"} Inventory ID
             .col-sm-5
-              =collection_select(:employee,:inventory_id, Inventory.all.order([:id]), :id, :inventory_name,  prompt: ' ')
+              =collection_select(:employee,:inventory_id, Inventory.where('quantity_of_free != 0').order([:id]), :id, :inventory_name,  prompt: ' ')
           .form-group
             %label.col-sm-3.control-label{for: "date_of_receipt"} Date Of Receipt
             .col-sm-5
@@ -21,6 +21,8 @@
           .form-group
             %label.col-sm-3.control-label{for: "quantity"} Quantity
             .col-sm-5
-              %input.form-control{id: 'quantity', name: "employee[quantity]", placeholder: "Quantity", type: "integer"}/
+              %input.form-control{id: 'quantity', name: "employee[quantity]", placeholder: "Quantity", type: "number"}/
+          .form-group
+            %input.form-control{id: 'employee_inventory_name', name: "employee[inventory_name]"  }/
           .modal-footer
             %button.btn.btn-primary{id: 'createEmployees',type: "submit"} Add New

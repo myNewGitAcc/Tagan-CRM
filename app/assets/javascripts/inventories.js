@@ -2,7 +2,7 @@
  * Created by user on 03.08.16.
  */
 $(document).ready(function() {
-  
+
   newInvertory = function () {
     $('.newModal').modal('show');
   };
@@ -16,35 +16,33 @@ $(document).ready(function() {
     $('#quantity_of_free').attr("value", $('#quantity_in_stock').val());
     e.preventDefault();
     $.ajax('/inventories/create', {
-     type: 'POST',
-     datatype: 'json',
-     contenType: 'application/json',
-     data: $('#form').serialize(),
-     success: function (data) {
-      var number_id =+ $('tbody').find('tr').last().find('td').first().text();
-      if (data.result == 'create')
-      {
-        var tr = $('<tr><td>'+(data.id)+'</td><td>'+
-                 $('#inventory_name').val()+ '</td><td>'+
-                 $('#quantity_in_stock').val()+'</td><td>'+
-                 (data.quantity_in_stock - data.quantity)+'</td></tr>');
-        $('tbody').append(tr);
-      }
-      else
-      {
-        $('tbody').find('td:contains(' + $('#inventory_name').val() + ')').each(function () {
-        if ($(this).html() == $('#inventory_name').val())
-        {
-          var currentValue = +$(this).next().text();
-          $(this).next().text(+data.quantity + currentValue);
+      type: 'POST',
+      datatype: 'json',
+      contenType: 'application/json',
+      data: $('#form').serialize(),
+      success: function (data) {
+        var number_id = +$('tbody').find('tr').last().find('td').first().text();
+        if (data.result == 'create') {
+          var tr = $('<tr><td>' + (data.id) + '</td><td>' +
+            $('#inventory_name').val() + '</td><td>' +
+            $('#quantity_in_stock').val() + '</td><td>' +
+            (data.quantity_in_stock - data.quantity) + '</td></tr>');
+          $('tbody').append(tr);
         }
-        });
+        else {
+          $('tbody').find('td:contains(' + $('#inventory_name').val() + ')').each(function () {
+            if ($(this).html() == $('#inventory_name').val()) {
+              var currentValue = +$(this).next().text();
+              $(this).next().text(+data.quantity + currentValue);
+            }
+          });
+        }
+        toastr.success('New inventory added');
+        $('.modal').modal('hide');
+      },
+      error: function (e) {
+        console.log(e);
       }
-      $('.modal').modal('hide');
-     },
-     error: function (e) {
-       console.log(e);
-     }
     });
   });
 
@@ -89,10 +87,11 @@ $(document).ready(function() {
       contenType: 'application/json',
       data:{ "id": id, "quantity": $('#quantity').val() },
       success: function(data) {
-        pos.find('td').last().prev().text(data.quantity_in_stock);
         var free = +pos.find('td').last().text();
-        console.log(free);
+        var qtt  = +pos.find('td').last().prev().text()
+        pos.find('td').last().prev().text(qtt - data.free);
         pos.find('td').last().text(free - data.free);
+        toastr("")
         $('.modal').modal('hide');
       },
       error: function (e) {

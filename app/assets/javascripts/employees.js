@@ -20,6 +20,7 @@ $(document).ready(function() {
   }
 
   $('#createEmployees').on('click', function (e) {
+    $('#employee_inventory_name').attr("value", $('#employee_inventory_id option:selected').text());
     e.preventDefault();
     $.ajax('/employees/create', {
       type: 'POST',
@@ -27,6 +28,7 @@ $(document).ready(function() {
       contenType: 'application/json',
       data: $('#form').serialize(),
       success: function () {
+        toastr.success('Inventory is added to the user')
         $('.modal').modal('hide');
       },
       error: function (e) {
@@ -42,7 +44,7 @@ $(document).ready(function() {
   });
 
   $(document).on('click','.spoiler', function (e) {
-    e.preventDefault();
+    // e.preventDefault();
     var id = +$(this).closest('td').text();
     var pos = $(this);
     $.ajax('/employees/insert_data', {
@@ -60,46 +62,14 @@ $(document).ready(function() {
             '</td><td>'+(data.result[i].date_of_receipt)+'</td><td>'+
             (data.result[i].quantity)+'</td></tr>');
           pos.closest('tr').next('.inventory').find('tbody').append(insertInventory)
-        });}
+        });
+        } else {
+          var table = $('<tr class="inventory"><td class="fistTd"></td><td colspan="2"><table class="table-bordered col-md-12   ">' +
+            '<thead><th>Inventories not found for user</th></thead>');
+          pos.closest('tr').after(table);
+        }
         pos.removeClass('spoiler');
         pos.addClass('active');
-      },
-      error: function (e) {
-        console.log(e);
-      }
-    });
-  });
-
-   // function option() {
-   //   var id = +$('.selected').find('td').first().text();
-   //   $.ajax('/employees/select', {
-   //     type: 'GET',
-   //     datatype: 'json',
-   //     contenType: 'application/json',
-   //     data: {"user_id": id},
-   //     success: function (data) {
-   //       $('select#employee_inventory').append($('<option></option>'));
-   //       $(data.result).each(function (i) {
-   //         $('select#employee_inventory').append($('<option>' + data.result[i].inventory_name + '</option>'));
-   //       });
-   //     },
-   //     error: function (e) {
-   //       console.log(e);
-   //     }
-   //   });
-   // };
-
-  $('#deleteAll').click( function (e) {
-    var pos = $('.selected')
-    var user_id = +$('.selected').find('td').first().text();
-    e.preventDefault();
-    $.ajax('/employees/destroy_employee', {
-      type: 'DELETE',
-      datatype: 'json',
-      contenType: 'application/json',
-      data:{ "id": id },
-      success: function() {
-        $('.modal').modal('hide');
       },
       error: function (e) {
         console.log(e);
@@ -123,6 +93,7 @@ $(document).ready(function() {
           pos.find('td').last().text(x - data.quantity);
           $('.modal').modal('hide');
         }else{
+          $('.modal').modal('hide');
           pos.remove(); 
         }
       },

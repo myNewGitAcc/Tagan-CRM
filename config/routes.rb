@@ -31,6 +31,8 @@ Rails.application.routes.draw do
 
   post 'inventories/create', to: 'managment/inventories#create'
 
+  get 'inventories/autocomplete', to: 'managment/inventories#autocomplete'
+
   delete 'inventories/destroy_inventory', to: 'managment/inventories#destroy_inventory'
 
   delete 'inventories/destroy_quantity', to: 'managment/inventories#destroy_quantity'
@@ -48,4 +50,5 @@ Rails.application.routes.draw do
   delete 'employees/destroy_quantity', to: 'managment/employees#destroy_quantity'
 
   get '/*path' => 'auth#redirect'
+
 end

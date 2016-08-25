@@ -64,12 +64,32 @@
   display: none !important;
 }
 
+#employee_inventory_name {
+  visibility: hidden;
+  display: none !important;
+}
+
 .selected{
   background: silver;
 }
 
 .table-hover > tbody > tr:hover {
   background-color: silver;
+}
+
+.modal-body {
+  #form {
+    .ui-autocomplete {
+      position: absolute;
+      top: 33px;
+      left: 15px;
+      cursor: default;
+    }
+  }
+}
+
+.navbar {
+  text-align: center;
 }
 
 //table {

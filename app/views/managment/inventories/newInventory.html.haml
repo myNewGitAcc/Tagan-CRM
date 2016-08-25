@@ -8,13 +8,18 @@
         %form.form-horizontal{id: 'form'}
           .form-group
             %label.col-sm-3.control-label{for: "inventory_name"} Inventory Name
-            .col-sm-5
-              %input.form-control{id: 'inventory_name', name: "inventory[inventory_name]", placeholder: "Inventory_name", type: "text"}/
+            .col-sm-5.test1
+              %input.form-control.rfield{id: 'inventory_name', name: "inventory[inventory_name]", placeholder: "Inventory name", type: "text"}/
+          -#.form-group
+          -#  %label.col-sm-3.control-label{for: "avatar"} Image
+          -#  .col-sm-5
+          -#    %input.form-control{:name=> "inventory[avatar]", :type=> 'file', :accept=>".txt,image/*"}/
           .form-group
             %label.col-sm-3.control-label{for: "quantity_in_stock"} Quantity In Stock
             .col-sm-5
-              %input.form-control{id: 'quantity_in_stock', name: "inventory[quantity_in_stock]", placeholder: "Quantity_In_Stock", type: "integer"}/
+              %input.form-control.rfield{id: 'quantity_in_stock', name: "inventory[quantity_in_stock]", placeholder: "Quantity In Stock", type: "number"}/
           .form-group
             %input.form-control{id: 'quantity_of_free', name: "inventory[quantity_of_free]"  }/
           .modal-footer
             %button.btn.btn-primary{id: 'createInventories',type: "submit"} Add New
+            %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Close

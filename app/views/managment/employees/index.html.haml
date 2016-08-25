@@ -1,3 +1,4 @@
+%h2.text-center Employees
 %div.container.mt50
   %div.row
     %table.table-bordered.col-md-10
@@ -14,8 +15,9 @@
               = item.id
             %td= item.full_name
             %td= item.role
-    %a.col-md-1.col-md-offset-1{onclick: "newEmployee()", class: 'btn btn-primary setting_buttons_1'} Add new Inventory to Employee
-    %a.col-md-1.col-md-offset-1{id: "removeInv", onclick: "deleteEmployee()", class: 'btn btn-primary setting_buttons_2 disabled'} Remove Inventory Employee
+    - if(current_user.role == "inventory")
+      %a.col-md-1.col-md-offset-1{onclick: "newEmployee()", class: 'btn btn-primary setting_buttons_1'} Add new Inventory to Employee
+      %a.col-md-1.col-md-offset-1{id: "removeInv", onclick: "deleteEmployee()", class: 'btn btn-primary setting_buttons_2 disabled'} Remove Inventory Employee
 
 
 =render template: 'managment/employees/newInventory'

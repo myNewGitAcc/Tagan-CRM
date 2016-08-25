@@ -84,3 +84,7 @@ end
 gem 'active_admin_datetimepicker'
 
 gem 'bootstrap-sass'
+
+gem 'jquery-ui-rails'
+
+gem 'carrierwave'

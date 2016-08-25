@@ -3,13 +3,15 @@ class Managment::InventoriesController < ManagmentController
   def index
     @tech = Inventory.all.order(:id)
     quantity = Employee.all.order(:inventory_id).group(:inventory_id).sum(:quantity)
-    quantity.each do |k,v|
-      @tech.each do |i|
-        if i.id == k
-         i.quantity_of_free -= v
-        end
-      end
-    end
+    # quantity.each do |k,v|
+    #   @tech.each do |i|
+    #     if i.id == k
+    #      if (i.quantity_of_free -= v) <= 0
+    #        i.quantity_of_free = 0
+    #      end
+    #     end
+    #   end
+    # end
   end
 
   def create
@@ -19,6 +21,8 @@ class Managment::InventoriesController < ManagmentController
       inventory.save
       Employee.where(inventory_name: params[:inventory][:inventory_name]).update_all(inventory_id: inventory.id)
       quantity = Employee.where(inventory_id: inventory.id).sum(:quantity)
+      inventory.quantity_of_free -= quantity
+      inventory.update(quantity_of_free: inventory.quantity_of_free)
       respond_to do |format|
         format.json {render json: { result: 'create', id: inventory.id, quantity_in_stock: inventory.quantity_in_stock, quantity: quantity} }
       end
@@ -49,8 +53,18 @@ class Managment::InventoriesController < ManagmentController
     end
   end
 
+  def autocomplete
+    @inventories = Inventory.order(:inventory_name).where("#{:inventory_name} LIKE ?", "%#{params[:term]}%")
+    respond_to do |format|
+      # format.html
+      format.json {
+        render json: @inventories.map(&:inventory_name).to_json
+      }
+    end
+  end
+
   def inventory_params
-    params.require(:inventory).permit(:inventory_name, :quantity_in_stock, :quantity_of_free)
+    params.require(:inventory).permit(:inventory_name, :quantity_in_stock, :quantity_of_free, :avatar)
   end
 
 

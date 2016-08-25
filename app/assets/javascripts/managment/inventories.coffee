@@ -6,3 +6,4 @@
 #= require bootstrap
 #= require employees.js
 #= require inventories.js
+#= require jquery-ui/autocomplete
