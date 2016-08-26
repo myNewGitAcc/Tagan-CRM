@@ -4,6 +4,7 @@
 #= require jquery
 #= require jquery_ujs
 #= require bootstrap
+#= require validate.js
 #= require employees.js
 #= require inventories.js
 #= require jquery-ui/autocomplete

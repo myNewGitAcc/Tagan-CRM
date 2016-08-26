@@ -7,7 +7,8 @@ class Managment::EmployeesController < ManagmentController
   def create
     employee = Employee.new(employee_params)
     if employee.save
-      inventory = Inventory.find(inventory_id: employee.inventory_id)
+      inventory = Inventory.find(employee.inventory_id)
+      inventory.update(quantity_of_free: "#{inventory.quantity_of_free - params[:employee][:quantity].to_i}")
      respond_to do |format|
        format.json {render json: { result: 'create'} }
      end
@@ -32,10 +33,14 @@ class Managment::EmployeesController < ManagmentController
     employee = Employee.find(params[:id])
      if employee.quantity > params[:quantity].to_i
       employee.update(quantity: "#{employee.quantity - params[:quantity].to_i}")
+      inventory = Inventory.find_by(id: employee.inventory_id)
+      inventory.update(quantity_of_free: "#{inventory.quantity_of_free + params[:quantity].to_i}")
       respond_to do |format|
         format.json {render json: {"qtt": employee.quantity, "inventory_name": employee.inventory_name, "quantity": params[:quantity].to_i } }
       end
      else
+       inventory = Inventory.find_by(id: employee.inventory_id)
+       inventory.update(quantity_of_free: "#{inventory.quantity_of_free + params[:quantity].to_i}")
        employee.destroy
        respond_to do |format|
          format.json {render json: {"qtt": "0", "inventory_name": employee.inventory_name, "quantity": params[:quantity].to_i }   }

@@ -20,21 +20,28 @@ $(document).ready(function() {
   }
 
   $('#createEmployees').on('click', function (e) {
-    $('#employee_inventory_name').attr("value", $('#employee_inventory_id option:selected').text());
     e.preventDefault();
-    $.ajax('/employees/create', {
-      type: 'POST',
-      datatype: 'json',
-      contenType: 'application/json',
-      data: $('#form').serialize(),
-      success: function () {
-        toastr.success('Inventory is added to the user')
-        $('.modal').modal('hide');
-      },
-      error: function (e) {
-        console.log(e);
-      }
-    });
+    checkInput();
+    // Считаем к-во незаполненных полей
+    var sizeEmpty = $('#form').find('.empty_field').length; 
+    if(sizeEmpty == 0 ) {
+      $('#employee_inventory_name').attr("value", $('#employee_inventory_id option:selected').text());
+
+      $.ajax('/employees/create', {
+        type: 'POST',
+        datatype: 'json',
+        contenType: 'application/json',
+        data: $('#form').serialize(),
+        success: function () {
+
+          toastr.success('Inventory is added to the user')
+          $('.modal').modal('hide');
+        },
+        error: function (e) {
+          console.log(e);
+        }
+      });
+    }
   });
 
   $(document).on('click', '.active', function () {
@@ -93,8 +100,8 @@ $(document).ready(function() {
           pos.find('td').last().text(x - data.quantity);
           $('.modal').modal('hide');
         }else{
+          pos.remove();
           $('.modal').modal('hide');
-          pos.remove(); 
         }
       },
       error: function (e) {
