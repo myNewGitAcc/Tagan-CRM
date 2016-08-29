@@ -20,27 +20,37 @@ $(document).ready(function() {
   }
 
   $('#createEmployees').on('click', function (e) {
-    e.preventDefault();
     checkInput();
+
     // Считаем к-во незаполненных полей
-    var sizeEmpty = $('#form').find('.empty_field').length; 
+    var sizeEmpty = $('#form').find('.empty_field').length;
     if(sizeEmpty == 0 ) {
-      $('#employee_inventory_name').attr("value", $('#employee_inventory_id option:selected').text());
-
-      $.ajax('/employees/create', {
-        type: 'POST',
-        datatype: 'json',
-        contenType: 'application/json',
-        data: $('#form').serialize(),
-        success: function () {
-
-          toastr.success('Inventory is added to the user')
-          $('.modal').modal('hide');
-        },
-        error: function (e) {
-          console.log(e);
-        }
-      });
+      //Получаем количество свободного и веденного инвентаря
+      var free = $('#employee_inventory_id option:selected').data('quantity');
+      var qtt = $('#quantity').val();
+      if(qtt <= free){
+        //Заполняем скрытое поле
+        $('#employee_inventory_name').attr("value", $('#employee_inventory_id option:selected').text());
+        $.ajax('/employees/create', {
+          type: 'POST',
+          datatype: 'json',
+          contenType: 'application/json',
+          data: $('#form').serialize(),
+          success: function () {
+            toastr.success('Inventory is added to the user');
+            $('.modal').modal('hide');
+          },
+          error: function (e) {
+            console.log(e);
+          }
+        });
+      }else {
+        e.preventDefault();
+        wrongNumber();
+        toastr.warning("Quantity of free inventory "+free)
+      }
+    }else {
+      e.preventDefault();
     }
   });
 
@@ -86,28 +96,35 @@ $(document).ready(function() {
 
   $('#deleteQtt').click( function (e) {
     var pos = $('.selected')
-    var id = $('.selected').find('td').first().text();
-    e.preventDefault();
-    $.ajax('/employees/destroy_quantity', {
-      type: 'DELETE',
-      datatype: 'json',
-      contenType: 'application/json',
-      data:{ "id": id, "quantity": $('#quantityDelete').val() },
-      success: function(data) {
-        console.log(data);
-        if (data.qtt > 0) {
-          var x = +pos.find('td').last().text();
-          pos.find('td').last().text(x - data.quantity);
-          $('.modal').modal('hide');
-        }else{
-          pos.remove();
-          $('.modal').modal('hide');
+    var id = pos.find('td').first().text();
+    var qtt = pos.find('td').last().text();
+    var qttPer = $('#quantityDelete').val();
+    if(qttPer <= qtt) {
+      e.preventDefault();
+      $.ajax('/employees/destroy_quantity', {
+        type: 'DELETE',
+        datatype: 'json',
+        contenType: 'application/json',
+        data: {"id": id, "quantity": $('#quantityDelete').val()},
+        success: function (data) {
+          if (data.qtt > 0) {
+            var x = +pos.find('td').last().text();
+            pos.find('td').last().text(x - data.quantity);
+            $('.modal').modal('hide');
+          } else {
+            pos.remove();
+            $('.modal').modal('hide');
+          }
+        },
+        error: function (e) {
+          console.log(e);
         }
-      },
-      error: function (e) {
-        console.log(e);
-      }
-    });
+      });
+    }else {
+      e.preventDefault();
+      wrongNumber();
+      toastr.warning("Quantity inventory for "+qtt)
+    }
   });
   
 });

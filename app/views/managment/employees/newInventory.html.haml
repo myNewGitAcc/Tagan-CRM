@@ -9,11 +9,11 @@
           .form-group
             %label.col-sm-3.control-label{for: "user_id"} User ID
             .col-sm-5
-              .rfield= collection_select(:employee,:user_id, @user, :id, :full_name, {prompt: ' '}, class: 'rfield')
+              = collection_select(:employee,:user_id, @user, :id, :full_name,{prompt: ' '}, class: 'rfield')
           .form-group
             %label.col-sm-3.control-label{for: "inventory_id"} Inventory ID
             .col-sm-5
-              =collection_select(:employee,:inventory_id, Inventory.where('quantity_of_free != 0').order([:id]), :id, :inventory_name,  {prompt: ' '}, class: 'rfield')
+              =select(:employee,:inventory_id, @inventory_free,{prompt: ' '}, class: 'rfield' )
           .form-group
             %label.col-sm-3.control-label{for: "date_of_receipt"} Date Of Receipt
             .col-sm-5

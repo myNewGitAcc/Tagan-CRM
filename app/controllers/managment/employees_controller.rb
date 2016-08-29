@@ -2,6 +2,8 @@ class Managment::EmployeesController < ManagmentController
 
   def index
     @user = User.all.order([:id])
+    @inventory_free = Inventory.where('quantity_of_free != 0')
+                               .order([:id]).collect{|i| [ i.inventory_name, i.id, data: {quantity: i.quantity_of_free} ] }
   end
 
   def create

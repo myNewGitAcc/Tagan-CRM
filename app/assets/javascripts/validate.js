@@ -32,5 +32,13 @@ function lightEmpty(){
   //Через 3 сепкунды удаляем подсветку
   setTimeout(function(){
     $('#form').find('.empty_field').removeAttr('style');
+  },500);
+}
+
+function wrongNumber(){
+  $('#quantity').css({'border-color': 'orange'});
+  //Через 3 сепкунды удаляем подсветку
+  setTimeout(function(){
+    $('#quantity').removeAttr('style');
   },3000);
 }
