@@ -10,26 +10,26 @@
                     <h3> Remains to work out: <span class="label label-success">{{ worktimeCtrl.remainsWork }}</span> </h3>
                 </div>
                 <div class="worktime-footer">
-                    <div ng-show="worktimeCtrl.onlineUser != null" class="buttons animation">
-                        <div ng-if="worktimeCtrl.onlineUser!='offline'">
+                    <div ng-show="worktimeCtrl.userStatus != null" class="buttons animation">
+                        <div ng-if="worktimeCtrl.userStatus!='offline'">
                             <p  class="btn-pause">
-                                <a class="btn btn-primary"
-                                        ng-click="worktimeCtrl.pause()"
-                                        ng-class="{'btn-warning': worktimeCtrl.buttonPause=='Continue'}">
-                                    {{worktimeCtrl.buttonPause}}
+                                <a  class="btn btn-primary"
+                                    ng-click="worktimeCtrl.pause()"
+                                    ng-class="{'btn-warning': worktimeCtrl.userStatus == 'away'}">
+                                    {{worktimeCtrl.userStatus=='away'?'Continue':'Pause'}}
                                 </a>
                             </p>
 
                             <p class="btn-move">
-                                <a class="btn btn-primary"
-                                        ng-click="worktimeCtrl.moveAway()">
+                                <a  class="btn btn-primary"
+                                    ng-click="worktimeCtrl.moveAway()">
                                     Move away
                                 </a>
                             </p>
                         </div>
-                        <p ng-if="worktimeCtrl.onlineUser=='offline'" class="btn-start">
-                            <a class="btn btn-success"
-                                    ng-click="worktimeCtrl.startTime()">
+                        <p ng-if="worktimeCtrl.userStatus=='offline'" class="btn-start">
+                            <a  class="btn btn-success"
+                                ng-click="worktimeCtrl.startTime()">
                                 Start
                             </a>
                         </p>
