@@ -1,11 +1,28 @@
 module API
-  module Concern::WorkingTime
+  module Concern::WorkingTimes
     extend ActiveSupport::Concern
     included do
 
-      segment :working_time do
-        desc "Return all working time"
+      segment :working_times do
 
+        desc "Create work time"
+        params do
+          optional :user_id, type: Integer, desc: 'User id'
+          optional :status_change_date, type: Date, desc: 'Status change date YYYY-MM-DD HH:MM:SS'
+          optional :labor_hours, type: Integer, desc: 'Labor hours'
+        end
+
+        post do
+          begin
+            working_time_params = ActionController::Parameters.new(params).permit(:user_id, :status_change_date, :labor_hours)
+            timing = WorkingTime.create(working_time_params)
+            success! timing.as_api_response(:basic), 201
+          rescue => e
+            throw_error! 403, e.class.to_s, e.message
+          end
+        end
+
+        desc "Return all working time"
         params do
           optional :access_token, type: String, desc: 'User access token'
         end
@@ -61,6 +78,19 @@ module API
             throw_error! 403, e.class.to_s, e.message
           end
         end
+
+        desc "Delete working day that user"
+
+        delete ':id' do
+          begin
+            timing  = WorkingTime.find(params[:id])
+            timing.destroy
+            success! timing.as_api_response(:basic), 200
+          rescue => e
+            throw_error! 403, e.class.to_s, e.message
+          end
+        end
+
       end
     end
   end
