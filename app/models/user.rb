@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   enum role: [:admin, :management, :developers, :trainees]
   enum status: [:offline, :online, :away]
 
+  has_many :working_times
+
   api_accessible :basic do |t|
     t.add :id
     t.add :email

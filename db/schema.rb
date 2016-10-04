@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160714131258) do
+ActiveRecord::Schema.define(version: 20161003153742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,19 +49,56 @@ ActiveRecord::Schema.define(version: 20160714131258) do
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true, using: :btree
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true, using: :btree
 
+  create_table "articles", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "subject",    null: false
+    t.string   "body",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "articles", ["user_id"], name: "index_articles_on_user_id", using: :btree
+
+  create_table "employees", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "inventory_id"
+    t.date     "date_of_receipt"
+    t.integer  "quantity"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "inventory_name"
+  end
+
+  create_table "inventories", force: :cascade do |t|
+    t.string   "inventory_name"
+    t.integer  "quantity_in_stock"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "quantity_of_free",  default: 0
+    t.string   "avatar"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.text     "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  create_table "technologies", force: :cascade do |t|
+    t.string   "title",      null: false
+    t.string   "comment",    null: false
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                  default: "",    null: false
+    t.string   "encrypted_password",     default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",          default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.inet     "current_sign_in_ip"
@@ -70,15 +107,22 @@ ActiveRecord::Schema.define(version: 20160714131258) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.integer  "failed_attempts",        default: 0,  null: false
+    t.integer  "failed_attempts",        default: 0,     null: false
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
     t.integer  "role"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "admin",                  default: false
+    t.date     "date_of_birth"
+    t.string   "place_of_birth"
+    t.string   "location"
     t.string   "first_name"
     t.string   "last_name"
+    t.string   "middle_name"
+    t.string   "place_id"
+    t.string   "location_id"
     t.integer  "status",                 default: 0
   end
 
@@ -88,4 +132,15 @@ ActiveRecord::Schema.define(version: 20160714131258) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
+  create_table "working_times", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "status_change_date"
+    t.integer  "labor_hours"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_foreign_key "articles", "users", name: "articles_user_id_fkey"
+  add_foreign_key "employees", "inventories", name: "employees_inventory_id_fkey"
+  add_foreign_key "employees", "users", name: "employees_user_id_fkey"
 end

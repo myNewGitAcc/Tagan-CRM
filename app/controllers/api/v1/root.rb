@@ -7,6 +7,7 @@ module API
       include API::Concern::Registration
       include API::Concern::UserProfile
       include API::Concern::Users
+      include API::Concern::WorkingTime
 
 
       add_swagger_documentation(
