@@ -8,7 +8,7 @@ module API
         desc "Create work time"
         params do
           optional :user_id, type: Integer, desc: 'User id'
-          optional :status_change_date, type: Date, desc: 'Status change date YYYY-MM-DD HH:MM:SS'
+          optional :status_change_date, type: DateTime, desc: 'Status change date YYYY-MM-DD HH:MM:SS'
           optional :labor_hours, type: Integer, desc: 'Labor hours'
         end
 
