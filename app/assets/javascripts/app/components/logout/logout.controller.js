@@ -1,7 +1,11 @@
 'use strict';
 
 class LogoutController {
-  constructor() {
+  constructor($scope) {
+    this.showPopUpDialog = false;
+
+    //console.log("шоупопапдиалог: " + this.showPopUpDialog);
+
     this.logout = ()=>{
       this.content = 'Do you want logout?';
       this.showPopUpDialog = true;
@@ -19,6 +23,6 @@ class LogoutController {
 }
 
 
-LogoutController.$inject = [];
+//LogoutController.$inject = [];
 angular.module('ngSpaApp')
-  .controller('LogoutController', LogoutController);
+  .controller('LogoutController', ['$scope', function($scope) {return new LogoutController($scope);}]);
