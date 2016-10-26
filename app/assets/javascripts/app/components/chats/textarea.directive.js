@@ -32,7 +32,7 @@ angular.module('ngSpaApp')
         var char = String.fromCharCode(e.which);
         var text = angular.element(e.srcElement).val();
         if(!regex.test(char) || !regex.test(text)) {
-          event.preventDefault();
+          e.preventDefault();
         }
       });
 

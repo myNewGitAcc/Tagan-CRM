@@ -1,8 +1,6 @@
 'use strict';
 
-class worktimeController {
-  constructor($rootScope, worktimeFactory, $scope, users, $http, $interval) {
-
+function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $interval) {
     worktimeFactory.stopCalculation();
     
     this.hoursWorked = "XX часов XX минут XX секунд";
@@ -91,7 +89,6 @@ class worktimeController {
       timeStart();
       chngUserStatus("online");
     }
-  }
 }
 
 worktimeController.$inject = ['$rootScope', 'worktimeFactory', '$scope', 'users', '$http', '$interval'];
