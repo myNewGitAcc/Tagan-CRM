@@ -72,3 +72,5 @@ gem 'angular-rails-templates'
 gem 'faye-rails', '~> 2.0'
 
 gem 'thin'
+
+gem "paranoia", "~> 2"
