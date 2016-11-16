@@ -18,6 +18,17 @@ ActiveAdmin.register Transaction do
     link_to "#{amount.round(2)} $"
   end
 
+  filter :employee_name_eq,
+         label: 'Employee',
+         as: :select,
+         collection: -> { Transaction.all.pluck(:info).flatten.map{|el| el['employee_name'] }.uniq }
+  filter :invoice_info_eq,
+         label: 'Invoice ID',
+         as: :select,
+         collection: -> { Transaction.all.pluck(:info).flatten.map{|el| el['invoice_id'] }.uniq }
+  filter :type, as: :select, collection: ['Debit','Credit']
+  filter :created_at, as: :date_range
+
   index do
     selectable_column
     id_column
@@ -46,18 +57,6 @@ ActiveAdmin.register Transaction do
       row :created_at
     end
   end
-
-  filter :employee_name_eq,
-          label: 'Employee',
-          as: :select,
-          collection: -> { Transaction.all.pluck(:info).flatten.map{|el| el['employee_name'] }.uniq }
-  filter :invoice_info_eq,
-          label: 'Invoice ID',
-          as: :select,
-          collection: -> { Transaction.all.pluck(:info).flatten.map{|el| el['invoice_id'] }.uniq }
-  filter :type, as: :select, collection: ['Debit','Credit']
-  filter :created_at, as: :date_range
-
 
   form do |f|
     f.inputs "Admin Details" do
