@@ -3,6 +3,15 @@ class Transaction < ActiveRecord::Base
 
   belongs_to :company
 
+  ransacker :employee_name do |parent|
+    Arel::Nodes::InfixOperation.new(
+        '->>', parent.table[:info], Arel::Nodes.build_quoted('employee_name'))
+  end
+
+  ransacker :invoice_info do |parent|
+    Arel::Nodes::InfixOperation.new(
+        '->>', parent.table[:info], Arel::Nodes.build_quoted('invoice_id'))
+  end
 
   def info_raw
     self.info unless self.info.nil?

@@ -1,9 +1,14 @@
 ActiveAdmin.register Invoice do
   permit_params :csv_file
 
-  config.filters = false
+  actions :all, :except => [:destroy, :edit]
+
+  filter :team
+  filter :freelancer
+  filter :amount
 
   index do
+    id_column
     column :date
     column :refference_id
     column :freelancer
@@ -57,9 +62,8 @@ ActiveAdmin.register Invoice do
                                 amount_in_local: row['Amount in local currency'],
                                 currency: row['Currency']
                                 )
-          if invoice.valid?
-            invoice.save
-          end
+
+          invoice.save
         end
       end
       redirect_to admin_invoices_path
