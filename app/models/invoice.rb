@@ -27,10 +27,10 @@ class Invoice < ActiveRecord::Base
   end
 
   def save_debit commission
-    Debit.create(company_id: self.company.id, name: 'Upwork commission', amount: commission, info: { invoice_id: self.id } )
+    Debit.create(company_id: self.company.id, name: 'Upwork commission', amount: commission,created_at: self.date,info: { invoice_id: self.id } )
   end
 
   def save_credit amount
-    Credit.create(company_id: self.company.id, name: "#{self.type_of_calculation}, #{self.description}", amount: amount, info: { invoice_id: self.id } )
+    Credit.create(company_id: self.company.id, name: "#{self.type_of_calculation}, #{self.description}", amount: amount,created_at: self.date,info: { invoice_id: self.id } )
   end
 end
