@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161108094511) do
+ActiveRecord::Schema.define(version: 20161117122923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,16 @@ ActiveRecord::Schema.define(version: 20161108094511) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "internal_accounts", force: :cascade do |t|
+    t.integer  "account_type"
+    t.string   "name"
+    t.string   "description"
+    t.boolean  "active"
+    t.datetime "deleted_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.integer  "company_id"
     t.date     "date"
@@ -80,6 +90,7 @@ ActiveRecord::Schema.define(version: 20161108094511) do
     t.datetime "deleted_at"
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
+    t.integer  "internal_account_id", null: false
   end
 
   create_table "messages", force: :cascade do |t|
@@ -102,9 +113,10 @@ ActiveRecord::Schema.define(version: 20161108094511) do
     t.string   "type"
     t.json     "info"
     t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.float    "amount"
+    t.integer  "internal_account_id", null: false
   end
 
   create_table "users", force: :cascade do |t|

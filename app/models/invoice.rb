@@ -2,10 +2,10 @@ class Invoice < ActiveRecord::Base
   acts_as_paranoid
 
   belongs_to :company
+  belongs_to :internal_account
 
   before_create :ensure_company
   after_commit :ensure_debit_credit, on: :create
-
 
   private
 
@@ -27,10 +27,16 @@ class Invoice < ActiveRecord::Base
   end
 
   def save_debit commission
-    Debit.create(company_id: self.company.id, name: 'Upwork commission', amount: commission,created_at: self.date,info: { invoice_id: self.id } )
+    Debit.create(transaction_params('Upwork commission', commission))
   end
 
   def save_credit amount
-    Credit.create(company_id: self.company.id, name: "#{self.type_of_calculation}, #{self.description}", amount: amount,created_at: self.date,info: { invoice_id: self.id } )
+    Credit.create(transaction_params("#{self.type_of_calculation}, #{self.description}", amount))
+  end
+
+  private
+
+  def transaction_params name, total
+    {company_id: self.company.id, name: name, amount: total,created_at: self.date,internal_account_id: self.internal_account_id,info: { invoice_id: self.id } }
   end
 end

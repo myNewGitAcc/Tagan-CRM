@@ -1,5 +1,5 @@
 ActiveAdmin.register Transaction do
-  permit_params :name, :type, :amount, :info_raw
+  permit_params :name, :type, :amount, :info_raw, :internal_account_id
 
   action_item :view, only: :index do
     debit = Transaction::Debit.write_off
@@ -28,6 +28,7 @@ ActiveAdmin.register Transaction do
          collection: -> { Transaction.all.pluck(:info).flatten.map{|el| el['invoice_id'] }.uniq }
   filter :type, as: :select, collection: ['Debit','Credit']
   filter :created_at, as: :date_range
+  filter :internal_account_id, as: :select
 
   index do
     selectable_column
@@ -37,6 +38,7 @@ ActiveAdmin.register Transaction do
     column :info
     column :amount
     column :created_at
+    column :internal_account_id
     actions
   end
 
@@ -55,6 +57,7 @@ ActiveAdmin.register Transaction do
       end
       row :amount
       row :created_at
+      row :internal_account_id
     end
   end
 
@@ -64,6 +67,7 @@ ActiveAdmin.register Transaction do
       f.input :type, as: :select, collection: ['Debit','Credit']
       f.input :info_raw, as: :text, input_html: { class: 'jsoneditor-target' }
       f.input :amount
+      f.input :internal_account_id, as: :select, collection: InternalAccount.all.map{ |account| ["#{account.name}", account.id]}
     end
     f.actions
   end

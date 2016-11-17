@@ -2,6 +2,7 @@ class Transaction < ActiveRecord::Base
   acts_as_paranoid
 
   belongs_to :company
+  belongs_to :internal_account
 
   ransacker :employee_name do |parent|
     Arel::Nodes::InfixOperation.new(

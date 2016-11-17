@@ -1,5 +1,5 @@
 ActiveAdmin.register Invoice do
-  permit_params :csv_file
+  permit_params :csv_file, :internal_account_id
 
   actions :all, :except => [:destroy, :edit]
 
@@ -15,6 +15,7 @@ ActiveAdmin.register Invoice do
     column :team
     column :amount
     column :created_at
+    column :internal_account_id
 
     actions
   end
@@ -22,6 +23,7 @@ ActiveAdmin.register Invoice do
   form do |f|
     f.inputs "Invoice" do
       f.input :csv_file, as: :file
+      f.input :internal_account_id, as: :select, collection: InternalAccount.all.map{ |account| ["#{account.name}", account.id]}
     end
     f.actions
   end
@@ -47,7 +49,7 @@ ActiveAdmin.register Invoice do
     def create
       @redirect_url = admin_invoices_path
 
-      if permitted_params[:invoice].present?
+      if permitted_params[:invoice].present? && permitted_params[:invoice][:internal_account_id].present?
         csv_file = permitted_params[:invoice][:csv_file].read
         csv = CSV.parse(csv_file, :headers => true)
         if csv.headers.include?('Team') && csv.headers.include?('Amount') && csv.headers.include?('Freelancer')
@@ -63,7 +65,8 @@ ActiveAdmin.register Invoice do
                 account_name: row['Account Name'],
                 amount: row['Amount'],
                 amount_in_local: row['Amount in local currency'],
-                currency: row['Currency']
+                currency: row['Currency'],
+                internal_account_id: permitted_params[:invoice][:internal_account_id]
             )
 
             invoice.save
@@ -72,6 +75,9 @@ ActiveAdmin.register Invoice do
           flash[:warning] = 'Please, select the correct file.'
           @redirect_url = :back
         end
+      else
+        flash[:warning] = 'Please, fill in all fields.'
+        @redirect_url = :back
       end
       redirect_to @redirect_url
     end
