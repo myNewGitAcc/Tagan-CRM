@@ -1,0 +1,20 @@
+%div{style: 'margin-top: 80px;'}
+  %h1.reports-text Statistics
+  %table.reports-table.rtable
+    %thead
+      %tr
+        %th Name
+        %th Company
+        %th Type
+        %th Info
+        %th Amount
+        %th Date
+    %tbody
+      - @transactions.order(:created_at).each do |transaction|
+        %tr
+          %td= transaction.name
+          %td= transaction.company.present? ? transaction.company.name : ''
+          %td= transaction.type
+          %td= transaction.info
+          %td= transaction.amount
+          %td= transaction.created_at.to_date

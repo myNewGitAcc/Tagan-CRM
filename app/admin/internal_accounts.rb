@@ -1,7 +1,7 @@
 ActiveAdmin.register InternalAccount do
   permit_params :account_type, :name, :description, :active
 
-  filter :account_type, as: :select
+  filter :account_type, as: :select, collection: [ :card, :bank]
   filter :name
   filter :active
 

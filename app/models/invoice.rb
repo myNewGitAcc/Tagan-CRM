@@ -19,10 +19,9 @@ class Invoice < ActiveRecord::Base
     if self.company.present?
       commission =  self.company.commissions.last.percent
       result_commision = (amount.to_f * commission)/100
-      result_amount = amount - result_commision
 
       save_debit(result_commision)
-      save_credit(result_amount)
+      save_credit(amount)
     end
   end
 

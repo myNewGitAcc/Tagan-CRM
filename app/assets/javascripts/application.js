@@ -35,3 +35,4 @@
 //= require faye
 //= require_tree ./app
 //= require_tree ./app/templates
+//= require bootstrap-datepicker

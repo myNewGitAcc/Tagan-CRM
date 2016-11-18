@@ -1,0 +1,8 @@
+.reports-table
+  #hightchart.hightchart
+  %div.cursor.filter-is-visible
+
+:javascript
+  window.onload = function() {
+    loadChart(#{@result_month}, #{@result_amount});
+  };

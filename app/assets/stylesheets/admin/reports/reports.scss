@@ -1,0 +1,83 @@
+.reports-text {
+  text-align: center;
+}
+
+.reports-table {
+  width: 100%;
+  margin: 40px auto;
+  #hightchart {
+    .highcharts-container-width {
+      width: auto;
+      text-align: center;
+    }
+  }
+}
+
+.rtable {
+  border: 1px solid #ddd;
+  max-width: 100%;
+  background-color: transparent;
+  border-spacing: 0;
+  border-collapse: collapse;
+  box-sizing: border-box;
+  display: table;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  th, td {
+    border: 1px solid #ddd;
+    vertical-align: middle;
+    padding: 8px;
+    line-height: 1.42857143;
+  }
+}
+
+.hightchart {
+  min-width: 310px;
+  height: 400px;
+  margin: 0 auto;
+}
+
+.hide-filter {
+  transition: all 300ms;
+  transform: translate(300px,0px);
+  display: none;
+}
+
+#sidebar {
+  transition: all 300ms;
+}
+
+.cursor, .cursor:focus {
+  cursor: pointer;
+}
+
+.filter-is-visible {
+  position: absolute;
+  top: 248px;
+  right: -10px;
+  border: 20px solid transparent;	border-left: 20px solid #505559;
+}
+
+.filter-is-hidden {
+  position: absolute;
+  top: 248px;
+  right: 0px;
+  border: 20px solid transparent;	border-right: 20px solid #505559;
+}
+
+#wrapper {
+  #active_admin_content {
+    #main_content_wrapper{
+      .advanced-chart {
+        margin-right: 0px;
+      }
+    }
+  }
+}
+
+.hightchart-root-widht {
+  width: 100%;
+  height: 487px;
+}

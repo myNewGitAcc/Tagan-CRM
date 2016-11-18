@@ -2,13 +2,13 @@ ActiveAdmin.register Transaction do
   permit_params :name, :type, :amount, :info_raw, :internal_account_id
 
   action_item :view, only: :index do
-    debit = Transaction::Debit.write_off
+    debit = Debit.active_account
     debit_amount = 0
     debit.each do |d|
       debit_amount += d.amount
     end
 
-    credit = Transaction::Credit.all
+    credit = Credit.active_account
     credit_amount = 0
     credit.each do |c|
       credit_amount += c.amount

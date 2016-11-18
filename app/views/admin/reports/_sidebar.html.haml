@@ -1,0 +1,29 @@
+%form#new_q.filter_form{"accept-charset" => "UTF-8", :action => "/admin/reports", :method => "get"}
+  %input{:name => "utf8", :type => "hidden", :value => "✓"}/
+  #q_created_at_input.date_range.input.optional.stringish.filter_form_field.filter_date_range
+    %label.label Date range
+    %input.datepicker#q_created_at_gteq{:maxlength => "10", :name => "q[created_at_gteq]", :size => "12", :type => "text", :value => ''}/
+    %span.seperator -
+    %input.datepicker#q_created_at_lteq{:maxlength => "10", :name => "q[created_at_lteq]", :size => "12", :type => "text", :value => ""}/
+  %p
+    %b Please select the unit
+  %p
+    %input{:checked => "checked", :name => "q[unit]", :type => "radio", :value => "day"}/
+    Day
+  %p
+    %input{:name => "q[unit]", :type => "radio", :value => "week"}/
+    Week
+  %p
+    %input{:name => "q[unit]", :type => "radio", :value => "month"}/
+    Month
+  %br
+  %p
+    %b Please select internal account
+  %select#q_internal_account_id_eq{:name => "q[internal_account_id]"}
+    %option{:value => ""} Any
+    - @internal_accounts.each do |account|
+      - if account.active == true
+        %option{:value => "#{account.id}"}= account.name
+  .buttons
+    %input{:name => "commit", :type => "submit", :value => "Filter"}/
+    %a.clear_filters_btn{:href => "#"} Clear Filters
