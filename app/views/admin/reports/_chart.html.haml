@@ -1,8 +1,9 @@
 .reports-table
   #hightchart.hightchart
-  %div.cursor.filter-is-visible
+  %div.cursor.filter-is-visible{onclick: "changeChart(#{@result_month}, #{@result_amount})"}
 
 :javascript
   window.onload = function() {
     loadChart(#{@result_month}, #{@result_amount});
+    urlParameters();
   };

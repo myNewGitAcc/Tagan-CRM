@@ -94,7 +94,6 @@ GEM
       sprockets (>= 3.5.2)
     builder (3.2.2)
     byebug (9.0.5)
-    chartkick (2.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     coffee-rails (4.1.1)
@@ -339,7 +338,6 @@ DEPENDENCIES
   bootstrap-datepicker-rails
   browserify-rails
   byebug
-  chartkick
   coffee-rails (~> 4.1.0)
   devise
   devise-token_authenticatable
