@@ -2,7 +2,7 @@
 server '104.131.169.1', port: 22, roles: [:web, :app, :db], primary: true
 
 set :repo_url,        'git@github.com:Scorpion626/Tagan-CRM.git'
-set :application,     'Tagan-CRM'
+set :application,     'Tagan-CRM-Vadim'
 set :user,            'vadim'
 set :puma_threads,    [4, 16]
 set :puma_workers,    0
