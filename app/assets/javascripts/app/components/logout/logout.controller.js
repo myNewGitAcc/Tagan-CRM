@@ -3,16 +3,16 @@
 function LogoutController($scope){
   this.showPopUpDialog = false;
 
-  this.logout = ()=>{
+  this.logout = function(){
     this.content = 'Do you want logout?';
     this.showPopUpDialog = true;
   }
 
-  this.cancel = ()=> {
+  this.cancel = function() {
     this.showPopUpDialog = false;
   }
 
-  this.close = ()=> {
+  this.close = function() {
     this.showPopUpDialog = false;
   }
 }

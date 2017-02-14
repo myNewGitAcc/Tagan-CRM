@@ -4,8 +4,8 @@
 
   function employeesFactoryService() {
     return {
-      filtered: (payload, users)=> {
-        users.forEach((user)=>{
+      filtered: function(payload, users) {
+        users.forEach(function(user){
           if (user.id == payload.id) {
             user.status = payload.status;
           }

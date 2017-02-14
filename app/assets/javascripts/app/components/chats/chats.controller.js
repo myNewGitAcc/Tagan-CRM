@@ -1,22 +1,22 @@
 'use strict';
 
-class chatsController {
-  constructor(chats, $scope, FayeClient, users, $notification) {
+function chatsController(chats, $scope, FayeClient, users, $notification) {
+
     this.message = "";
     this.allMessages = [];
     var controllerThis = this;
-    users.getUsers().then((response)=>{
+    users.getUsers().then(function(response){
       this.users = response.data.data;
     });
 
-    this.sendMessage = ()=>{
+    this.sendMessage = function(){
       var time = moment(new Date()).format('HH:mm:ss');
       chats.send($scope.currentUserName, this.message, time, this.users, $scope.currentUserId);
       this.message = '';
     };
 
     FayeClient.subscribe('/private_chats/'+$scope.currentUserId, function(payload) {
-      $scope.$apply(()=>{
+      $scope.$apply(function(){
         if (payload.name != $scope.currentUserName && payload.name != 'Error') {
           $notification(payload.name, {
             body: payload.message,
@@ -31,7 +31,7 @@ class chatsController {
     });
     
     FayeClient.subscribe('/user_chats', function(payload) {
-      $scope.$apply(()=>{
+      $scope.$apply(function(){
         if (payload.name != $scope.currentUserName) {
           $notification(payload.name, {
             body: payload.message,
@@ -45,12 +45,12 @@ class chatsController {
 
     });
 
-    this.addressee = (author)=>{
+    this.addressee = function(author){
       author = author.split(' ');
       this.message = '@' + author[0] + ':';
     }
 
-  }
+
 
 }
 

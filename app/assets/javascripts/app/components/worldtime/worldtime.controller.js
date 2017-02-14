@@ -1,7 +1,6 @@
 'use strict';
 
-class worldtimeController {
-  constructor($http, $interval) {
+function worldtimeController($http, $interval) {
 
     var key = 'AIzaSyD-WiMcT6mKg0Fs-YOymfUFNP0RFi7wOD0';
     this.markers = [];
@@ -10,15 +9,15 @@ class worldtimeController {
     this.localTime = moment(date).format('MMMM Do YYYY, HH:mm:ss');
     var timerStart;
 
-    this.start = ()=> {
+    this.start = function() {
       this.localTime = moment(new Date()).format('MMMM Do YYYY, HH:mm:ss');
     }
 
-    this.stop = ()=>{
+    this.stop = function(){
       $interval.cancel(timerStart);
     }
 
-    this.timeUpdate = ()=>{
+    this.timeUpdate = function(){
       timerStart = $interval(this.start, 1000);
     }
     this.timeUpdate();
@@ -40,12 +39,12 @@ class worldtimeController {
       scrollwheel:  false,
       disableDoubleClickZoom: true
     });
-    this.map.addListener('click', (event)=>{
+    this.map.addListener('click', function(event){
       this.addMarker(event);
       this.getTimeZone(event);
     });
 
-    this.addMarker = (location) => {
+    this.addMarker = function(location) {
       this.setMapOnAll(null);
       var marker = new google.maps.Marker({
         position:{
@@ -57,24 +56,23 @@ class worldtimeController {
       this.markers.push(marker);
     }
 
-    this.setMapOnAll = (map)=> {
+    this.setMapOnAll = function(map) {
       for (var i = 0; i < this.markers.length; i++) {
         this.markers[i].setMap(map);
       }
     }
 
-    this.getTimeZone = (location)=> {
+    this.getTimeZone = function(location) {
       $http.get('https://maps.googleapis.com/maps/api/timezone/json?location='
                  + location.latLng.lat() + ',' + location.latLng.lng()
                  + '&timestamp=1331766000&language=es&key=' + key)
-      .then((response)=>{
+      .then(function(response){
         var timeZoneId = response.data.timeZoneId;
         this.stop();
         this.timeUpdate();
         this.selectedTime = moment(new Date()).tz(timeZoneId).format('MMMM Do YYYY, HH:mm:ss');
 
       });
-    }
   }
 
 }

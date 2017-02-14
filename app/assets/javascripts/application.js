@@ -35,4 +35,6 @@
 //= require faye
 //= require_tree ./app
 //= require_tree ./app/templates
+//= require bootstrap-sprockets
 //= require bootstrap-datepicker
+//= require foundation
