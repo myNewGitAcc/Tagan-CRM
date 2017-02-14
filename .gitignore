@@ -15,4 +15,4 @@
 .idea/*
 /vendor/assets/components/
 node_modules/
-/.vscode/
+/.vscode/config/database.yml
