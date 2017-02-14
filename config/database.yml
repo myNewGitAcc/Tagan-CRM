@@ -12,11 +12,11 @@ development:
   password: '7286'
   host: localhost
 
-  production:
-    <<: *default
-    database: TaganCrm-production
-    username: vadim
-    password: '7286'
+production:
+  <<: *default
+  database: TaganCrm-production
+  username: vadim
+  password: '7286'
 #    host: localhost
 
 test:
