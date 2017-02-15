@@ -63,7 +63,7 @@ gem 'devise'
 gem 'devise-token_authenticatable'
 gem 'acts_as_api', '~> 0.4.2'
 
-gem "browserify-rails"
+gem 'browserify-rails'
 
 gem 'activeadmin', github: 'activeadmin'
 
@@ -83,6 +83,8 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano3-puma',   require: false
+  gem 'capistrano-bower'
+  gem 'capistrano-npm'
 end
 
 gem 'puma'

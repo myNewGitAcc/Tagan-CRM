@@ -79,6 +79,18 @@ namespace :deploy do
   after  :finishing,    :restart
 end
 
+namespace :bundler do
+  desc "Installing npm and browserify"
+  task :install_npm do
+    on roles(:app) do
+      execute "npm --version"
+      execute "echo 1qaz!QAZ | sudo -S npm install js-base64 --save"
+      execute "echo 1qaz!QAZ | sudo -S  apt-get install nodejs-legacy"
+    end
+  end
+  after :install,       :install_npm
+end
+
 # ps aux | grep puma    # Get puma pid
 # kill -s SIGUSR2 pid   # Restart puma
 # kill -s SIGTERM pid   # Stop puma
