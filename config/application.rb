@@ -10,7 +10,7 @@ require 'sprockets/es6'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups)
+Bundler.require(*Rails.groups, :assets)
 
 module SpaApp
   class Application < Rails::Application
@@ -36,7 +36,7 @@ module SpaApp
     config.assets.precompile.shift
 
     config.assets.precompile += %w( messages.css messages.js )
-
+    config.assets.initialize_on_precompile = false
 
     # Add additional asset pathes
     config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
@@ -44,6 +44,8 @@ module SpaApp
     config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')
     # Precompile additional asset types
     config.assets.precompile += %w( auth.css auth.js )
+
+    config.assets.precompile += %w( active_admin.css active_admin/print.css active_admin.js )
 
     config.assets.precompile.push(Proc.new do |path|
          File.extname(path).in? [
