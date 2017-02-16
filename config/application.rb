@@ -15,6 +15,8 @@ Bundler.require(*Rails.groups, :assets)
 module SpaApp
   class Application < Rails::Application
 
+    config.assets.precompile += %w( messages.css messages.js )
+    config.assets.initialize_on_precompile = false
     config.angular_templates.ignore_prefix  = %w(app/templates/)
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -25,7 +27,7 @@ module SpaApp
     # config.time_zone = 'Central Time (US & Canada)'
 
     config.browserify_rails.commandline_options = "-t [ babelify --presets [ es2015 ] ]"
-    config.browserify_rails.paths << Rails.root.join('../../node_modules')
+    config.browserify_rails.paths << Rails.root.join('/node_modules')
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
@@ -35,8 +37,6 @@ module SpaApp
 
     config.assets.precompile.shift
 
-    config.assets.precompile += %w( messages.css messages.js )
-    config.assets.initialize_on_precompile = false
 
     # Add additional asset pathes
     config.assets.paths << Rails.root.join('vendor', 'assets', 'components')

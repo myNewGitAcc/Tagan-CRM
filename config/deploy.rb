@@ -23,9 +23,9 @@ set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true # Change to false when not using ActiveRecord
 set :linked_files, fetch(:linked_files, []).push('config/database.yml.example')
-set :linked_dirs, %w(
-  node_modules
-)
+set :linked_dirs, fetch(:linked_dirs, []).push('node_modules')
+set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
+set :sudo
 ## Defaults:
 # set :scm,           :git
 
@@ -50,25 +50,25 @@ namespace :puma do
 end
 
 namespace :deploy do
-  desc "Make sure local git is in sync with remote."
 
-  desc 'Copy upstart script'
-  task :upstart do
+  desc 'Initial Deploy'
+  task :initial do
     on roles(:app) do
-      within release_path do
-        sudo :cp, "etc/#{fetch :application}.upstart.conf", "/etc/init/#{fetch :application}.conf"
-      end
+      before 'deploy:restart', 'puma:start'
+      invoke 'deploy'
     end
   end
 
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      invoke 'pm2:restart'
+      invoke 'puma:restart'
     end
   end
 
-  after :publishing, :restart
+  after  :finishing,    :compile_assets
+  after  :finishing,    :cleanup
+  after  :finishing,    :restart
 
 end
 
@@ -76,16 +76,17 @@ namespace :bundler do
   desc "Installing npm and browserify"
   task :install_npm do
     on roles(:app) do
-      execute "npm --version"
-      execute "echo 1qaz!QAZ | sudo -S npm install js-base64 --save"
-      execute "echo 1qaz!QAZ | sudo -S  apt-get install nodejs-legacy"
-      execute "echo 1qaz!QAZ | sudo -S  npm install babel-preset-es2015@6.9.0"
-      execute "echo 1qaz!QAZ | sudo -S  npm install babelify@7.3.0"
-      execute "echo 1qaz!QAZ | sudo -S  npm install bower@1.7.9"
-      execute "echo 1qaz!QAZ | sudo -S  npm install browserify@10.2.6"
-      execute "echo 1qaz!QAZ | sudo -S  npm install browserify-incremental@3.1.1"
-      execute "echo 1qaz!QAZ | sudo -S npm init --yes \n"
-      execute "echo 1qaz!QAZ | sudo -S  npm install underscore@1.8.3"
+      #execute "npm --version"
+      #execute "echo 1qaz!QAZ | sudo -S  npm install js-base64 --save"
+      #execute "echo 1qaz!QAZ | sudo -S  apt-get install nodejs-legacy"
+      #execute "echo 1qaz!QAZ | sudo -S  npm install babel-preset-es2015@6.9.0"
+      #execute "echo 1qaz!QAZ | sudo -S  npm install babelify@7.3.0"
+      #execute "echo 1qaz!QAZ | sudo -S  npm install bower@1.7.9"
+      #execute "echo 1qaz!QAZ | sudo -S  npm install browserify"
+      #execute "echo 1qaz!QAZ | sudo -S  npm install browserify-incremental"
+      execute "echo 1qaz!QAZ | sudo -S  npm install"
+      # execute "echo 1qaz!QAZ | sudo -S  npm install underscore@1.8.3"
+      execute "echo 1qaz!QAZ | sudo -S  npm update --save"
     end
   end
 
