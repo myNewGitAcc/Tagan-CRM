@@ -76,16 +76,7 @@ namespace :bundler do
   desc "Installing npm and browserify"
   task :install_npm do
     on roles(:app) do
-      #execute "npm --version"
-      #execute "echo 1qaz!QAZ | sudo -S  npm install js-base64 --save"
-      #execute "echo 1qaz!QAZ | sudo -S  apt-get install nodejs-legacy"
-      #execute "echo 1qaz!QAZ | sudo -S  npm install babel-preset-es2015@6.9.0"
-      #execute "echo 1qaz!QAZ | sudo -S  npm install babelify@7.3.0"
-      #execute "echo 1qaz!QAZ | sudo -S  npm install bower@1.7.9"
-      #execute "echo 1qaz!QAZ | sudo -S  npm install browserify"
-      #execute "echo 1qaz!QAZ | sudo -S  npm install browserify-incremental"
       execute "echo 1qaz!QAZ | sudo -S  npm install"
-      # execute "echo 1qaz!QAZ | sudo -S  npm install underscore@1.8.3"
       execute "echo 1qaz!QAZ | sudo -S  npm update --save"
     end
   end

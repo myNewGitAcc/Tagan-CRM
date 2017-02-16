@@ -1,5 +1,6 @@
 
- @import './app';
+ @import './app/bootstrap_and_overrides';
+ @import './app/main.scss';
  @import 'bootstrap-datepicker';
  @import "bootstrap-sprockets";
  @import "bootstrap";
