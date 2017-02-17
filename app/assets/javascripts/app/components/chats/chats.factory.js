@@ -6,7 +6,7 @@
 
     return {
 
-      send: (full_name, message, time, allUsers, currentUserId) => {
+      send: function(full_name, message, time, allUsers, currentUserId)  {
         if ((message[0] == '@') && (~message.indexOf(':'))) {
           var nameUser = message.substring(1).split(':');
           nameUser[0] = nameUser[0].replace(/\n/g,'').replace(' ','');

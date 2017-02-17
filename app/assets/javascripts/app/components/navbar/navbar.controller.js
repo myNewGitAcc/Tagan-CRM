@@ -2,7 +2,7 @@
 
 function NavbarController($location){
 	this.activePage = $location.path();
-	this.setPage = (event)=> {
+	this.setPage = function(event) {
 		this.activePage = event.target.pathname;
 	}
 }

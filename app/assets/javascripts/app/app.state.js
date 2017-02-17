@@ -37,8 +37,8 @@ angular
                   controller: 'chatsController',
                   controllerAs: 'chatsCtrl',
                   resolve: {
-                    getId: ($rootScope, users)=>{
-                      return users.getProfile().then((response)=>{
+                    getId: function($rootScope, users){
+                      return users.getProfile().then(function(response){
                         $rootScope.currentUserId = response.data.data.id;
                       });
                     }

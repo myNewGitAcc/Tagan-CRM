@@ -6,23 +6,23 @@
     this.userStatuses = ['offline', 'online', 'away'];
 
     return {
-      getProfile: ()=> {
+      getProfile: function() {
         return $http.get('/api/v1/users/profile');
       },
 
-      getUsers: ()=> {
+      getUsers: function() {
         return $http.get('/api/v1/users/users');
       },
 
-      deleteUser: (id)=> {
+      deleteUser: function(id) {
         return $http.destroy('/api/v1/users/'+id);
       },
 
-      getUser: (id) => {
+      getUser: function(id) {
         return $http.get('/api/v1/users/'+id);
       },
 
-      userStatusUpdate: (id, thisStatus) => {
+      userStatusUpdate: function(id, thisStatus)  {
         FayeClient.publish('/user_statuses', {status: this.userStatuses[thisStatus], id: id});
 
         return $http.put('/api/v1/users/'+id, {

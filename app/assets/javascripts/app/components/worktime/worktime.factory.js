@@ -35,7 +35,7 @@
   	}
 
     return {
-      desintegration: (ms)=>{
+      desintegration: function(ms){
         var dt = new Date(ms);
         var h = dt.getUTCHours();
         var m = dt.getUTCMinutes();
@@ -45,32 +45,32 @@
                 (s>0?s+(s==1?" секунда":s<5?" секунды":s<21?" секунд":s%10==0?" секунд":s%10==1?" секунда":s%10<5?" секунды":" секунд"):"");
       },
 
-      msRounding: (ms)=>{
+      msRounding: function(ms){
       	return 1000*Math.floor(ms/1000);
       },
 
-      runCalculation: (f, param1, param2)=>{
+      runCalculation: function(f, param1, param2){
       	$rootScope.intervalId = $interval(f, 1000, 0, true, param1, param2);
       },
 
-    	stopCalculation: () => {
+    	stopCalculation: function()  {
     		if($rootScope.intervalId)
       		$interval.cancel($rootScope.intervalId);
   		},
   		
-  		checkRecord: (id) => {
+  		checkRecord: function(id) {
     		return request('GET', id, {user_id: id, created_at: dateConstruct('short')});
   		},
 
-  		createRecord: (id) => {
+  		createRecord: function(id)  {
     		return request('POST', id, {user_id: id, status_change_date: dateConstruct('long'), labor_hours: 0});
   		},
 
-  		updateRecordAtStartOrResume: (id) => {
+  		updateRecordAtStartOrResume: function(id) {
   			return request('PUT', id, {created_at: dateConstruct('short'), status_change_date: dateConstruct('long')});
   		},
 
-  		updateRecordAtPauseOrAway: (id, time) => {
+  		updateRecordAtPauseOrAway: function(id, time) {
   			return request('PUT', id, {created_at: dateConstruct('short'), labor_hours: time});
   		}
     };
