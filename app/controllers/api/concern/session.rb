@@ -9,7 +9,7 @@ module API
       end
       post '/login' do
         authenticate_user!
-        success!(current_user.as_api_response(:default_token), status)
+        success!(current_user.as_api_response(:default_token), status:"success")
       end
 
       desc "Return logout status."

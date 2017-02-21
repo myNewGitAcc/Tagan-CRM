@@ -1,4 +1,4 @@
-module API
+  module API
   class Base < Grape::API
     include API::Helpers::ApiHelper
     mount API::V1::Root
