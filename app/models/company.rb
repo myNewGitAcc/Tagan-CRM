@@ -1,10 +1,10 @@
 class Company < ActiveRecord::Base
   acts_as_paranoid
 
-  has_many :rates
-  has_many :commissions
-  has_many :transactions
-  has_many :invoices
+  has_many :rates, dependent: :destroy
+  has_many :commissions, dependent: :destroy
+  has_many :transactions, dependent: :destroy
+  has_many :invoices, dependent: :destroy
 
   after_commit :ensure_a_rates_with_commisions, on: :create
 
