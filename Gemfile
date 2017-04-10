@@ -76,3 +76,6 @@ gem 'thin'
 gem "paranoia", "~> 2"
 
 gem 'bootstrap-datepicker-rails'
+
+gem 'vkontakte_api', '~> 1.4'
+gem 'dotenv-rails'

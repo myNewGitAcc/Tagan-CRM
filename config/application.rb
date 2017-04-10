@@ -7,6 +7,7 @@ require "action_view/railtie"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 require 'sprockets/es6'
+require 'vkontakte_api'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -63,5 +64,9 @@ module SpaApp
 
     config.middleware.delete Rack::Lock
     config.middleware.use FayeRails::Middleware, mount: '/faye', :timeout => 25
+
+    VkontakteApi.configure do |config|
+      config.api_version = '5.59'
+    end
   end
 end
