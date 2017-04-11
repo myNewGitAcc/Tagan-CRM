@@ -45,6 +45,11 @@
                 (s>0?s+(s==1?" секунда":s<5?" секунды":s<21?" секунд":s%10==0?" секунд":s%10==1?" секунда":s%10<5?" секунды":" секунд"):"");
       },
 
+      getUTCHours: (ms)=>{
+        var dt = new Date(ms);
+        return dt.getUTCHours();
+      },
+
       msRounding: (ms)=>{
       	return 1000*Math.floor(ms/1000);
       },

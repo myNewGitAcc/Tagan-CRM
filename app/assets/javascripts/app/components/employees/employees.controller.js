@@ -16,6 +16,13 @@ class employeesController {
 
     });
 
+    FayeClient.subscribe('/user_hours', function(payload) {
+      $scope.$apply(()=>{
+        controllerThis.users = employeesFactory.filtered(payload, controllerThis.users);
+      })
+
+    });
+
     this.setTabs = (event) => {
       this.activeTabs = event.target.text;
     };

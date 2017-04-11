@@ -8,6 +8,7 @@
         users.forEach((user)=>{
           if (user.id == payload.id) {
             user.status = payload.status;
+            user.hours = payload.hours
           }
         });
         return users;

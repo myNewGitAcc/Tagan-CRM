@@ -22,12 +22,16 @@
         return $http.get('/api/v1/users/'+id);
       },
 
-      userStatusUpdate: (id, thisStatus) => {
-        FayeClient.publish('/user_statuses', {status: this.userStatuses[thisStatus], id: id});
+      userStatusUpdate: (id, hours, thisStatus) => {
+        FayeClient.publish('/user_statuses', {hours: hours, status: this.userStatuses[thisStatus], id: id});
 
         return $http.put('/api/v1/users/'+id, {
           status: thisStatus
         });
+      },
+
+      userHoursUpdate: (id, hours, thisStatus) => {
+        FayeClient.publish('/user_hours', {hours: hours, status: thisStatus, id: id});
       }
     };
   }

@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
     t.add :role
     t.add :full_name
     t.add :status
+    t.add lambda{|user| user.get_working_times}, as: :hours
     t.add :created_at
   end
 
@@ -83,6 +84,16 @@ class User < ActiveRecord::Base
     "#{self.first_name} #{self.last_name}"
   end
 
+
+  def get_working_times
+    current_today = Date.today
+    working_time = self.working_times.find_by(created_at: current_today.beginning_of_day..current_today.end_of_day)
+    if working_time.present?
+      return working_time.labor_hours/3600000
+    else
+      return 0
+    end
+  end
 
 
   def ensure_authentication_token

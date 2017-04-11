@@ -26,13 +26,15 @@ function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $
 
 
     let chngUserStatus = status => {
-      users.userStatusUpdate($scope.currentUserId, status=="offline"?0:status=="online"?1:2);
+      users.userStatusUpdate($scope.currentUserId, this.hoursWorked, status=="offline"?0:status=="online"?1:2);
       this.userStatus = status;
     }
 
     let changingTimes = (workedMs, becameOnline)=> {
       var workedTime = workedMs + (new Date() - Date.parse(becameOnline));
       this.hoursWorked =  worktimeFactory.desintegration(workedTime);
+      var hours = worktimeFactory.getUTCHours(workedTime);
+      users.userHoursUpdate($scope.currentUserId, hours, this.userStatus);
 
       var remainTime = new Date(8*60*60*1000) - worktimeFactory.msRounding(workedTime);
       if(remainTime>0)
