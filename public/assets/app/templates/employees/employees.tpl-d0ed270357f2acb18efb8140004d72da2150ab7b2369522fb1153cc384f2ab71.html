@@ -29,7 +29,7 @@
                         <tr ng-repeat="user in employeesCtrl.users | filter:employeesCtrl.activeTabs">
                             <td>{{user.full_name}}</td>
                             <td>{{user.email}}</td>
-                            <td>{{user.id}}</td>
+                            <td>{{user.hours}}</td>
                             <td ng-class="{'online': user.status == 'online',
                                             'offline': user.status == 'offline'}">
                                 <span class="glyphicon-user"> </span>{{user.status}}

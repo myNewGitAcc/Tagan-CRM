@@ -1,15 +1,15 @@
 /*!
- * jQuery JavaScript Library v3.0.0
+ * jQuery JavaScript Library v3.2.1
  * https://jquery.com/
  *
  * Includes Sizzle.js
  * https://sizzlejs.com/
  *
- * Copyright jQuery Foundation and other contributors
+ * Copyright JS Foundation and other contributors
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2016-06-09T18:02Z
+ * Date: 2017-03-20T18:59Z
  */
 
 ( function( global, factory ) {
@@ -38,7 +38,7 @@
 	}
 
 // Pass this if window is not defined yet
-}( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+} )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
 // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
 // throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
@@ -82,10 +82,14 @@ var support = {};
 		script.text = code;
 		doc.head.appendChild( script ).parentNode.removeChild( script );
 	}
+/* global Symbol */
+// Defining this global in .eslintrc.json would create a danger of using the global
+// unguarded in another place, it seems safer to define global only for this module
+
 
 
 var
-	version = "3.0.0",
+	version = "3.2.1",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -125,13 +129,14 @@ jQuery.fn = jQuery.prototype = {
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
-		return num != null ?
 
-			// Return just the one element from the set
-			( num < 0 ? this[ num + this.length ] : this[ num ] ) :
+		// Return all the elements in a clean array
+		if ( num == null ) {
+			return slice.call( this );
+		}
 
-			// Return all the elements in a clean array
-			slice.call( this );
+		// Return just the one element from the set
+		return num < 0 ? this[ num + this.length ] : this[ num ];
 	},
 
 	// Take an array of elements and push it onto the stack
@@ -232,11 +237,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Recurse if we're merging plain objects or arrays
 				if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
-					( copyIsArray = jQuery.isArray( copy ) ) ) ) {
+					( copyIsArray = Array.isArray( copy ) ) ) ) {
 
 					if ( copyIsArray ) {
 						copyIsArray = false;
-						clone = src && jQuery.isArray( src ) ? src : [];
+						clone = src && Array.isArray( src ) ? src : [];
 
 					} else {
 						clone = src && jQuery.isPlainObject( src ) ? src : {};
@@ -274,8 +279,6 @@ jQuery.extend( {
 	isFunction: function( obj ) {
 		return jQuery.type( obj ) === "function";
 	},
-
-	isArray: Array.isArray,
 
 	isWindow: function( obj ) {
 		return obj != null && obj === obj.window;
@@ -317,7 +320,11 @@ jQuery.extend( {
 	},
 
 	isEmptyObject: function( obj ) {
+
+		/* eslint-disable no-unused-vars */
+		// See https://github.com/eslint/eslint/issues/6125
 		var name;
+
 		for ( name in obj ) {
 			return false;
 		}
@@ -345,10 +352,6 @@ jQuery.extend( {
 	// Microsoft forgot to hump their vendor prefix (#9572)
 	camelCase: function( string ) {
 		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
-	},
-
-	nodeName: function( elem, name ) {
-		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
 	each: function( obj, callback ) {
@@ -507,15 +510,9 @@ jQuery.extend( {
 	support: support
 } );
 
-// JSHint would error on this code due to the Symbol not being defined in ES5.
-// Defining this global in .jshintrc would create a danger of using the global
-// unguarded in another place, it seems safer to just disable JSHint for these
-// three lines.
-/* jshint ignore: start */
 if ( typeof Symbol === "function" ) {
 	jQuery.fn[ Symbol.iterator ] = arr[ Symbol.iterator ];
 }
-/* jshint ignore: end */
 
 // Populate the class2type map
 jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
@@ -541,14 +538,14 @@ function isArrayLike( obj ) {
 }
 var Sizzle =
 /*!
- * Sizzle CSS Selector Engine v2.3.0
+ * Sizzle CSS Selector Engine v2.3.3
  * https://sizzlejs.com/
  *
  * Copyright jQuery Foundation and other contributors
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-01-04
+ * Date: 2016-08-08
  */
 (function( window ) {
 
@@ -694,7 +691,7 @@ var i,
 
 	// CSS string/identifier serialization
 	// https://drafts.csswg.org/cssom/#common-serializing-idioms
-	rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g,
+	rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g,
 	fcssescape = function( ch, asCodePoint ) {
 		if ( asCodePoint ) {
 
@@ -721,7 +718,7 @@ var i,
 
 	disabledAncestor = addCombinator(
 		function( elem ) {
-			return elem.disabled === true;
+			return elem.disabled === true && ("form" in elem || "label" in elem);
 		},
 		{ dir: "parentNode", next: "legend" }
 	);
@@ -1007,26 +1004,54 @@ function createButtonPseudo( type ) {
  * @param {Boolean} disabled true for :disabled; false for :enabled
  */
 function createDisabledPseudo( disabled ) {
-	// Known :disabled false positives:
-	// IE: *[disabled]:not(button, input, select, textarea, optgroup, option, menuitem, fieldset)
-	// not IE: fieldset[disabled] > legend:nth-of-type(n+2) :can-disable
+
+	// Known :disabled false positives: fieldset[disabled] > legend:nth-of-type(n+2) :can-disable
 	return function( elem ) {
 
-		// Check form elements and option elements for explicit disabling
-		return "label" in elem && elem.disabled === disabled ||
-			"form" in elem && elem.disabled === disabled ||
+		// Only certain elements can match :enabled or :disabled
+		// https://html.spec.whatwg.org/multipage/scripting.html#selector-enabled
+		// https://html.spec.whatwg.org/multipage/scripting.html#selector-disabled
+		if ( "form" in elem ) {
 
-			// Check non-disabled form elements for fieldset[disabled] ancestors
-			"form" in elem && elem.disabled === false && (
-				// Support: IE6-11+
-				// Ancestry is covered for us
-				elem.isDisabled === disabled ||
+			// Check for inherited disabledness on relevant non-disabled elements:
+			// * listed form-associated elements in a disabled fieldset
+			//   https://html.spec.whatwg.org/multipage/forms.html#category-listed
+			//   https://html.spec.whatwg.org/multipage/forms.html#concept-fe-disabled
+			// * option elements in a disabled optgroup
+			//   https://html.spec.whatwg.org/multipage/forms.html#concept-option-disabled
+			// All such elements have a "form" property.
+			if ( elem.parentNode && elem.disabled === false ) {
 
-				// Otherwise, assume any non-<option> under fieldset[disabled] is disabled
-				/* jshint -W018 */
-				elem.isDisabled !== !disabled &&
-					("label" in elem || !disabledAncestor( elem )) !== disabled
-			);
+				// Option elements defer to a parent optgroup if present
+				if ( "label" in elem ) {
+					if ( "label" in elem.parentNode ) {
+						return elem.parentNode.disabled === disabled;
+					} else {
+						return elem.disabled === disabled;
+					}
+				}
+
+				// Support: IE 6 - 11
+				// Use the isDisabled shortcut property to check for disabled fieldset ancestors
+				return elem.isDisabled === disabled ||
+
+					// Where there is no isDisabled, check manually
+					/* jshint -W018 */
+					elem.isDisabled !== !disabled &&
+						disabledAncestor( elem ) === disabled;
+			}
+
+			return elem.disabled === disabled;
+
+		// Try to winnow out elements that can't be disabled before trusting the disabled property.
+		// Some victims get caught in our net (label, legend, menu, track), but it shouldn't
+		// even exist on them, let alone have a boolean value.
+		} else if ( "label" in elem ) {
+			return elem.disabled === disabled;
+		}
+
+		// Remaining elements are neither :enabled nor :disabled
+		return false;
 	};
 }
 
@@ -1142,25 +1167,21 @@ setDocument = Sizzle.setDocument = function( node ) {
 		return !document.getElementsByName || !document.getElementsByName( expando ).length;
 	});
 
-	// ID find and filter
+	// ID filter and find
 	if ( support.getById ) {
-		Expr.find["ID"] = function( id, context ) {
-			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
-				var m = context.getElementById( id );
-				return m ? [ m ] : [];
-			}
-		};
 		Expr.filter["ID"] = function( id ) {
 			var attrId = id.replace( runescape, funescape );
 			return function( elem ) {
 				return elem.getAttribute("id") === attrId;
 			};
 		};
+		Expr.find["ID"] = function( id, context ) {
+			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
+				var elem = context.getElementById( id );
+				return elem ? [ elem ] : [];
+			}
+		};
 	} else {
-		// Support: IE6/7
-		// getElementById is not reliable as a find shortcut
-		delete Expr.find["ID"];
-
 		Expr.filter["ID"] =  function( id ) {
 			var attrId = id.replace( runescape, funescape );
 			return function( elem ) {
@@ -1168,6 +1189,36 @@ setDocument = Sizzle.setDocument = function( node ) {
 					elem.getAttributeNode("id");
 				return node && node.value === attrId;
 			};
+		};
+
+		// Support: IE 6 - 7 only
+		// getElementById is not reliable as a find shortcut
+		Expr.find["ID"] = function( id, context ) {
+			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
+				var node, i, elems,
+					elem = context.getElementById( id );
+
+				if ( elem ) {
+
+					// Verify the id attribute
+					node = elem.getAttributeNode("id");
+					if ( node && node.value === id ) {
+						return [ elem ];
+					}
+
+					// Fall back on getElementsByName
+					elems = context.getElementsByName( id );
+					i = 0;
+					while ( (elem = elems[i++]) ) {
+						node = elem.getAttributeNode("id");
+						if ( node && node.value === id ) {
+							return [ elem ];
+						}
+					}
+				}
+
+				return [];
+			}
 		};
 	}
 
@@ -2209,6 +2260,7 @@ function addCombinator( matcher, combinator, base ) {
 					return matcher( elem, context, xml );
 				}
 			}
+			return false;
 		} :
 
 		// Check against all ancestor/preceding elements
@@ -2253,6 +2305,7 @@ function addCombinator( matcher, combinator, base ) {
 					}
 				}
 			}
+			return false;
 		};
 }
 
@@ -2615,8 +2668,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 		// Reduce context if the leading compound selector is an ID
 		tokens = match[0] = match[0].slice( 0 );
 		if ( tokens.length > 2 && (token = tokens[0]).type === "ID" &&
-				support.getById && context.nodeType === 9 && documentIsHTML &&
-				Expr.relative[ tokens[1].type ] ) {
+				context.nodeType === 9 && documentIsHTML && Expr.relative[ tokens[1].type ] ) {
 
 			context = ( Expr.find["ID"]( token.matches[0].replace(runescape, funescape), context ) || [] )[0];
 			if ( !context ) {
@@ -2754,6 +2806,7 @@ jQuery.escapeSelector = Sizzle.escape;
 
 
 
+
 var dir = function( elem, dir, until ) {
 	var matched = [],
 		truncate = until !== undefined;
@@ -2785,6 +2838,13 @@ var siblings = function( n, elem ) {
 
 var rneedsContext = jQuery.expr.match.needsContext;
 
+
+
+function nodeName( elem, name ) {
+
+  return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
+
+};
 var rsingleTag = ( /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i );
 
 
@@ -2795,27 +2855,31 @@ var risSimple = /^.[^:#\[\.,]*$/;
 function winnow( elements, qualifier, not ) {
 	if ( jQuery.isFunction( qualifier ) ) {
 		return jQuery.grep( elements, function( elem, i ) {
-			/* jshint -W018 */
 			return !!qualifier.call( elem, i, elem ) !== not;
 		} );
-
 	}
 
+	// Single element
 	if ( qualifier.nodeType ) {
 		return jQuery.grep( elements, function( elem ) {
 			return ( elem === qualifier ) !== not;
 		} );
-
 	}
 
-	if ( typeof qualifier === "string" ) {
-		if ( risSimple.test( qualifier ) ) {
-			return jQuery.filter( qualifier, elements, not );
-		}
-
-		qualifier = jQuery.filter( qualifier, elements );
+	// Arraylike of elements (jQuery, arguments, Array)
+	if ( typeof qualifier !== "string" ) {
+		return jQuery.grep( elements, function( elem ) {
+			return ( indexOf.call( qualifier, elem ) > -1 ) !== not;
+		} );
 	}
 
+	// Simple selector that can be filtered directly, removing non-Elements
+	if ( risSimple.test( qualifier ) ) {
+		return jQuery.filter( qualifier, elements, not );
+	}
+
+	// Complex selector, compare the two sets, removing non-Elements
+	qualifier = jQuery.filter( qualifier, elements );
 	return jQuery.grep( elements, function( elem ) {
 		return ( indexOf.call( qualifier, elem ) > -1 ) !== not && elem.nodeType === 1;
 	} );
@@ -2828,11 +2892,13 @@ jQuery.filter = function( expr, elems, not ) {
 		expr = ":not(" + expr + ")";
 	}
 
-	return elems.length === 1 && elem.nodeType === 1 ?
-		jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [] :
-		jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) {
-			return elem.nodeType === 1;
-		} ) );
+	if ( elems.length === 1 && elem.nodeType === 1 ) {
+		return jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [];
+	}
+
+	return jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) {
+		return elem.nodeType === 1;
+	} ) );
 };
 
 jQuery.fn.extend( {
@@ -3130,7 +3196,18 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-		return elem.contentDocument || jQuery.merge( [], elem.childNodes );
+        if ( nodeName( elem, "iframe" ) ) {
+            return elem.contentDocument;
+        }
+
+        // Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
+        // Treat the template element as a regular one in browsers that
+        // don't support it.
+        if ( nodeName( elem, "template" ) ) {
+            elem = elem.content || elem;
+        }
+
+        return jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
@@ -3160,14 +3237,14 @@ jQuery.each( {
 		return this.pushStack( matched );
 	};
 } );
-var rnotwhite = ( /\S+/g );
+var rnothtmlwhite = ( /[^\x20\t\r\n\f]+/g );
 
 
 
 // Convert String-formatted options into Object-formatted ones
 function createOptions( options ) {
 	var object = {};
-	jQuery.each( options.match( rnotwhite ) || [], function( _, flag ) {
+	jQuery.each( options.match( rnothtmlwhite ) || [], function( _, flag ) {
 		object[ flag ] = true;
 	} );
 	return object;
@@ -3228,7 +3305,7 @@ jQuery.Callbacks = function( options ) {
 		fire = function() {
 
 			// Enforce single-firing
-			locked = options.once;
+			locked = locked || options.once;
 
 			// Execute callbacks for all pending executions,
 			// respecting firingIndex overrides and runtime changes
@@ -3397,7 +3474,7 @@ function Thrower( ex ) {
 	throw ex;
 }
 
-function adoptValue( value, resolve, reject ) {
+function adoptValue( value, resolve, reject, noValue ) {
 	var method;
 
 	try {
@@ -3413,19 +3490,20 @@ function adoptValue( value, resolve, reject ) {
 		// Other non-thenables
 		} else {
 
-			// Support: Android 4.0 only
-			// Strict mode functions invoked without .call/.apply get global-object context
-			resolve.call( undefined, value );
+			// Control `resolve` arguments by letting Array#slice cast boolean `noValue` to integer:
+			// * false: [ value ].slice( 0 ) => resolve( value )
+			// * true: [ value ].slice( 1 ) => resolve()
+			resolve.apply( undefined, [ value ].slice( noValue ) );
 		}
 
 	// For Promises/A+, convert exceptions into rejections
 	// Since jQuery.when doesn't unwrap thenables, we can skip the extra checks appearing in
 	// Deferred#then to conditionally suppress rejection.
-	} catch ( /*jshint -W002 */ value ) {
+	} catch ( value ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		reject.call( undefined, value );
+		reject.apply( undefined, [ value ] );
 	}
 }
 
@@ -3750,7 +3828,8 @@ jQuery.extend( {
 
 		// Single- and empty arguments are adopted like Promise.resolve
 		if ( remaining <= 1 ) {
-			adoptValue( singleValue, master.done( updateFunc( i ) ).resolve, master.reject );
+			adoptValue( singleValue, master.done( updateFunc( i ) ).resolve, master.reject,
+				!remaining );
 
 			// Use .then() to unwrap secondary thenables (cf. gh-3000)
 			if ( master.state() === "pending" ||
@@ -3786,12 +3865,29 @@ jQuery.Deferred.exceptionHook = function( error, stack ) {
 
 
 
+jQuery.readyException = function( error ) {
+	window.setTimeout( function() {
+		throw error;
+	} );
+};
+
+
+
+
 // The deferred used on DOM ready
 var readyList = jQuery.Deferred();
 
 jQuery.fn.ready = function( fn ) {
 
-	readyList.then( fn );
+	readyList
+		.then( fn )
+
+		// Wrap jQuery.readyException in a function so that the lookup
+		// happens at the time of error handling instead of callback
+		// registration.
+		.catch( function( error ) {
+			jQuery.readyException( error );
+		} );
 
 	return this;
 };
@@ -3804,15 +3900,6 @@ jQuery.extend( {
 	// A counter to track how many items to wait for before
 	// the ready event fires. See #6781
 	readyWait: 1,
-
-	// Hold (or release) the ready event
-	holdReady: function( hold ) {
-		if ( hold ) {
-			jQuery.readyWait++;
-		} else {
-			jQuery.ready( true );
-		}
-	},
 
 	// Handle when the DOM is ready
 	ready: function( wait ) {
@@ -3915,13 +4002,16 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 		}
 	}
 
-	return chainable ?
-		elems :
+	if ( chainable ) {
+		return elems;
+	}
 
-		// Gets
-		bulk ?
-			fn.call( elems ) :
-			len ? fn( elems[ 0 ], key ) : emptyGet;
+	// Gets
+	if ( bulk ) {
+		return fn.call( elems );
+	}
+
+	return len ? fn( elems[ 0 ], key ) : emptyGet;
 };
 var acceptData = function( owner ) {
 
@@ -3931,7 +4021,6 @@ var acceptData = function( owner ) {
 	//    - Node.DOCUMENT_NODE
 	//  - Object
 	//    - Any
-	/* jshint -W018 */
 	return owner.nodeType === 1 || owner.nodeType === 9 || !( +owner.nodeType );
 };
 
@@ -4047,7 +4136,7 @@ Data.prototype = {
 		if ( key !== undefined ) {
 
 			// Support array or space separated string of keys
-			if ( jQuery.isArray( key ) ) {
+			if ( Array.isArray( key ) ) {
 
 				// If key is an array of keys...
 				// We always set camelCase keys, so remove that.
@@ -4059,7 +4148,7 @@ Data.prototype = {
 				// Otherwise, create an array by matching non-whitespace
 				key = key in cache ?
 					[ key ] :
-					( key.match( rnotwhite ) || [] );
+					( key.match( rnothtmlwhite ) || [] );
 			}
 
 			i = key.length;
@@ -4107,6 +4196,31 @@ var dataUser = new Data();
 var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /[A-Z]/g;
 
+function getData( data ) {
+	if ( data === "true" ) {
+		return true;
+	}
+
+	if ( data === "false" ) {
+		return false;
+	}
+
+	if ( data === "null" ) {
+		return null;
+	}
+
+	// Only convert to a number if it doesn't change the string
+	if ( data === +data + "" ) {
+		return +data;
+	}
+
+	if ( rbrace.test( data ) ) {
+		return JSON.parse( data );
+	}
+
+	return data;
+}
+
 function dataAttr( elem, key, data ) {
 	var name;
 
@@ -4118,14 +4232,7 @@ function dataAttr( elem, key, data ) {
 
 		if ( typeof data === "string" ) {
 			try {
-				data = data === "true" ? true :
-					data === "false" ? false :
-					data === "null" ? null :
-
-					// Only convert to a number if it doesn't change the string
-					+data + "" === data ? +data :
-					rbrace.test( data ) ? JSON.parse( data ) :
-					data;
+				data = getData( data );
 			} catch ( e ) {}
 
 			// Make sure we set the data so it isn't changed later
@@ -4255,7 +4362,7 @@ jQuery.extend( {
 
 			// Speed up dequeue by getting out quickly if this is just a lookup
 			if ( data ) {
-				if ( !queue || jQuery.isArray( data ) ) {
+				if ( !queue || Array.isArray( data ) ) {
 					queue = dataPriv.access( elem, type, jQuery.makeArray( data ) );
 				} else {
 					queue.push( data );
@@ -4432,8 +4539,12 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 		scale = 1,
 		maxIterations = 20,
 		currentValue = tween ?
-			function() { return tween.cur(); } :
-			function() { return jQuery.css( elem, prop, "" ); },
+			function() {
+				return tween.cur();
+			} :
+			function() {
+				return jQuery.css( elem, prop, "" );
+			},
 		initial = currentValue(),
 		unit = valueParts && valueParts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
 
@@ -4498,7 +4609,7 @@ function getDefaultDisplay( elem ) {
 		return display;
 	}
 
-	temp = doc.body.appendChild( doc.createElement( nodeName ) ),
+	temp = doc.body.appendChild( doc.createElement( nodeName ) );
 	display = jQuery.css( temp, "display" );
 
 	temp.parentNode.removeChild( temp );
@@ -4616,15 +4727,23 @@ function getAll( context, tag ) {
 
 	// Support: IE <=9 - 11 only
 	// Use typeof to avoid zero-argument method invocation on host objects (#15151)
-	var ret = typeof context.getElementsByTagName !== "undefined" ?
-			context.getElementsByTagName( tag || "*" ) :
-			typeof context.querySelectorAll !== "undefined" ?
-				context.querySelectorAll( tag || "*" ) :
-			[];
+	var ret;
 
-	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
-		jQuery.merge( [ context ], ret ) :
-		ret;
+	if ( typeof context.getElementsByTagName !== "undefined" ) {
+		ret = context.getElementsByTagName( tag || "*" );
+
+	} else if ( typeof context.querySelectorAll !== "undefined" ) {
+		ret = context.querySelectorAll( tag || "*" );
+
+	} else {
+		ret = [];
+	}
+
+	if ( tag === undefined || tag && nodeName( context, tag ) ) {
+		return jQuery.merge( [ context ], ret );
+	}
+
+	return ret;
 }
 
 
@@ -4898,7 +5017,7 @@ jQuery.event = {
 		}
 
 		// Handle multiple events separated by a space
-		types = ( types || "" ).match( rnotwhite ) || [ "" ];
+		types = ( types || "" ).match( rnothtmlwhite ) || [ "" ];
 		t = types.length;
 		while ( t-- ) {
 			tmp = rtypenamespace.exec( types[ t ] ) || [];
@@ -4980,7 +5099,7 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
-		types = ( types || "" ).match( rnotwhite ) || [ "" ];
+		types = ( types || "" ).match( rnothtmlwhite ) || [ "" ];
 		t = types.length;
 		while ( t-- ) {
 			tmp = rtypenamespace.exec( types[ t ] ) || [];
@@ -5106,51 +5225,58 @@ jQuery.event = {
 	},
 
 	handlers: function( event, handlers ) {
-		var i, matches, sel, handleObj,
+		var i, handleObj, sel, matchedHandlers, matchedSelectors,
 			handlerQueue = [],
 			delegateCount = handlers.delegateCount,
 			cur = event.target;
 
-		// Support: IE <=9
 		// Find delegate handlers
-		// Black-hole SVG <use> instance trees (#13180)
-		//
-		// Support: Firefox <=42
-		// Avoid non-left-click in FF but don't block IE radio events (#3861, gh-2343)
-		if ( delegateCount && cur.nodeType &&
-			( event.type !== "click" || isNaN( event.button ) || event.button < 1 ) ) {
+		if ( delegateCount &&
+
+			// Support: IE <=9
+			// Black-hole SVG <use> instance trees (trac-13180)
+			cur.nodeType &&
+
+			// Support: Firefox <=42
+			// Suppress spec-violating clicks indicating a non-primary pointer button (trac-3861)
+			// https://www.w3.org/TR/DOM-Level-3-Events/#event-type-click
+			// Support: IE 11 only
+			// ...but not arrow key "clicks" of radio inputs, which can have `button` -1 (gh-2343)
+			!( event.type === "click" && event.button >= 1 ) ) {
 
 			for ( ; cur !== this; cur = cur.parentNode || this ) {
 
 				// Don't check non-elements (#13208)
 				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
-				if ( cur.nodeType === 1 && ( cur.disabled !== true || event.type !== "click" ) ) {
-					matches = [];
+				if ( cur.nodeType === 1 && !( event.type === "click" && cur.disabled === true ) ) {
+					matchedHandlers = [];
+					matchedSelectors = {};
 					for ( i = 0; i < delegateCount; i++ ) {
 						handleObj = handlers[ i ];
 
 						// Don't conflict with Object.prototype properties (#13203)
 						sel = handleObj.selector + " ";
 
-						if ( matches[ sel ] === undefined ) {
-							matches[ sel ] = handleObj.needsContext ?
+						if ( matchedSelectors[ sel ] === undefined ) {
+							matchedSelectors[ sel ] = handleObj.needsContext ?
 								jQuery( sel, this ).index( cur ) > -1 :
 								jQuery.find( sel, this, null, [ cur ] ).length;
 						}
-						if ( matches[ sel ] ) {
-							matches.push( handleObj );
+						if ( matchedSelectors[ sel ] ) {
+							matchedHandlers.push( handleObj );
 						}
 					}
-					if ( matches.length ) {
-						handlerQueue.push( { elem: cur, handlers: matches } );
+					if ( matchedHandlers.length ) {
+						handlerQueue.push( { elem: cur, handlers: matchedHandlers } );
 					}
 				}
 			}
 		}
 
 		// Add the remaining (directly-bound) handlers
+		cur = this;
 		if ( delegateCount < handlers.length ) {
-			handlerQueue.push( { elem: this, handlers: handlers.slice( delegateCount ) } );
+			handlerQueue.push( { elem: cur, handlers: handlers.slice( delegateCount ) } );
 		}
 
 		return handlerQueue;
@@ -5220,7 +5346,7 @@ jQuery.event = {
 
 			// For checkbox, fire native event so checked state will be right
 			trigger: function() {
-				if ( this.type === "checkbox" && this.click && jQuery.nodeName( this, "input" ) ) {
+				if ( this.type === "checkbox" && this.click && nodeName( this, "input" ) ) {
 					this.click();
 					return false;
 				}
@@ -5228,7 +5354,7 @@ jQuery.event = {
 
 			// For cross-browser consistency, don't fire native .click() on links
 			_default: function( event ) {
-				return jQuery.nodeName( event.target, "a" );
+				return nodeName( event.target, "a" );
 			}
 		},
 
@@ -5384,7 +5510,19 @@ jQuery.each( {
 
 		// Add which for click: 1 === left; 2 === middle; 3 === right
 		if ( !event.which && button !== undefined && rmouseEvent.test( event.type ) ) {
-			return ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
+			if ( button & 1 ) {
+				return 1;
+			}
+
+			if ( button & 2 ) {
+				return 3;
+			}
+
+			if ( button & 4 ) {
+				return 2;
+			}
+
+			return 0;
 		}
 
 		return event.which;
@@ -5475,7 +5613,13 @@ jQuery.fn.extend( {
 
 
 var
+
+	/* eslint-disable max-len */
+
+	// See https://github.com/eslint/eslint/issues/3229
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([a-z][^\/\0>\x20\t\r\n\f]*)[^>]*)\/>/gi,
+
+	/* eslint-enable */
 
 	// Support: IE <=10 - 11, Edge 12 - 13
 	// In IE/Edge using regex groups here causes severe slowdowns.
@@ -5487,11 +5631,12 @@ var
 	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
 
+// Prefer a tbody over its parent table for containing new rows
 function manipulationTarget( elem, content ) {
-	if ( jQuery.nodeName( elem, "table" ) &&
-		jQuery.nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
+	if ( nodeName( elem, "table" ) &&
+		nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
 
-		return elem.getElementsByTagName( "tbody" )[ 0 ] || elem;
+		return jQuery( ">tbody", elem )[ 0 ] || elem;
 	}
 
 	return elem;
@@ -6021,12 +6166,18 @@ var getStyles = function( elem ) {
 
 function curCSS( elem, name, computed ) {
 	var width, minWidth, maxWidth, ret,
+
+		// Support: Firefox 51+
+		// Retrieving style before computed somehow
+		// fixes an issue with getting wrong values
+		// on detached elements
 		style = elem.style;
 
 	computed = computed || getStyles( elem );
 
-	// Support: IE <=9 only
-	// getPropertyValue is only needed for .css('filter') (#12537)
+	// getPropertyValue is needed for:
+	//   .css('filter') (IE 9 only, #12537)
+	//   .css('--customProperty) (#3144)
 	if ( computed ) {
 		ret = computed.getPropertyValue( name ) || computed[ name ];
 
@@ -6092,6 +6243,7 @@ var
 	// except "table", "table-cell", or "table-caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rcustomProp = /^--/,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: "0",
@@ -6121,6 +6273,16 @@ function vendorPropName( name ) {
 	}
 }
 
+// Return a property mapped along what jQuery.cssProps suggests or to
+// a vendor prefixed property.
+function finalPropName( name ) {
+	var ret = jQuery.cssProps[ name ];
+	if ( !ret ) {
+		ret = jQuery.cssProps[ name ] = vendorPropName( name ) || name;
+	}
+	return ret;
+}
+
 function setPositiveNumber( elem, value, subtract ) {
 
 	// Any relative (+/-) values have already been
@@ -6134,15 +6296,17 @@ function setPositiveNumber( elem, value, subtract ) {
 }
 
 function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
-	var i = extra === ( isBorderBox ? "border" : "content" ) ?
-
-		// If we already have the right measurement, avoid augmentation
-		4 :
-
-		// Otherwise initialize for horizontal or vertical properties
-		name === "width" ? 1 : 0,
-
+	var i,
 		val = 0;
+
+	// If we already have the right measurement, avoid augmentation
+	if ( extra === ( isBorderBox ? "border" : "content" ) ) {
+		i = 4;
+
+	// Otherwise initialize for horizontal or vertical properties
+	} else {
+		i = name === "width" ? 1 : 0;
+	}
 
 	for ( ; i < 4; i += 2 ) {
 
@@ -6179,43 +6343,30 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 
 function getWidthOrHeight( elem, name, extra ) {
 
-	// Start with offset property, which is equivalent to the border-box value
-	var val,
-		valueIsBorderBox = true,
+	// Start with computed style
+	var valueIsBorderBox,
 		styles = getStyles( elem ),
+		val = curCSS( elem, name, styles ),
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
-	// Support: IE <=11 only
-	// Running getBoundingClientRect on a disconnected node
-	// in IE throws an error.
-	if ( elem.getClientRects().length ) {
-		val = elem.getBoundingClientRect()[ name ];
+	// Computed unit is not pixels. Stop here and return.
+	if ( rnumnonpx.test( val ) ) {
+		return val;
 	}
 
-	// Some non-html elements return undefined for offsetWidth, so check for null/undefined
-	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
-	// MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
-	if ( val <= 0 || val == null ) {
+	// Check for style in case a browser which returns unreliable values
+	// for getComputedStyle silently falls back to the reliable elem.style
+	valueIsBorderBox = isBorderBox &&
+		( support.boxSizingReliable() || val === elem.style[ name ] );
 
-		// Fall back to computed then uncomputed css if necessary
-		val = curCSS( elem, name, styles );
-		if ( val < 0 || val == null ) {
-			val = elem.style[ name ];
-		}
-
-		// Computed unit is not pixels. Stop here and return.
-		if ( rnumnonpx.test( val ) ) {
-			return val;
-		}
-
-		// Check for style in case a browser which returns unreliable values
-		// for getComputedStyle silently falls back to the reliable elem.style
-		valueIsBorderBox = isBorderBox &&
-			( support.boxSizingReliable() || val === elem.style[ name ] );
-
-		// Normalize "", auto, and prepare for extra
-		val = parseFloat( val ) || 0;
+	// Fall back to offsetWidth/Height when value is "auto"
+	// This happens for inline elements with no explicit setting (gh-3571)
+	if ( val === "auto" ) {
+		val = elem[ "offset" + name[ 0 ].toUpperCase() + name.slice( 1 ) ];
 	}
+
+	// Normalize "", auto, and prepare for extra
+	val = parseFloat( val ) || 0;
 
 	// Use the active box-sizing model to add/subtract irrelevant styles
 	return ( val +
@@ -6280,10 +6431,15 @@ jQuery.extend( {
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
 			origName = jQuery.camelCase( name ),
+			isCustomProp = rcustomProp.test( name ),
 			style = elem.style;
 
-		name = jQuery.cssProps[ origName ] ||
-			( jQuery.cssProps[ origName ] = vendorPropName( origName ) || origName );
+		// Make sure that we're working with the right name. We don't
+		// want to query the value if it is a CSS custom property
+		// since they are user-defined.
+		if ( !isCustomProp ) {
+			name = finalPropName( origName );
+		}
 
 		// Gets hook for the prefixed version, then unprefixed version
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
@@ -6319,7 +6475,11 @@ jQuery.extend( {
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
 
-				style[ name ] = value;
+				if ( isCustomProp ) {
+					style.setProperty( name, value );
+				} else {
+					style[ name ] = value;
+				}
 			}
 
 		} else {
@@ -6338,11 +6498,15 @@ jQuery.extend( {
 
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
-			origName = jQuery.camelCase( name );
+			origName = jQuery.camelCase( name ),
+			isCustomProp = rcustomProp.test( name );
 
-		// Make sure that we're working with the right name
-		name = jQuery.cssProps[ origName ] ||
-			( jQuery.cssProps[ origName ] = vendorPropName( origName ) || origName );
+		// Make sure that we're working with the right name. We don't
+		// want to modify the value if it is a CSS custom property
+		// since they are user-defined.
+		if ( !isCustomProp ) {
+			name = finalPropName( origName );
+		}
 
 		// Try prefixed name followed by the unprefixed name
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
@@ -6367,6 +6531,7 @@ jQuery.extend( {
 			num = parseFloat( val );
 			return extra === true || isFinite( num ) ? num || 0 : val;
 		}
+
 		return val;
 	}
 } );
@@ -6466,7 +6631,7 @@ jQuery.fn.extend( {
 				map = {},
 				i = 0;
 
-			if ( jQuery.isArray( name ) ) {
+			if ( Array.isArray( name ) ) {
 				styles = getStyles( elem );
 				len = name.length;
 
@@ -6604,13 +6769,18 @@ jQuery.fx.step = {};
 
 
 var
-	fxNow, timerId,
+	fxNow, inProgress,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rrun = /queueHooks$/;
 
-function raf() {
-	if ( timerId ) {
-		window.requestAnimationFrame( raf );
+function schedule() {
+	if ( inProgress ) {
+		if ( document.hidden === false && window.requestAnimationFrame ) {
+			window.requestAnimationFrame( schedule );
+		} else {
+			window.setTimeout( schedule, jQuery.fx.interval );
+		}
+
 		jQuery.fx.tick();
 	}
 }
@@ -6632,7 +6802,7 @@ function genFx( type, includeWidth ) {
 	// If we include width, step value is 1 to do all cssExpand values,
 	// otherwise step value is 2 to skip over Left and Right
 	includeWidth = includeWidth ? 1 : 0;
-	for ( ; i < 4 ; i += 2 - includeWidth ) {
+	for ( ; i < 4; i += 2 - includeWidth ) {
 		which = cssExpand[ i ];
 		attrs[ "margin" + which ] = attrs[ "padding" + which ] = type;
 	}
@@ -6659,7 +6829,6 @@ function createTween( value, prop, animation ) {
 }
 
 function defaultPrefilter( elem, props, opts ) {
-	/* jshint validthis: true */
 	var prop, value, toggle, hooks, oldfire, propTween, restoreDisplay, display,
 		isBox = "width" in props || "height" in props,
 		anim = this,
@@ -6801,8 +6970,11 @@ function defaultPrefilter( elem, props, opts ) {
 				showHide( [ elem ], true );
 			}
 
-			/* jshint -W083 */
+			/* eslint-disable no-loop-func */
+
 			anim.done( function() {
+
+			/* eslint-enable no-loop-func */
 
 				// The final step of a "hide" animation is actually hiding the element
 				if ( !hidden ) {
@@ -6835,7 +7007,7 @@ function propFilter( props, specialEasing ) {
 		name = jQuery.camelCase( index );
 		easing = specialEasing[ name ];
 		value = props[ index ];
-		if ( jQuery.isArray( value ) ) {
+		if ( Array.isArray( value ) ) {
 			easing = value[ 1 ];
 			value = props[ index ] = value[ 0 ];
 		}
@@ -6888,18 +7060,25 @@ function Animation( elem, properties, options ) {
 				index = 0,
 				length = animation.tweens.length;
 
-			for ( ; index < length ; index++ ) {
+			for ( ; index < length; index++ ) {
 				animation.tweens[ index ].run( percent );
 			}
 
 			deferred.notifyWith( elem, [ animation, percent, remaining ] );
 
+			// If there's more to do, yield
 			if ( percent < 1 && length ) {
 				return remaining;
-			} else {
-				deferred.resolveWith( elem, [ animation ] );
-				return false;
 			}
+
+			// If this was an empty animation, synthesize a final progress notification
+			if ( !length ) {
+				deferred.notifyWith( elem, [ animation, 1, 0 ] );
+			}
+
+			// Resolve the animation and report its conclusion
+			deferred.resolveWith( elem, [ animation ] );
+			return false;
 		},
 		animation = deferred.promise( {
 			elem: elem,
@@ -6929,7 +7108,7 @@ function Animation( elem, properties, options ) {
 					return this;
 				}
 				stopped = true;
-				for ( ; index < length ; index++ ) {
+				for ( ; index < length; index++ ) {
 					animation.tweens[ index ].run( 1 );
 				}
 
@@ -6947,7 +7126,7 @@ function Animation( elem, properties, options ) {
 
 	propFilter( props, animation.opts.specialEasing );
 
-	for ( ; index < length ; index++ ) {
+	for ( ; index < length; index++ ) {
 		result = Animation.prefilters[ index ].call( animation, elem, props, animation.opts );
 		if ( result ) {
 			if ( jQuery.isFunction( result.stop ) ) {
@@ -6964,6 +7143,13 @@ function Animation( elem, properties, options ) {
 		animation.opts.start.call( elem, animation );
 	}
 
+	// Attach callbacks from options
+	animation
+		.progress( animation.opts.progress )
+		.done( animation.opts.done, animation.opts.complete )
+		.fail( animation.opts.fail )
+		.always( animation.opts.always );
+
 	jQuery.fx.timer(
 		jQuery.extend( tick, {
 			elem: elem,
@@ -6972,11 +7158,7 @@ function Animation( elem, properties, options ) {
 		} )
 	);
 
-	// attach callbacks from options
-	return animation.progress( animation.opts.progress )
-		.done( animation.opts.done, animation.opts.complete )
-		.fail( animation.opts.fail )
-		.always( animation.opts.always );
+	return animation;
 }
 
 jQuery.Animation = jQuery.extend( Animation, {
@@ -6994,14 +7176,14 @@ jQuery.Animation = jQuery.extend( Animation, {
 			callback = props;
 			props = [ "*" ];
 		} else {
-			props = props.match( rnotwhite );
+			props = props.match( rnothtmlwhite );
 		}
 
 		var prop,
 			index = 0,
 			length = props.length;
 
-		for ( ; index < length ; index++ ) {
+		for ( ; index < length; index++ ) {
 			prop = props[ index ];
 			Animation.tweeners[ prop ] = Animation.tweeners[ prop ] || [];
 			Animation.tweeners[ prop ].unshift( callback );
@@ -7027,14 +7209,19 @@ jQuery.speed = function( speed, easing, fn ) {
 		easing: fn && easing || easing && !jQuery.isFunction( easing ) && easing
 	};
 
-	// Go to the end state if fx are off or if document is hidden
-	if ( jQuery.fx.off || document.hidden ) {
+	// Go to the end state if fx are off
+	if ( jQuery.fx.off ) {
 		opt.duration = 0;
 
 	} else {
-		opt.duration = typeof opt.duration === "number" ?
-			opt.duration : opt.duration in jQuery.fx.speeds ?
-				jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
+		if ( typeof opt.duration !== "number" ) {
+			if ( opt.duration in jQuery.fx.speeds ) {
+				opt.duration = jQuery.fx.speeds[ opt.duration ];
+
+			} else {
+				opt.duration = jQuery.fx.speeds._default;
+			}
+		}
 	}
 
 	// Normalize opt.queue - true/undefined/null -> "fx"
@@ -7215,7 +7402,7 @@ jQuery.fx.tick = function() {
 	for ( ; i < timers.length; i++ ) {
 		timer = timers[ i ];
 
-		// Checks the timer has not already been removed
+		// Run the timer and safely remove it when done (allowing for external removal)
 		if ( !timer() && timers[ i ] === timer ) {
 			timers.splice( i--, 1 );
 		}
@@ -7229,30 +7416,21 @@ jQuery.fx.tick = function() {
 
 jQuery.fx.timer = function( timer ) {
 	jQuery.timers.push( timer );
-	if ( timer() ) {
-		jQuery.fx.start();
-	} else {
-		jQuery.timers.pop();
-	}
+	jQuery.fx.start();
 };
 
 jQuery.fx.interval = 13;
 jQuery.fx.start = function() {
-	if ( !timerId ) {
-		timerId = window.requestAnimationFrame ?
-			window.requestAnimationFrame( raf ) :
-			window.setInterval( jQuery.fx.tick, jQuery.fx.interval );
+	if ( inProgress ) {
+		return;
 	}
+
+	inProgress = true;
+	schedule();
 };
 
 jQuery.fx.stop = function() {
-	if ( window.cancelAnimationFrame ) {
-		window.cancelAnimationFrame( timerId );
-	} else {
-		window.clearInterval( timerId );
-	}
-
-	timerId = null;
+	inProgress = null;
 };
 
 jQuery.fx.speeds = {
@@ -7369,7 +7547,7 @@ jQuery.extend( {
 		type: {
 			set: function( elem, value ) {
 				if ( !support.radioValue && value === "radio" &&
-					jQuery.nodeName( elem, "input" ) ) {
+					nodeName( elem, "input" ) ) {
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {
@@ -7384,7 +7562,10 @@ jQuery.extend( {
 	removeAttr: function( elem, value ) {
 		var name,
 			i = 0,
-			attrNames = value && value.match( rnotwhite );
+
+			// Attribute names can contain non-HTML whitespace characters
+			// https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
+			attrNames = value && value.match( rnothtmlwhite );
 
 		if ( attrNames && elem.nodeType === 1 ) {
 			while ( ( name = attrNames[ i++ ] ) ) {
@@ -7491,12 +7672,19 @@ jQuery.extend( {
 				// Use proper attribute retrieval(#12072)
 				var tabindex = jQuery.find.attr( elem, "tabindex" );
 
-				return tabindex ?
-					parseInt( tabindex, 10 ) :
+				if ( tabindex ) {
+					return parseInt( tabindex, 10 );
+				}
+
+				if (
 					rfocusable.test( elem.nodeName ) ||
-						rclickable.test( elem.nodeName ) && elem.href ?
-							0 :
-							-1;
+					rclickable.test( elem.nodeName ) &&
+					elem.href
+				) {
+					return 0;
+				}
+
+				return -1;
 			}
 		}
 	},
@@ -7513,9 +7701,14 @@ jQuery.extend( {
 // on the option
 // The getter ensures a default option is selected
 // when in an optgroup
+// eslint rule "no-unused-expressions" is disabled for this code
+// since it considers such accessions noop
 if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
+
+			/* eslint no-unused-expressions: "off" */
+
 			var parent = elem.parentNode;
 			if ( parent && parent.parentNode ) {
 				parent.parentNode.selectedIndex;
@@ -7523,6 +7716,9 @@ if ( !support.optSelected ) {
 			return null;
 		},
 		set: function( elem ) {
+
+			/* eslint no-unused-expressions: "off" */
+
 			var parent = elem.parentNode;
 			if ( parent ) {
 				parent.selectedIndex;
@@ -7553,7 +7749,13 @@ jQuery.each( [
 
 
 
-var rclass = /[\t\r\n\f]/g;
+	// Strip and collapse whitespace according to HTML spec
+	// https://html.spec.whatwg.org/multipage/infrastructure.html#strip-and-collapse-whitespace
+	function stripAndCollapse( value ) {
+		var tokens = value.match( rnothtmlwhite ) || [];
+		return tokens.join( " " );
+	}
+
 
 function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
@@ -7571,12 +7773,11 @@ jQuery.fn.extend( {
 		}
 
 		if ( typeof value === "string" && value ) {
-			classes = value.match( rnotwhite ) || [];
+			classes = value.match( rnothtmlwhite ) || [];
 
 			while ( ( elem = this[ i++ ] ) ) {
 				curValue = getClass( elem );
-				cur = elem.nodeType === 1 &&
-					( " " + curValue + " " ).replace( rclass, " " );
+				cur = elem.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
 
 				if ( cur ) {
 					j = 0;
@@ -7587,7 +7788,7 @@ jQuery.fn.extend( {
 					}
 
 					// Only assign if different to avoid unneeded rendering.
-					finalValue = jQuery.trim( cur );
+					finalValue = stripAndCollapse( cur );
 					if ( curValue !== finalValue ) {
 						elem.setAttribute( "class", finalValue );
 					}
@@ -7613,14 +7814,13 @@ jQuery.fn.extend( {
 		}
 
 		if ( typeof value === "string" && value ) {
-			classes = value.match( rnotwhite ) || [];
+			classes = value.match( rnothtmlwhite ) || [];
 
 			while ( ( elem = this[ i++ ] ) ) {
 				curValue = getClass( elem );
 
 				// This expression is here for better compressibility (see addClass)
-				cur = elem.nodeType === 1 &&
-					( " " + curValue + " " ).replace( rclass, " " );
+				cur = elem.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
 
 				if ( cur ) {
 					j = 0;
@@ -7633,7 +7833,7 @@ jQuery.fn.extend( {
 					}
 
 					// Only assign if different to avoid unneeded rendering.
-					finalValue = jQuery.trim( cur );
+					finalValue = stripAndCollapse( cur );
 					if ( curValue !== finalValue ) {
 						elem.setAttribute( "class", finalValue );
 					}
@@ -7668,7 +7868,7 @@ jQuery.fn.extend( {
 				// Toggle individual class names
 				i = 0;
 				self = jQuery( this );
-				classNames = value.match( rnotwhite ) || [];
+				classNames = value.match( rnothtmlwhite ) || [];
 
 				while ( ( className = classNames[ i++ ] ) ) {
 
@@ -7711,10 +7911,8 @@ jQuery.fn.extend( {
 		className = " " + selector + " ";
 		while ( ( elem = this[ i++ ] ) ) {
 			if ( elem.nodeType === 1 &&
-				( " " + getClass( elem ) + " " ).replace( rclass, " " )
-					.indexOf( className ) > -1
-			) {
-				return true;
+				( " " + stripAndCollapse( getClass( elem ) ) + " " ).indexOf( className ) > -1 ) {
+					return true;
 			}
 		}
 
@@ -7725,8 +7923,7 @@ jQuery.fn.extend( {
 
 
 
-var rreturn = /\r/g,
-	rspaces = /[\x20\t\r\n\f]+/g;
+var rreturn = /\r/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
@@ -7747,13 +7944,13 @@ jQuery.fn.extend( {
 
 				ret = elem.value;
 
-				return typeof ret === "string" ?
+				// Handle most common string cases
+				if ( typeof ret === "string" ) {
+					return ret.replace( rreturn, "" );
+				}
 
-					// Handle most common string cases
-					ret.replace( rreturn, "" ) :
-
-					// Handle cases where value is null/undef or number
-					ret == null ? "" : ret;
+				// Handle cases where value is null/undef or number
+				return ret == null ? "" : ret;
 			}
 
 			return;
@@ -7781,7 +7978,7 @@ jQuery.fn.extend( {
 			} else if ( typeof val === "number" ) {
 				val += "";
 
-			} else if ( jQuery.isArray( val ) ) {
+			} else if ( Array.isArray( val ) ) {
 				val = jQuery.map( val, function( value ) {
 					return value == null ? "" : value + "";
 				} );
@@ -7810,20 +8007,24 @@ jQuery.extend( {
 					// option.text throws exceptions (#14686, #14858)
 					// Strip and collapse whitespace
 					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
-					jQuery.trim( jQuery.text( elem ) ).replace( rspaces, " " );
+					stripAndCollapse( jQuery.text( elem ) );
 			}
 		},
 		select: {
 			get: function( elem ) {
-				var value, option,
+				var value, option, i,
 					options = elem.options,
 					index = elem.selectedIndex,
 					one = elem.type === "select-one",
 					values = one ? null : [],
-					max = one ? index + 1 : options.length,
-					i = index < 0 ?
-						max :
-						one ? index : 0;
+					max = one ? index + 1 : options.length;
+
+				if ( index < 0 ) {
+					i = max;
+
+				} else {
+					i = one ? index : 0;
+				}
 
 				// Loop through all the selected options
 				for ( ; i < max; i++ ) {
@@ -7836,7 +8037,7 @@ jQuery.extend( {
 							// Don't return options that are disabled or in a disabled optgroup
 							!option.disabled &&
 							( !option.parentNode.disabled ||
-								!jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
+								!nodeName( option.parentNode, "optgroup" ) ) ) {
 
 						// Get the specific value for the option
 						value = jQuery( option ).val();
@@ -7862,11 +8063,16 @@ jQuery.extend( {
 
 				while ( i-- ) {
 					option = options[ i ];
+
+					/* eslint-disable no-cond-assign */
+
 					if ( option.selected =
 						jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1
 					) {
 						optionSet = true;
 					}
+
+					/* eslint-enable no-cond-assign */
 				}
 
 				// Force browsers to behave consistently when non-matching value is set
@@ -7883,7 +8089,7 @@ jQuery.extend( {
 jQuery.each( [ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
 		set: function( elem, value ) {
-			if ( jQuery.isArray( value ) ) {
+			if ( Array.isArray( value ) ) {
 				return ( elem.checked = jQuery.inArray( jQuery( elem ).val(), value ) > -1 );
 			}
 		}
@@ -8178,7 +8384,7 @@ var
 function buildParams( prefix, obj, traditional, add ) {
 	var name;
 
-	if ( jQuery.isArray( obj ) ) {
+	if ( Array.isArray( obj ) ) {
 
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
@@ -8230,7 +8436,7 @@ jQuery.param = function( a, traditional ) {
 		};
 
 	// If an array was passed in, assume that it is an array of form elements.
-	if ( jQuery.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
+	if ( Array.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 
 		// Serialize the form elements
 		jQuery.each( a, function() {
@@ -8272,13 +8478,17 @@ jQuery.fn.extend( {
 		.map( function( i, elem ) {
 			var val = jQuery( this ).val();
 
-			return val == null ?
-				null :
-				jQuery.isArray( val ) ?
-					jQuery.map( val, function( val ) {
-						return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
-					} ) :
-					{ name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
+			if ( val == null ) {
+				return null;
+			}
+
+			if ( Array.isArray( val ) ) {
+				return jQuery.map( val, function( val ) {
+					return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
+				} );
+			}
+
+			return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
 		} ).get();
 	}
 } );
@@ -8287,7 +8497,7 @@ jQuery.fn.extend( {
 var
 	r20 = /%20/g,
 	rhash = /#.*$/,
-	rts = /([?&])_=[^&]*/,
+	rantiCache = /([?&])_=[^&]*/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
 
 	// #7653, #8125, #8152: local protocol detection
@@ -8333,7 +8543,7 @@ function addToPrefiltersOrTransports( structure ) {
 
 		var dataType,
 			i = 0,
-			dataTypes = dataTypeExpression.toLowerCase().match( rnotwhite ) || [];
+			dataTypes = dataTypeExpression.toLowerCase().match( rnothtmlwhite ) || [];
 
 		if ( jQuery.isFunction( func ) ) {
 
@@ -8575,6 +8785,7 @@ jQuery.extend( {
 		processData: true,
 		async: true,
 		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+
 		/*
 		timeout: 0,
 		data: null,
@@ -8800,7 +9011,7 @@ jQuery.extend( {
 		s.type = options.method || options.type || s.method || s.type;
 
 		// Extract dataTypes list
-		s.dataTypes = ( s.dataType || "*" ).toLowerCase().match( rnotwhite ) || [ "" ];
+		s.dataTypes = ( s.dataType || "*" ).toLowerCase().match( rnothtmlwhite ) || [ "" ];
 
 		// A cross-domain request is in order when the origin doesn't match the current origin.
 		if ( s.crossDomain == null ) {
@@ -8872,9 +9083,9 @@ jQuery.extend( {
 				delete s.data;
 			}
 
-			// Add anti-cache in uncached url if needed
+			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
-				cacheURL = cacheURL.replace( rts, "" );
+				cacheURL = cacheURL.replace( rantiCache, "$1" );
 				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
 			}
 
@@ -9613,7 +9824,7 @@ jQuery.fn.load = function( url, params, callback ) {
 		off = url.indexOf( " " );
 
 	if ( off > -1 ) {
-		selector = jQuery.trim( url.slice( off ) );
+		selector = stripAndCollapse( url.slice( off ) );
 		url = url.slice( 0, off );
 	}
 
@@ -9696,13 +9907,6 @@ jQuery.expr.pseudos.animated = function( elem ) {
 
 
 
-/**
- * Gets a window from an element
- */
-function getWindow( elem ) {
-	return jQuery.isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
-}
-
 jQuery.offset = {
 	setOffset: function( elem, options, i ) {
 		var curPosition, curLeft, curCSSTop, curTop, curOffset, curCSSLeft, calculatePosition,
@@ -9767,13 +9971,14 @@ jQuery.fn.extend( {
 				} );
 		}
 
-		var docElem, win, rect, doc,
+		var doc, docElem, rect, win,
 			elem = this[ 0 ];
 
 		if ( !elem ) {
 			return;
 		}
 
+		// Return zeros for disconnected and hidden (display: none) elements (gh-2310)
 		// Support: IE <=11 only
 		// Running getBoundingClientRect on a
 		// disconnected node in IE throws an error
@@ -9783,20 +9988,14 @@ jQuery.fn.extend( {
 
 		rect = elem.getBoundingClientRect();
 
-		// Make sure element is not hidden (display: none)
-		if ( rect.width || rect.height ) {
-			doc = elem.ownerDocument;
-			win = getWindow( doc );
-			docElem = doc.documentElement;
+		doc = elem.ownerDocument;
+		docElem = doc.documentElement;
+		win = doc.defaultView;
 
-			return {
-				top: rect.top + win.pageYOffset - docElem.clientTop,
-				left: rect.left + win.pageXOffset - docElem.clientLeft
-			};
-		}
-
-		// Return zeros for disconnected and hidden elements (gh-2310)
-		return rect;
+		return {
+			top: rect.top + win.pageYOffset - docElem.clientTop,
+			left: rect.left + win.pageXOffset - docElem.clientLeft
+		};
 	},
 
 	position: function() {
@@ -9822,7 +10021,7 @@ jQuery.fn.extend( {
 
 			// Get correct offsets
 			offset = this.offset();
-			if ( !jQuery.nodeName( offsetParent[ 0 ], "html" ) ) {
+			if ( !nodeName( offsetParent[ 0 ], "html" ) ) {
 				parentOffset = offsetParent.offset();
 			}
 
@@ -9869,7 +10068,14 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 
 	jQuery.fn[ method ] = function( val ) {
 		return access( this, function( elem, method, val ) {
-			var win = getWindow( elem );
+
+			// Coalesce documents and windows
+			var win;
+			if ( jQuery.isWindow( elem ) ) {
+				win = elem;
+			} else if ( elem.nodeType === 9 ) {
+				win = elem.defaultView;
+			}
 
 			if ( val === undefined ) {
 				return win ? win[ prop ] : elem[ method ];
@@ -9978,7 +10184,16 @@ jQuery.fn.extend( {
 	}
 } );
 
+jQuery.holdReady = function( hold ) {
+	if ( hold ) {
+		jQuery.readyWait++;
+	} else {
+		jQuery.ready( true );
+	}
+};
+jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
+jQuery.nodeName = nodeName;
 
 
 
@@ -10001,7 +10216,6 @@ if ( typeof define === "function" && define.amd ) {
 		return jQuery;
 	} );
 }
-
 
 
 
@@ -10034,8 +10248,10 @@ if ( !noGlobal ) {
 }
 
 
+
+
 return jQuery;
-} ) );
+} );
 /**
  * @license AngularJS v1.5.5
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -40915,7 +41131,7 @@ angular.module("templates", []);
 
 /**
  * State-based routing for AngularJS
- * @version v0.3.1
+ * @version v0.3.0
  * @link http://angular-ui.github.com/
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -44271,7 +44487,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
         $urlRouter.update(true);
 
         return $state.current;
-      }).then(null, function (error) {
+      }, function (error) {
         if ($state.transition !== transition) return TransitionSuperseded;
 
         $state.transition = null;
@@ -44902,7 +45118,7 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate,
           }
 
           if (currentEl) {
-            var $uiViewData = currentEl.data('$uiViewAnim');
+            var $uiViewData = currentEl.data('$uiView');
             renderer.leave(currentEl, function() {
               $uiViewData.$$animLeave.resolve();
               previousEl = null;
@@ -44915,7 +45131,7 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate,
 
         function updateView(firstTime) {
           var newScope,
-              name            = getUiViewName(scope, attrs, $element, $interpolate),
+              name            = getUiViewName(scope, attrs, inherited, $interpolate),
               previousLocals  = name && $state.$current && $state.$current.locals[name];
 
           if (!firstTime && previousLocals === latestLocals) return; // nothing to do
@@ -44938,14 +45154,14 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate,
 
           var clone = $transclude(newScope, function(clone) {
             var animEnter = $q.defer(), animLeave = $q.defer();
-            var viewAnimData = {
+            var viewData = {
+              name: name,
               $animEnter: animEnter.promise,
               $animLeave: animLeave.promise,
               $$animLeave: animLeave
             };
 
-            clone.data('$uiViewAnim', viewAnimData);
-            renderer.enter(clone, $element, function onUiViewEnter() {
+            renderer.enter(clone.data('$uiView', viewData), $element, function onUiViewEnter() {
               animEnter.resolve();
               if(currentScope) {
                 currentScope.$emit('$viewContentAnimationEnded');
@@ -44990,14 +45206,14 @@ function $ViewDirectiveFill (  $compile,   $controller,   $state,   $interpolate
       var initial = tElement.html();
       return function (scope, $element, attrs) {
         var current = $state.$current,
-            name = getUiViewName(scope, attrs, $element, $interpolate),
-            locals  = current && current.locals[name];
+            $uiViewData = $element.data('$uiView'),
+            locals  = current && current.locals[$uiViewData.name];
 
         if (! locals) {
           return;
         }
 
-        $element.data('$uiView', { name: name, state: locals.$$state });
+        extend($uiViewData, { state: locals.$$state });
         $element.html(locals.$template ? locals.$template : initial);
 
         var resolveData = angular.extend({}, locals);
@@ -45028,10 +45244,9 @@ function $ViewDirectiveFill (  $compile,   $controller,   $state,   $interpolate
  * Shared ui-view code for both directives:
  * Given scope, element, and its attributes, return the view's name
  */
-function getUiViewName(scope, attrs, element, $interpolate) {
+function getUiViewName(scope, attrs, inherited, $interpolate) {
   var name = $interpolate(attrs.uiView || attrs.name || '')(scope);
-  var uiViewCreatedBy = element.inheritedData('$uiView');
-  return name.indexOf('@') >= 0 ?  name :  (name + '@' + (uiViewCreatedBy ? uiViewCreatedBy.state.name : ''));
+  return name.indexOf('@') >= 0 ?  name :  (name + '@' + (inherited ? inherited.state.name : ''));
 }
 
 angular.module('ui.router.state').directive('uiView', $ViewDirective);
@@ -45491,7 +45706,7 @@ angular.module('ui.router.state')
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
 /**
- * @license AngularJS v1.5.7
+ * @license AngularJS v1.5.5
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -45625,7 +45840,7 @@ function stripCommentsFromElement(element) {
   if (element instanceof jqLite) {
     switch (element.length) {
       case 0:
-        return element;
+        return [];
         break;
 
       case 1:
@@ -48706,6 +48921,8 @@ var $$AnimationProvider = ['$animateProvider', function($animateProvider) {
         // may attempt more elements, but custom drivers are more particular
         for (var i = drivers.length - 1; i >= 0; i--) {
           var driverName = drivers[i];
+          if (!$injector.has(driverName)) continue; // TODO(matsko): remove this check
+
           var factory = $injector.get(driverName);
           var driver = factory(animationDetails);
           if (driver) {
@@ -48734,8 +48951,7 @@ var $$AnimationProvider = ['$animateProvider', function($animateProvider) {
         }
 
         function update(element) {
-          var runner = getRunner(element);
-          if (runner) runner.setHost(newRunner);
+          getRunner(element).setHost(newRunner);
         }
       }
 
@@ -49638,7 +49854,7 @@ angular.module('ngAnimate', [])
 
 })(window, window.angular);
 /**
- * @license AngularJS v1.5.7
+ * @license AngularJS v1.5.5
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -49909,387 +50125,375 @@ var jqLite = angular.element;
  */
 angular.module('ngMessages', [])
 
-  /**
-   * @ngdoc directive
-   * @module ngMessages
-   * @name ngMessages
-   * @restrict AE
-   *
-   * @description
-   * `ngMessages` is a directive that is designed to show and hide messages based on the state
-   * of a key/value object that it listens on. The directive itself complements error message
-   * reporting with the `ngModel` $error object (which stores a key/value state of validation errors).
-   *
-   * `ngMessages` manages the state of internal messages within its container element. The internal
-   * messages use the `ngMessage` directive and will be inserted/removed from the page depending
-   * on if they're present within the key/value object. By default, only one message will be displayed
-   * at a time and this depends on the prioritization of the messages within the template. (This can
-   * be changed by using the `ng-messages-multiple` or `multiple` attribute on the directive container.)
-   *
-   * A remote template can also be used to promote message reusability and messages can also be
-   * overridden.
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-message="stringValue">...</ANY>
-   *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
-   *   <ANY ng-message-exp="expressionValue">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-message when="stringValue">...</ng-message>
-   *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
-   *   <ng-message when-exp="expressionValue">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * @param {string} ngMessages an angular expression evaluating to a key/value object
-   *                 (this is typically the $error object on an ngModel instance).
-   * @param {string=} ngMessagesMultiple|multiple when set, all messages will be displayed with true
-   *
-   * @example
-   * <example name="ngMessages-directive" module="ngMessagesExample"
-   *          deps="angular-messages.js"
-   *          animations="true" fixBase="true">
-   *   <file name="index.html">
-   *     <form name="myForm">
-   *       <label>
-   *         Enter your name:
-   *         <input type="text"
-   *                name="myName"
-   *                ng-model="name"
-   *                ng-minlength="5"
-   *                ng-maxlength="20"
-   *                required />
-   *       </label>
-   *       <pre>myForm.myName.$error = {{ myForm.myName.$error | json }}</pre>
-   *
-   *       <div ng-messages="myForm.myName.$error" style="color:maroon" role="alert">
-   *         <div ng-message="required">You did not enter a field</div>
-   *         <div ng-message="minlength">Your field is too short</div>
-   *         <div ng-message="maxlength">Your field is too long</div>
-   *       </div>
-   *     </form>
-   *   </file>
-   *   <file name="script.js">
-   *     angular.module('ngMessagesExample', ['ngMessages']);
-   *   </file>
-   * </example>
-   */
-  .directive('ngMessages', ['$animate', function($animate) {
-    var ACTIVE_CLASS = 'ng-active';
-    var INACTIVE_CLASS = 'ng-inactive';
+   /**
+    * @ngdoc directive
+    * @module ngMessages
+    * @name ngMessages
+    * @restrict AE
+    *
+    * @description
+    * `ngMessages` is a directive that is designed to show and hide messages based on the state
+    * of a key/value object that it listens on. The directive itself complements error message
+    * reporting with the `ngModel` $error object (which stores a key/value state of validation errors).
+    *
+    * `ngMessages` manages the state of internal messages within its container element. The internal
+    * messages use the `ngMessage` directive and will be inserted/removed from the page depending
+    * on if they're present within the key/value object. By default, only one message will be displayed
+    * at a time and this depends on the prioritization of the messages within the template. (This can
+    * be changed by using the `ng-messages-multiple` or `multiple` attribute on the directive container.)
+    *
+    * A remote template can also be used to promote message reusability and messages can also be
+    * overridden.
+    *
+    * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
+    *
+    * @usage
+    * ```html
+    * <!-- using attribute directives -->
+    * <ANY ng-messages="expression" role="alert">
+    *   <ANY ng-message="stringValue">...</ANY>
+    *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
+    *   <ANY ng-message-exp="expressionValue">...</ANY>
+    * </ANY>
+    *
+    * <!-- or by using element directives -->
+    * <ng-messages for="expression" role="alert">
+    *   <ng-message when="stringValue">...</ng-message>
+    *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
+    *   <ng-message when-exp="expressionValue">...</ng-message>
+    * </ng-messages>
+    * ```
+    *
+    * @param {string} ngMessages an angular expression evaluating to a key/value object
+    *                 (this is typically the $error object on an ngModel instance).
+    * @param {string=} ngMessagesMultiple|multiple when set, all messages will be displayed with true
+    *
+    * @example
+    * <example name="ngMessages-directive" module="ngMessagesExample"
+    *          deps="angular-messages.js"
+    *          animations="true" fixBase="true">
+    *   <file name="index.html">
+    *     <form name="myForm">
+    *       <label>
+    *         Enter your name:
+    *         <input type="text"
+    *                name="myName"
+    *                ng-model="name"
+    *                ng-minlength="5"
+    *                ng-maxlength="20"
+    *                required />
+    *       </label>
+    *       <pre>myForm.myName.$error = {{ myForm.myName.$error | json }}</pre>
+    *
+    *       <div ng-messages="myForm.myName.$error" style="color:maroon" role="alert">
+    *         <div ng-message="required">You did not enter a field</div>
+    *         <div ng-message="minlength">Your field is too short</div>
+    *         <div ng-message="maxlength">Your field is too long</div>
+    *       </div>
+    *     </form>
+    *   </file>
+    *   <file name="script.js">
+    *     angular.module('ngMessagesExample', ['ngMessages']);
+    *   </file>
+    * </example>
+    */
+   .directive('ngMessages', ['$animate', function($animate) {
+     var ACTIVE_CLASS = 'ng-active';
+     var INACTIVE_CLASS = 'ng-inactive';
 
-    return {
-      require: 'ngMessages',
-      restrict: 'AE',
-      controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
-        var ctrl = this;
-        var latestKey = 0;
-        var nextAttachId = 0;
+     return {
+       require: 'ngMessages',
+       restrict: 'AE',
+       controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
+         var ctrl = this;
+         var latestKey = 0;
+         var nextAttachId = 0;
 
-        this.getAttachId = function getAttachId() { return nextAttachId++; };
+         this.getAttachId = function getAttachId() { return nextAttachId++; };
 
-        var messages = this.messages = {};
-        var renderLater, cachedCollection;
+         var messages = this.messages = {};
+         var renderLater, cachedCollection;
 
-        this.render = function(collection) {
-          collection = collection || {};
+         this.render = function(collection) {
+           collection = collection || {};
 
-          renderLater = false;
-          cachedCollection = collection;
+           renderLater = false;
+           cachedCollection = collection;
 
-          // this is true if the attribute is empty or if the attribute value is truthy
-          var multiple = isAttrTruthy($scope, $attrs.ngMessagesMultiple) ||
-                         isAttrTruthy($scope, $attrs.multiple);
+           // this is true if the attribute is empty or if the attribute value is truthy
+           var multiple = isAttrTruthy($scope, $attrs.ngMessagesMultiple) ||
+                          isAttrTruthy($scope, $attrs.multiple);
 
-          var unmatchedMessages = [];
-          var matchedKeys = {};
-          var messageItem = ctrl.head;
-          var messageFound = false;
-          var totalMessages = 0;
+           var unmatchedMessages = [];
+           var matchedKeys = {};
+           var messageItem = ctrl.head;
+           var messageFound = false;
+           var totalMessages = 0;
 
-          // we use != instead of !== to allow for both undefined and null values
-          while (messageItem != null) {
-            totalMessages++;
-            var messageCtrl = messageItem.message;
+           // we use != instead of !== to allow for both undefined and null values
+           while (messageItem != null) {
+             totalMessages++;
+             var messageCtrl = messageItem.message;
 
-            var messageUsed = false;
-            if (!messageFound) {
-              forEach(collection, function(value, key) {
-                if (!messageUsed && truthy(value) && messageCtrl.test(key)) {
-                  // this is to prevent the same error name from showing up twice
-                  if (matchedKeys[key]) return;
-                  matchedKeys[key] = true;
+             var messageUsed = false;
+             if (!messageFound) {
+               forEach(collection, function(value, key) {
+                 if (!messageUsed && truthy(value) && messageCtrl.test(key)) {
+                   // this is to prevent the same error name from showing up twice
+                   if (matchedKeys[key]) return;
+                   matchedKeys[key] = true;
 
-                  messageUsed = true;
-                  messageCtrl.attach();
-                }
-              });
-            }
+                   messageUsed = true;
+                   messageCtrl.attach();
+                 }
+               });
+             }
 
-            if (messageUsed) {
-              // unless we want to display multiple messages then we should
-              // set a flag here to avoid displaying the next message in the list
-              messageFound = !multiple;
-            } else {
-              unmatchedMessages.push(messageCtrl);
-            }
+             if (messageUsed) {
+               // unless we want to display multiple messages then we should
+               // set a flag here to avoid displaying the next message in the list
+               messageFound = !multiple;
+             } else {
+               unmatchedMessages.push(messageCtrl);
+             }
 
-            messageItem = messageItem.next;
-          }
+             messageItem = messageItem.next;
+           }
 
-          forEach(unmatchedMessages, function(messageCtrl) {
-            messageCtrl.detach();
-          });
+           forEach(unmatchedMessages, function(messageCtrl) {
+             messageCtrl.detach();
+           });
 
-          unmatchedMessages.length !== totalMessages
+           unmatchedMessages.length !== totalMessages
               ? $animate.setClass($element, ACTIVE_CLASS, INACTIVE_CLASS)
               : $animate.setClass($element, INACTIVE_CLASS, ACTIVE_CLASS);
-        };
+         };
 
-        $scope.$watchCollection($attrs.ngMessages || $attrs['for'], ctrl.render);
+         $scope.$watchCollection($attrs.ngMessages || $attrs['for'], ctrl.render);
 
-        // If the element is destroyed, proactively destroy all the currently visible messages
-        $element.on('$destroy', function() {
-          forEach(messages, function(item) {
-            item.message.detach();
-          });
-        });
+         // If the element is destroyed, proactively destroy all the currently visible messages
+         $element.on('$destroy', function() {
+           forEach(messages, function(item) {
+             item.message.detach();
+           });
+         });
 
-        this.reRender = function() {
-          if (!renderLater) {
-            renderLater = true;
-            $scope.$evalAsync(function() {
-              if (renderLater) {
-                cachedCollection && ctrl.render(cachedCollection);
-              }
-            });
-          }
-        };
+         this.reRender = function() {
+           if (!renderLater) {
+             renderLater = true;
+             $scope.$evalAsync(function() {
+               if (renderLater) {
+                 cachedCollection && ctrl.render(cachedCollection);
+               }
+             });
+           }
+         };
 
-        this.register = function(comment, messageCtrl) {
-          var nextKey = latestKey.toString();
-          messages[nextKey] = {
-            message: messageCtrl
-          };
-          insertMessageNode($element[0], comment, nextKey);
-          comment.$$ngMessageNode = nextKey;
-          latestKey++;
+         this.register = function(comment, messageCtrl) {
+           var nextKey = latestKey.toString();
+           messages[nextKey] = {
+             message: messageCtrl
+           };
+           insertMessageNode($element[0], comment, nextKey);
+           comment.$$ngMessageNode = nextKey;
+           latestKey++;
 
-          ctrl.reRender();
-        };
+           ctrl.reRender();
+         };
 
-        this.deregister = function(comment) {
-          var key = comment.$$ngMessageNode;
-          delete comment.$$ngMessageNode;
-          removeMessageNode($element[0], comment, key);
-          delete messages[key];
-          ctrl.reRender();
-        };
+         this.deregister = function(comment) {
+           var key = comment.$$ngMessageNode;
+           delete comment.$$ngMessageNode;
+           removeMessageNode($element[0], comment, key);
+           delete messages[key];
+           ctrl.reRender();
+         };
 
-        function findPreviousMessage(parent, comment) {
-          var prevNode = comment;
-          var parentLookup = [];
+         function findPreviousMessage(parent, comment) {
+           var prevNode = comment;
+           var parentLookup = [];
 
-          while (prevNode && prevNode !== parent) {
-            var prevKey = prevNode.$$ngMessageNode;
-            if (prevKey && prevKey.length) {
-              return messages[prevKey];
-            }
+           while (prevNode && prevNode !== parent) {
+             var prevKey = prevNode.$$ngMessageNode;
+             if (prevKey && prevKey.length) {
+               return messages[prevKey];
+             }
 
-            // dive deeper into the DOM and examine its children for any ngMessage
-            // comments that may be in an element that appears deeper in the list
-            if (prevNode.childNodes.length && parentLookup.indexOf(prevNode) === -1) {
-              parentLookup.push(prevNode);
-              prevNode = prevNode.childNodes[prevNode.childNodes.length - 1];
-            } else if (prevNode.previousSibling) {
-              prevNode = prevNode.previousSibling;
-            } else {
-              prevNode = prevNode.parentNode;
-              parentLookup.push(prevNode);
-            }
-          }
-        }
+             // dive deeper into the DOM and examine its children for any ngMessage
+             // comments that may be in an element that appears deeper in the list
+             if (prevNode.childNodes.length && parentLookup.indexOf(prevNode) == -1) {
+               parentLookup.push(prevNode);
+               prevNode = prevNode.childNodes[prevNode.childNodes.length - 1];
+             } else if (prevNode.previousSibling) {
+               prevNode = prevNode.previousSibling;
+             } else {
+               prevNode = prevNode.parentNode;
+               parentLookup.push(prevNode);
+             }
+           }
+         }
 
-        function insertMessageNode(parent, comment, key) {
-          var messageNode = messages[key];
-          if (!ctrl.head) {
-            ctrl.head = messageNode;
-          } else {
-            var match = findPreviousMessage(parent, comment);
-            if (match) {
-              messageNode.next = match.next;
-              match.next = messageNode;
-            } else {
-              messageNode.next = ctrl.head;
-              ctrl.head = messageNode;
-            }
-          }
-        }
+         function insertMessageNode(parent, comment, key) {
+           var messageNode = messages[key];
+           if (!ctrl.head) {
+             ctrl.head = messageNode;
+           } else {
+             var match = findPreviousMessage(parent, comment);
+             if (match) {
+               messageNode.next = match.next;
+               match.next = messageNode;
+             } else {
+               messageNode.next = ctrl.head;
+               ctrl.head = messageNode;
+             }
+           }
+         }
 
-        function removeMessageNode(parent, comment, key) {
-          var messageNode = messages[key];
+         function removeMessageNode(parent, comment, key) {
+           var messageNode = messages[key];
 
-          var match = findPreviousMessage(parent, comment);
-          if (match) {
-            match.next = messageNode.next;
-          } else {
-            ctrl.head = messageNode.next;
-          }
-        }
-      }]
-    };
+           var match = findPreviousMessage(parent, comment);
+           if (match) {
+             match.next = messageNode.next;
+           } else {
+             ctrl.head = messageNode.next;
+           }
+         }
+       }]
+     };
 
-    function isAttrTruthy(scope, attr) {
-     return (isString(attr) && attr.length === 0) || //empty attribute
-            truthy(scope.$eval(attr));
-    }
+     function isAttrTruthy(scope, attr) {
+      return (isString(attr) && attr.length === 0) || //empty attribute
+             truthy(scope.$eval(attr));
+     }
 
-    function truthy(val) {
-      return isString(val) ? val.length : !!val;
-    }
-  }])
+     function truthy(val) {
+       return isString(val) ? val.length : !!val;
+     }
+   }])
 
-  /**
-   * @ngdoc directive
-   * @name ngMessagesInclude
-   * @restrict AE
-   * @scope
-   *
-   * @description
-   * `ngMessagesInclude` is a directive with the purpose to import existing ngMessage template
-   * code from a remote template and place the downloaded template code into the exact spot
-   * that the ngMessagesInclude directive is placed within the ngMessages container. This allows
-   * for a series of pre-defined messages to be reused and also allows for the developer to
-   * determine what messages are overridden due to the placement of the ngMessagesInclude directive.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-messages-include="remoteTplString">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-messages-include src="expressionValue1">...</ng-messages-include>
-   * </ng-messages>
-   * ```
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @param {string} ngMessagesInclude|src a string value corresponding to the remote template.
-   */
-  .directive('ngMessagesInclude',
-    ['$templateRequest', '$document', '$compile', function($templateRequest, $document, $compile) {
+   /**
+    * @ngdoc directive
+    * @name ngMessagesInclude
+    * @restrict AE
+    * @scope
+    *
+    * @description
+    * `ngMessagesInclude` is a directive with the purpose to import existing ngMessage template
+    * code from a remote template and place the downloaded template code into the exact spot
+    * that the ngMessagesInclude directive is placed within the ngMessages container. This allows
+    * for a series of pre-defined messages to be reused and also allows for the developer to
+    * determine what messages are overridden due to the placement of the ngMessagesInclude directive.
+    *
+    * @usage
+    * ```html
+    * <!-- using attribute directives -->
+    * <ANY ng-messages="expression" role="alert">
+    *   <ANY ng-messages-include="remoteTplString">...</ANY>
+    * </ANY>
+    *
+    * <!-- or by using element directives -->
+    * <ng-messages for="expression" role="alert">
+    *   <ng-messages-include src="expressionValue1">...</ng-messages-include>
+    * </ng-messages>
+    * ```
+    *
+    * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
+    *
+    * @param {string} ngMessagesInclude|src a string value corresponding to the remote template.
+    */
+   .directive('ngMessagesInclude',
+     ['$templateRequest', '$document', '$compile', function($templateRequest, $document, $compile) {
 
-    return {
-      restrict: 'AE',
-      require: '^^ngMessages', // we only require this for validation sake
-      link: function($scope, element, attrs) {
-        var src = attrs.ngMessagesInclude || attrs.src;
-        $templateRequest(src).then(function(html) {
-          if ($scope.$$destroyed) return;
+     return {
+       restrict: 'AE',
+       require: '^^ngMessages', // we only require this for validation sake
+       link: function($scope, element, attrs) {
+         var src = attrs.ngMessagesInclude || attrs.src;
+         $templateRequest(src).then(function(html) {
+           $compile(html)($scope, function(contents) {
+             element.after(contents);
 
-          if (isString(html) && !html.trim()) {
-            // Empty template - nothing to compile
-            replaceElementWithMarker(element, src);
-          } else {
-            // Non-empty template - compile and link
-            $compile(html)($scope, function(contents) {
-              element.after(contents);
-              replaceElementWithMarker(element, src);
-            });
-          }
-        });
-      }
-    };
+             // the anchor is placed for debugging purposes
+             var comment = $compile.$$createComment ?
+                 $compile.$$createComment('ngMessagesInclude', src) :
+                 $document[0].createComment(' ngMessagesInclude: ' + src + ' ');
+             var anchor = jqLite(comment);
+             element.after(anchor);
 
-    // Helpers
-    function replaceElementWithMarker(element, src) {
-      // A comment marker is placed for debugging purposes
-      var comment = $compile.$$createComment ?
-          $compile.$$createComment('ngMessagesInclude', src) :
-          $document[0].createComment(' ngMessagesInclude: ' + src + ' ');
-      var marker = jqLite(comment);
-      element.after(marker);
+             // we don't want to pollute the DOM anymore by keeping an empty directive element
+             element.remove();
+           });
+         });
+       }
+     };
+   }])
 
-      // Don't pollute the DOM anymore by keeping an empty directive element
-      element.remove();
-    }
-  }])
-
-  /**
-   * @ngdoc directive
-   * @name ngMessage
-   * @restrict AE
-   * @scope
-   *
-   * @description
-   * `ngMessage` is a directive with the purpose to show and hide a particular message.
-   * For `ngMessage` to operate, a parent `ngMessages` directive on a parent DOM element
-   * must be situated since it determines which messages are visible based on the state
-   * of the provided key/value map that `ngMessages` listens on.
-   *
-   * More information about using `ngMessage` can be found in the
-   * {@link module:ngMessages `ngMessages` module documentation}.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-message="stringValue">...</ANY>
-   *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-message when="stringValue">...</ng-message>
-   *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * @param {expression} ngMessage|when a string value corresponding to the message key.
-   */
+   /**
+    * @ngdoc directive
+    * @name ngMessage
+    * @restrict AE
+    * @scope
+    *
+    * @description
+    * `ngMessage` is a directive with the purpose to show and hide a particular message.
+    * For `ngMessage` to operate, a parent `ngMessages` directive on a parent DOM element
+    * must be situated since it determines which messages are visible based on the state
+    * of the provided key/value map that `ngMessages` listens on.
+    *
+    * More information about using `ngMessage` can be found in the
+    * {@link module:ngMessages `ngMessages` module documentation}.
+    *
+    * @usage
+    * ```html
+    * <!-- using attribute directives -->
+    * <ANY ng-messages="expression" role="alert">
+    *   <ANY ng-message="stringValue">...</ANY>
+    *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
+    * </ANY>
+    *
+    * <!-- or by using element directives -->
+    * <ng-messages for="expression" role="alert">
+    *   <ng-message when="stringValue">...</ng-message>
+    *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
+    * </ng-messages>
+    * ```
+    *
+    * @param {expression} ngMessage|when a string value corresponding to the message key.
+    */
   .directive('ngMessage', ngMessageDirectiveFactory())
 
 
-  /**
-   * @ngdoc directive
-   * @name ngMessageExp
-   * @restrict AE
-   * @priority 1
-   * @scope
-   *
-   * @description
-   * `ngMessageExp` is a directive with the purpose to show and hide a particular message.
-   * For `ngMessageExp` to operate, a parent `ngMessages` directive on a parent DOM element
-   * must be situated since it determines which messages are visible based on the state
-   * of the provided key/value map that `ngMessages` listens on.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression">
-   *   <ANY ng-message-exp="expressionValue">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression">
-   *   <ng-message when-exp="expressionValue">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @param {expression} ngMessageExp|whenExp an expression value corresponding to the message key.
-   */
+   /**
+    * @ngdoc directive
+    * @name ngMessageExp
+    * @restrict AE
+    * @priority 1
+    * @scope
+    *
+    * @description
+    * `ngMessageExp` is a directive with the purpose to show and hide a particular message.
+    * For `ngMessageExp` to operate, a parent `ngMessages` directive on a parent DOM element
+    * must be situated since it determines which messages are visible based on the state
+    * of the provided key/value map that `ngMessages` listens on.
+    *
+    * @usage
+    * ```html
+    * <!-- using attribute directives -->
+    * <ANY ng-messages="expression">
+    *   <ANY ng-message-exp="expressionValue">...</ANY>
+    * </ANY>
+    *
+    * <!-- or by using element directives -->
+    * <ng-messages for="expression">
+    *   <ng-message when-exp="expressionValue">...</ng-message>
+    * </ng-messages>
+    * ```
+    *
+    * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
+    *
+    * @param {expression} ngMessageExp|whenExp an expression value corresponding to the message key.
+    */
   .directive('ngMessageExp', ngMessageDirectiveFactory());
 
 function ngMessageDirectiveFactory() {
@@ -50309,8 +50513,8 @@ function ngMessageDirectiveFactory() {
         var assignRecords = function(items) {
           records = items
               ? (isArray(items)
-                  ? items
-                  : items.split(/[\s,]+/))
+                    ? items
+                    : items.split(/[\s,]+/))
               : null;
           ngMessagesCtrl.reRender();
         };
@@ -50329,7 +50533,7 @@ function ngMessageDirectiveFactory() {
           },
           attach: function() {
             if (!currentElement) {
-              $transclude(function(elm, newScope) {
+              $transclude(scope, function(elm) {
                 $animate.enter(elm, null, element);
                 currentElement = elm;
 
@@ -50345,7 +50549,6 @@ function ngMessageDirectiveFactory() {
                     ngMessagesCtrl.deregister(commentNode);
                     messageCtrl.detach();
                   }
-                  newScope.$destroy();
                 });
               });
             }
@@ -67542,7 +67745,7 @@ angular.module('ngSpaApp')
         var char = String.fromCharCode(e.which);
         var text = angular.element(e.srcElement).val();
         if(!regex.test(char) || !regex.test(text)) {
-          event.preventDefault();
+          e.preventDefault();
         }
       });
 
@@ -67561,6 +67764,13 @@ class employeesController {
     });
 
     FayeClient.subscribe('/user_statuses', function(payload) {
+      $scope.$apply(()=>{
+        controllerThis.users = employeesFactory.filtered(payload, controllerThis.users);
+      })
+
+    });
+
+    FayeClient.subscribe('/user_hours', function(payload) {
       $scope.$apply(()=>{
         controllerThis.users = employeesFactory.filtered(payload, controllerThis.users);
       })
@@ -67587,6 +67797,7 @@ angular.module('ngSpaApp')
         users.forEach((user)=>{
           if (user.id == payload.id) {
             user.status = payload.status;
+            user.hours = payload.hours
           }
         });
         return users;
@@ -67598,26 +67809,25 @@ angular.module('ngSpaApp')
 })();
 'use strict';
 
-class LogoutController {
-  constructor() {
-    this.logout = ()=>{
-      this.content = 'Do you want logout?';
-      this.showPopUpDialog = true;
-    }
+function LogoutController($scope){
+  this.showPopUpDialog = false;
 
-    this.cancel = ()=> {
-      this.showPopUpDialog = false;
-    }
-
-    this.close = ()=> {
-      this.showPopUpDialog = false;
-    }
+  this.logout = ()=>{
+    this.content = 'Do you want logout?';
+    this.showPopUpDialog = true;
   }
 
+  this.cancel = ()=> {
+    this.showPopUpDialog = false;
+  }
+
+  this.close = ()=> {
+    this.showPopUpDialog = false;
+  }
 }
 
 
-LogoutController.$inject = [];
+LogoutController.$inject = ['$scope'];
 angular.module('ngSpaApp')
   .controller('LogoutController', LogoutController);
 'use strict';
@@ -67631,14 +67841,11 @@ angular.module('ngSpaApp')
   }));
 'use strict';
 
-class NavbarController {
-  constructor($location) {
-      this.activePage = $location.path();
-      this.setPage = (event)=> {
-        this.activePage = event.target.pathname;
-      }
-  }
-
+function NavbarController($location){
+	this.activePage = $location.path();
+	this.setPage = (event)=> {
+		this.activePage = event.target.pathname;
+	}
 }
 
 NavbarController.$inject = ['$location'];
@@ -67656,43 +67863,100 @@ angular.module('ngSpaApp')
 }));
 'use strict';
 
-class worktimeController {
-  constructor(worktimeFactory, $scope, users) {
-    this.hoursWorked = 0;
-    this.remainsWork = 0;
+function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $interval) {
+    worktimeFactory.stopCalculation();
+    
+    this.hoursWorked = "XX часов XX минут XX секунд";
+    this.remainsWork = "XX часов XX минут XX секунд";
 
     users.getProfile().then( (response) => {
-      this.onlineUser = response.data.data.status;
-      this.buttonPause = this.onlineUser == 'away' ? 'Continue' : 'Pause';
+      this.userStatus = response.data.data.status;
       this.btn = true;
+
+      worktimeFactory.checkRecord(response.data.data.id).then((response)=>{
+        if(this.userStatus=="online"){
+          wrapperCalculation(response);
+        }else{
+          this.hoursWorked = worktimeFactory.desintegration(response.data.data.labor_hours);
+          this.remainsWork = worktimeFactory.desintegration((8*60*60*1000)-response.data.data.labor_hours);
+        }
+      }, ()=>{
+        this.hoursWorked="0 часов";
+        this.remainsWork="8 часов";
+      });
+
     });
 
-    this.pause = ()=> {
-      if (this.buttonPause == 'Pause') {
-        this.buttonPause = 'Continue';
-        users.userStatusUpdate($scope.currentUserId, 2);
+
+    let chngUserStatus = status => {
+      users.userStatusUpdate($scope.currentUserId, this.hoursWorked, status=="offline"?0:status=="online"?1:2);
+      this.userStatus = status;
+    }
+
+    let changingTimes = (workedMs, becameOnline)=> {
+      var workedTime = workedMs + (new Date() - Date.parse(becameOnline));
+      this.hoursWorked =  worktimeFactory.desintegration(workedTime);
+      var hours = worktimeFactory.getUTCHours(workedTime);
+      users.userHoursUpdate($scope.currentUserId, hours, this.userStatus);
+
+      var remainTime = new Date(8*60*60*1000) - worktimeFactory.msRounding(workedTime);
+      if(remainTime>0)
+        this.remainsWork = worktimeFactory.desintegration(remainTime);
+      else
+        this.remainsWork = "Дома ждут!";
+    }
+
+    let wrapperCalculation = response => {
+        worktimeFactory.runCalculation(changingTimes,response.data.data.labor_hours, response.data.data.status_change_date); 
+    }
+
+    let timeStartAtFirst = response => {
+      worktimeFactory.createRecord($scope.currentUserId).then(wrapperCalculation);
+    }
+
+    let timeStartAtNext = response => {
+      worktimeFactory.updateRecordAtStartOrResume($scope.currentUserId).then(wrapperCalculation);
+    }
+
+    let timeStart = () => {
+      worktimeFactory.checkRecord($scope.currentUserId).then(timeStartAtNext, timeStartAtFirst);
+    }
+
+    let timePauseOrAway = () => {
+      if(this.userStatus=="online"){
+        worktimeFactory.stopCalculation();
+        worktimeFactory.checkRecord($scope.currentUserId).then((response)=>{
+          var ms = response.data.data.labor_hours + worktimeFactory.msRounding(new Date() - Date.parse(response.data.data.status_change_date));
+          worktimeFactory.updateRecordAtPauseOrAway($scope.currentUserId, ms);
+        });
       }
-      else {
-        this.buttonPause = 'Pause';
-        users.userStatusUpdate($scope.currentUserId, 1);
+    }
+
+    let timeResume =()=>{
+      worktimeFactory.checkRecord($scope.currentUserId).then(timeStartAtNext);
+    }
+
+    this.pause = () => {
+      if(this.userStatus == "online"){
+        timePauseOrAway();
+        chngUserStatus("away");
+      }
+      else{
+        timeResume();
+        chngUserStatus("online");
       }
     }
-
-    this.moveAway = ()=> {
-      users.userStatusUpdate($scope.currentUserId, 0);
-      this.buttonPause = 'Pause';
-      this.onlineUser = 'offline';
+    this.moveAway = () => {
+      timePauseOrAway();
+      chngUserStatus("offline");
     }
-
-    this.startTime = ()=> {
-      users.userStatusUpdate($scope.currentUserId, 1);
-      this.onlineUser = 'online';
+    this.startTime = () => {
+      timeStart();
+      chngUserStatus("online");
     }
-  }
-
 }
 
-worktimeController.$inject = ['worktimeFactory', '$scope', 'users'];
+worktimeController.$inject = ['$rootScope', 'worktimeFactory', '$scope', 'users', '$http', '$interval'];
 
 angular.module('ngSpaApp')
   .controller('worktimeController', worktimeController);
@@ -67700,13 +67964,86 @@ angular.module('ngSpaApp')
 
 (function() {
 
-  function worktimeFactoryService($http) {
+  function worktimeFactoryService($http, $rootScope, $interval) {
+
+  	function repairDate(datePart){
+  		return +datePart>=10?datePart:"0"+datePart;
+  	}
+
+  	function dateConstruct(mode) {//mode: 'short'='YYYY-MM-DD' or 'long'='YYYY-MM-DD HH:MM:SS'
+  		var data = new Date();
+  		var dataToDb =  data.getUTCFullYear() + 
+  										"-" + 
+  										repairDate(+data.getUTCMonth()+1) + 
+  										"-" + 
+  										repairDate(data.getUTCDate());
+  		if(mode=='long')
+  			dataToDb += " " +
+  									repairDate(data.getUTCHours()) +
+  									":" +
+  									repairDate(data.getUTCMinutes()) +
+  									":" +
+  									repairDate(data.getUTCSeconds());
+  		return dataToDb;
+
+  	}
+
+  	function request(method, id, params){
+  		return $http({
+  			method: method,
+  			url: method=="PUT"?'/api/v1/working_times/'+id:'/api/v1/working_times',
+  			params: params
+  		})
+  	}
 
     return {
+      desintegration: (ms)=>{
+        var dt = new Date(ms);
+        var h = dt.getUTCHours();
+        var m = dt.getUTCMinutes();
+        var s = dt.getUTCSeconds();
+        return  (h>0?h+(h==1?" час ":h<5?" часа ":" часов "):"") + 
+                (m>0?m+(m==1?" минута ":m<5?" минуты ":m<21?" минут ":m%10==0?" минут ":m%10==1?" минута ":m%10<5?" минуты ":" минут "):"") + 
+                (s>0?s+(s==1?" секунда":s<5?" секунды":s<21?" секунд":s%10==0?" секунд":s%10==1?" секунда":s%10<5?" секунды":" секунд"):"");
+      },
 
+      getUTCHours: (ms)=>{
+        var dt = new Date(ms);
+        return dt.getUTCHours();
+      },
+
+      msRounding: (ms)=>{
+      	return 1000*Math.floor(ms/1000);
+      },
+
+      runCalculation: (f, param1, param2)=>{
+      	$rootScope.intervalId = $interval(f, 1000, 0, true, param1, param2);
+      },
+
+    	stopCalculation: () => {
+    		if($rootScope.intervalId)
+      		$interval.cancel($rootScope.intervalId);
+  		},
+  		
+  		checkRecord: (id) => {
+    		return request('GET', id, {user_id: id, created_at: dateConstruct('short')});
+  		},
+
+  		createRecord: (id) => {
+    		return request('POST', id, {user_id: id, status_change_date: dateConstruct('long'), labor_hours: 0});
+  		},
+
+  		updateRecordAtStartOrResume: (id) => {
+  			return request('PUT', id, {created_at: dateConstruct('short'), status_change_date: dateConstruct('long')});
+  		},
+
+  		updateRecordAtPauseOrAway: (id, time) => {
+  			return request('PUT', id, {created_at: dateConstruct('short'), labor_hours: time});
+  		}
     };
   }
-  worktimeFactoryService.$inject = ['$http'];
+
+  worktimeFactoryService.$inject = ['$http', '$rootScope', '$interval'];
 
   angular.module('ngSpaApp')
     .factory('worktimeFactory', worktimeFactoryService);
@@ -67820,12 +68157,16 @@ angular.module('ngSpaApp')
         return $http.get('/api/v1/users/'+id);
       },
 
-      userStatusUpdate: (id, thisStatus) => {
-        FayeClient.publish('/user_statuses', {status: this.userStatuses[thisStatus], id: id});
+      userStatusUpdate: (id, hours, thisStatus) => {
+        FayeClient.publish('/user_statuses', {hours: hours, status: this.userStatuses[thisStatus], id: id});
 
         return $http.put('/api/v1/users/'+id, {
           status: thisStatus
         });
+      },
+
+      userHoursUpdate: (id, hours, thisStatus) => {
+        FayeClient.publish('/user_hours', {hours: hours, status: thisStatus, id: id});
       }
     };
   }
@@ -67845,7 +68186,7 @@ angular.module("templates").run(["$templateCache", function($templateCache) {
 // source: app/assets/javascripts/app/templates/employees/employees.tpl.html
 
 angular.module("templates").run(["$templateCache", function($templateCache) {
-  $templateCache.put("employees/employees.tpl.html", '<div class="container">\n    <div class="employees-bordered">\n        <div class="employees-header">\n            <h4>Employees</h4>\n        </div>\n        <div class="employees-body">\n            <div class="employees-tabs">\n                <ul class="nav nav-tabs" ng-click="employeesCtrl.setTabs($event)">\n                    <li role="presentation" ng-class="{\'active\': employeesCtrl.activeTabs == \'Management\'}">\n                        <a href="">Management</a>\n                    </li>\n                    <li role="presentation" ng-class="{\'active\': employeesCtrl.activeTabs == \'Developers\'}">\n                        <a href="">Developers</a>\n                    </li>\n                    <li role="presentation" ng-class="{\'active\': employeesCtrl.activeTabs == \'Trainees\'}">\n                        <a href="">Trainees</a>\n                    </li>\n                </ul>\n            </div>\n            <div class="employees-table">\n                <table class="table table-bordered table-responsive">\n                    <thead>\n                        <th>Initials</th>\n                        <th>Email</th>\n                        <th>Hours worked</th>\n                        <th>status</th>\n                    </thead>\n                    <tbody>\n                        <tr ng-repeat="user in employeesCtrl.users | filter:employeesCtrl.activeTabs">\n                            <td>{{user.full_name}}</td>\n                            <td>{{user.email}}</td>\n                            <td>{{user.id}}</td>\n                            <td ng-class="{\'online\': user.status == \'online\',\n                                            \'offline\': user.status == \'offline\'}">\n                                <span class="glyphicon-user"> </span>{{user.status}}\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n</div>')
+  $templateCache.put("employees/employees.tpl.html", '<div class="container">\n    <div class="employees-bordered">\n        <div class="employees-header">\n            <h4>Employees</h4>\n        </div>\n        <div class="employees-body">\n            <div class="employees-tabs">\n                <ul class="nav nav-tabs" ng-click="employeesCtrl.setTabs($event)">\n                    <li role="presentation" ng-class="{\'active\': employeesCtrl.activeTabs == \'Management\'}">\n                        <a href="">Management</a>\n                    </li>\n                    <li role="presentation" ng-class="{\'active\': employeesCtrl.activeTabs == \'Developers\'}">\n                        <a href="">Developers</a>\n                    </li>\n                    <li role="presentation" ng-class="{\'active\': employeesCtrl.activeTabs == \'Trainees\'}">\n                        <a href="">Trainees</a>\n                    </li>\n                </ul>\n            </div>\n            <div class="employees-table">\n                <table class="table table-bordered table-responsive">\n                    <thead>\n                        <th>Initials</th>\n                        <th>Email</th>\n                        <th>Hours worked</th>\n                        <th>status</th>\n                    </thead>\n                    <tbody>\n                        <tr ng-repeat="user in employeesCtrl.users | filter:employeesCtrl.activeTabs">\n                            <td>{{user.full_name}}</td>\n                            <td>{{user.email}}</td>\n                            <td>{{user.hours}}</td>\n                            <td ng-class="{\'online\': user.status == \'online\',\n                                            \'offline\': user.status == \'offline\'}">\n                                <span class="glyphicon-user"> </span>{{user.status}}\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n</div>')
 }]);
 
 // Angular Rails Template
@@ -67866,7 +68207,7 @@ angular.module("templates").run(["$templateCache", function($templateCache) {
 // source: app/assets/javascripts/app/templates/worktime/worktime.tpl.html
 
 angular.module("templates").run(["$templateCache", function($templateCache) {
-  $templateCache.put("worktime/worktime.tpl.html", '<div class="container">\n    <div class="row">\n        <div class="col-lg-12">\n            <div class="worktime-bordered">\n                <div class="worktime-header">\n                    <h4>Worktime</h4>\n                </div>\n                <div class="worktime-body">\n                    <h3> Hours worked: <span class="label label-success">{{ worktimeCtrl.hoursWorked }}</span> </h3>\n                    <h3> Remains to work out: <span class="label label-success">{{ worktimeCtrl.remainsWork }}</span> </h3>\n                </div>\n                <div class="worktime-footer">\n                    <div ng-show="worktimeCtrl.onlineUser != null" class="buttons animation">\n                        <div ng-if="worktimeCtrl.onlineUser!=\'offline\'">\n                            <p  class="btn-pause">\n                                <a class="btn btn-primary"\n                                        ng-click="worktimeCtrl.pause()"\n                                        ng-class="{\'btn-warning\': worktimeCtrl.buttonPause==\'Continue\'}">\n                                    {{worktimeCtrl.buttonPause}}\n                                </a>\n                            </p>\n\n                            <p class="btn-move">\n                                <a class="btn btn-primary"\n                                        ng-click="worktimeCtrl.moveAway()">\n                                    Move away\n                                </a>\n                            </p>\n                        </div>\n                        <p ng-if="worktimeCtrl.onlineUser==\'offline\'" class="btn-start">\n                            <a class="btn btn-success"\n                                    ng-click="worktimeCtrl.startTime()">\n                                Start\n                            </a>\n                        </p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>')
+  $templateCache.put("worktime/worktime.tpl.html", '<div class="container">\n    <div class="row">\n        <div class="col-lg-12">\n            <div class="worktime-bordered">\n                <div class="worktime-header">\n                    <h4>Worktime</h4>\n                </div>\n                <div class="worktime-body">\n                    <h3> Hours worked: <span class="label label-success">{{ worktimeCtrl.hoursWorked }}</span> </h3>\n                    <h3> Remains to work out: <span class="label label-success">{{ worktimeCtrl.remainsWork }}</span> </h3>\n                </div>\n                <div class="worktime-footer">\n                    <div ng-show="worktimeCtrl.userStatus != null" class="buttons animation">\n                        <div ng-if="worktimeCtrl.userStatus!=\'offline\'">\n                            <p  class="btn-pause">\n                                <a  class="btn btn-primary"\n                                    ng-click="worktimeCtrl.pause()"\n                                    ng-class="{\'btn-warning\': worktimeCtrl.userStatus == \'away\'}">\n                                    {{worktimeCtrl.userStatus==\'away\'?\'Continue\':\'Pause\'}}\n                                </a>\n                            </p>\n\n                            <p class="btn-move">\n                                <a  class="btn btn-primary"\n                                    ng-click="worktimeCtrl.moveAway()">\n                                    Move away\n                                </a>\n                            </p>\n                        </div>\n                        <p ng-if="worktimeCtrl.userStatus==\'offline\'" class="btn-start">\n                            <a  class="btn btn-success"\n                                ng-click="worktimeCtrl.startTime()">\n                                Start\n                            </a>\n                        </p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>')
 }]);
 
 // Angular Rails Template
@@ -67875,6 +68216,3324 @@ angular.module("templates").run(["$templateCache", function($templateCache) {
 angular.module("templates").run(["$templateCache", function($templateCache) {
   $templateCache.put("worldtime/worldtime.tpl.html", '<div class="world-time">\n    <div id="map">\n    </div>\n    <div sticky class="time-container">\n        <h4 class="selected-time btn-primary">{{wtCtrl.selectedTime}}</h4>\n        <h4 class="local-time btn-success">{{wtCtrl.localTime}}</h4>\n    </div>\n\n</div>')
 }]);
+
+/*!
+ * Datepicker for Bootstrap v1.6.4 (https://github.com/eternicode/bootstrap-datepicker)
+ *
+ * Copyright 2012 Stefan Petre
+ * Improvements by Andrew Rowls
+ * Licensed under the Apache License v2.0 (http://www.apache.org/licenses/LICENSE-2.0)
+ */
+(function(factory){
+    if (typeof define === "function" && define.amd) {
+        define(["jquery"], factory);
+    } else if (typeof exports === 'object') {
+        factory(require('jquery'));
+    } else {
+        factory(jQuery);
+    }
+}(function($, undefined){
+
+	function UTCDate(){
+		return new Date(Date.UTC.apply(Date, arguments));
+	}
+	function UTCToday(){
+		var today = new Date();
+		return UTCDate(today.getFullYear(), today.getMonth(), today.getDate());
+	}
+	function isUTCEquals(date1, date2) {
+		return (
+			date1.getUTCFullYear() === date2.getUTCFullYear() &&
+			date1.getUTCMonth() === date2.getUTCMonth() &&
+			date1.getUTCDate() === date2.getUTCDate()
+		);
+	}
+	function alias(method){
+		return function(){
+			return this[method].apply(this, arguments);
+		};
+	}
+	function isValidDate(d) {
+		return d && !isNaN(d.getTime());
+	}
+
+	var DateArray = (function(){
+		var extras = {
+			get: function(i){
+				return this.slice(i)[0];
+			},
+			contains: function(d){
+				// Array.indexOf is not cross-browser;
+				// $.inArray doesn't work with Dates
+				var val = d && d.valueOf();
+				for (var i=0, l=this.length; i < l; i++)
+					if (this[i].valueOf() === val)
+						return i;
+				return -1;
+			},
+			remove: function(i){
+				this.splice(i,1);
+			},
+			replace: function(new_array){
+				if (!new_array)
+					return;
+				if (!$.isArray(new_array))
+					new_array = [new_array];
+				this.clear();
+				this.push.apply(this, new_array);
+			},
+			clear: function(){
+				this.length = 0;
+			},
+			copy: function(){
+				var a = new DateArray();
+				a.replace(this);
+				return a;
+			}
+		};
+
+		return function(){
+			var a = [];
+			a.push.apply(a, arguments);
+			$.extend(a, extras);
+			return a;
+		};
+	})();
+
+
+	// Picker object
+
+	var Datepicker = function(element, options){
+		$(element).data('datepicker', this);
+		this._process_options(options);
+
+		this.dates = new DateArray();
+		this.viewDate = this.o.defaultViewDate;
+		this.focusDate = null;
+
+		this.element = $(element);
+		this.isInput = this.element.is('input');
+		this.inputField = this.isInput ? this.element : this.element.find('input');
+		this.component = this.element.hasClass('date') ? this.element.find('.add-on, .input-group-addon, .btn') : false;
+		this.hasInput = this.component && this.inputField.length;
+		if (this.component && this.component.length === 0)
+			this.component = false;
+		this.isInline = !this.component && this.element.is('div');
+
+		this.picker = $(DPGlobal.template);
+
+		// Checking templates and inserting
+		if (this._check_template(this.o.templates.leftArrow)) {
+			this.picker.find('.prev').html(this.o.templates.leftArrow);
+		}
+		if (this._check_template(this.o.templates.rightArrow)) {
+			this.picker.find('.next').html(this.o.templates.rightArrow);
+		}
+
+		this._buildEvents();
+		this._attachEvents();
+
+		if (this.isInline){
+			this.picker.addClass('datepicker-inline').appendTo(this.element);
+		}
+		else {
+			this.picker.addClass('datepicker-dropdown dropdown-menu');
+		}
+
+		if (this.o.rtl){
+			this.picker.addClass('datepicker-rtl');
+		}
+
+		this.viewMode = this.o.startView;
+
+		if (this.o.calendarWeeks)
+			this.picker.find('thead .datepicker-title, tfoot .today, tfoot .clear')
+						.attr('colspan', function(i, val){
+							return parseInt(val) + 1;
+						});
+
+		this._allow_update = false;
+
+		this.setStartDate(this._o.startDate);
+		this.setEndDate(this._o.endDate);
+		this.setDaysOfWeekDisabled(this.o.daysOfWeekDisabled);
+		this.setDaysOfWeekHighlighted(this.o.daysOfWeekHighlighted);
+		this.setDatesDisabled(this.o.datesDisabled);
+
+		this.fillDow();
+		this.fillMonths();
+
+		this._allow_update = true;
+
+		this.update();
+		this.showMode();
+
+		if (this.isInline){
+			this.show();
+		}
+	};
+
+	Datepicker.prototype = {
+		constructor: Datepicker,
+
+		_resolveViewName: function(view, default_value){
+			if (view === 0 || view === 'days' || view === 'month') {
+				return 0;
+			}
+			if (view === 1 || view === 'months' || view === 'year') {
+				return 1;
+			}
+			if (view === 2 || view === 'years' || view === 'decade') {
+				return 2;
+			}
+			if (view === 3 || view === 'decades' || view === 'century') {
+				return 3;
+			}
+			if (view === 4 || view === 'centuries' || view === 'millennium') {
+				return 4;
+			}
+			return default_value === undefined ? false : default_value;
+		},
+
+		_check_template: function(tmp){
+			try {
+				// If empty
+				if (tmp === undefined || tmp === "") {
+					return false;
+				}
+				// If no html, everything ok
+				if ((tmp.match(/[<>]/g) || []).length <= 0) {
+					return true;
+				}
+				// Checking if html is fine
+				var jDom = $(tmp);
+				return jDom.length > 0;
+			}
+			catch (ex) {
+				return false;
+			}
+		},
+
+		_process_options: function(opts){
+			// Store raw options for reference
+			this._o = $.extend({}, this._o, opts);
+			// Processed options
+			var o = this.o = $.extend({}, this._o);
+
+			// Check if "de-DE" style date is available, if not language should
+			// fallback to 2 letter code eg "de"
+			var lang = o.language;
+			if (!dates[lang]){
+				lang = lang.split('-')[0];
+				if (!dates[lang])
+					lang = defaults.language;
+			}
+			o.language = lang;
+
+			// Retrieve view index from any aliases
+			o.startView = this._resolveViewName(o.startView, 0);
+			o.minViewMode = this._resolveViewName(o.minViewMode, 0);
+			o.maxViewMode = this._resolveViewName(o.maxViewMode, 4);
+
+			// Check that the start view is between min and max
+			o.startView = Math.min(o.startView, o.maxViewMode);
+			o.startView = Math.max(o.startView, o.minViewMode);
+
+			// true, false, or Number > 0
+			if (o.multidate !== true){
+				o.multidate = Number(o.multidate) || false;
+				if (o.multidate !== false)
+					o.multidate = Math.max(0, o.multidate);
+			}
+			o.multidateSeparator = String(o.multidateSeparator);
+
+			o.weekStart %= 7;
+			o.weekEnd = (o.weekStart + 6) % 7;
+
+			var format = DPGlobal.parseFormat(o.format);
+			if (o.startDate !== -Infinity){
+				if (!!o.startDate){
+					if (o.startDate instanceof Date)
+						o.startDate = this._local_to_utc(this._zero_time(o.startDate));
+					else
+						o.startDate = DPGlobal.parseDate(o.startDate, format, o.language, o.assumeNearbyYear);
+				}
+				else {
+					o.startDate = -Infinity;
+				}
+			}
+			if (o.endDate !== Infinity){
+				if (!!o.endDate){
+					if (o.endDate instanceof Date)
+						o.endDate = this._local_to_utc(this._zero_time(o.endDate));
+					else
+						o.endDate = DPGlobal.parseDate(o.endDate, format, o.language, o.assumeNearbyYear);
+				}
+				else {
+					o.endDate = Infinity;
+				}
+			}
+
+			o.daysOfWeekDisabled = o.daysOfWeekDisabled||[];
+			if (!$.isArray(o.daysOfWeekDisabled))
+				o.daysOfWeekDisabled = o.daysOfWeekDisabled.split(/[,\s]*/);
+			o.daysOfWeekDisabled = $.map(o.daysOfWeekDisabled, function(d){
+				return parseInt(d, 10);
+			});
+
+			o.daysOfWeekHighlighted = o.daysOfWeekHighlighted||[];
+			if (!$.isArray(o.daysOfWeekHighlighted))
+				o.daysOfWeekHighlighted = o.daysOfWeekHighlighted.split(/[,\s]*/);
+			o.daysOfWeekHighlighted = $.map(o.daysOfWeekHighlighted, function(d){
+				return parseInt(d, 10);
+			});
+
+			o.datesDisabled = o.datesDisabled||[];
+			if (!$.isArray(o.datesDisabled)) {
+				o.datesDisabled = [
+					o.datesDisabled
+				];
+			}
+			o.datesDisabled = $.map(o.datesDisabled,function(d){
+				return DPGlobal.parseDate(d, format, o.language, o.assumeNearbyYear);
+			});
+
+			var plc = String(o.orientation).toLowerCase().split(/\s+/g),
+				_plc = o.orientation.toLowerCase();
+			plc = $.grep(plc, function(word){
+				return /^auto|left|right|top|bottom$/.test(word);
+			});
+			o.orientation = {x: 'auto', y: 'auto'};
+			if (!_plc || _plc === 'auto')
+				; // no action
+			else if (plc.length === 1){
+				switch (plc[0]){
+					case 'top':
+					case 'bottom':
+						o.orientation.y = plc[0];
+						break;
+					case 'left':
+					case 'right':
+						o.orientation.x = plc[0];
+						break;
+				}
+			}
+			else {
+				_plc = $.grep(plc, function(word){
+					return /^left|right$/.test(word);
+				});
+				o.orientation.x = _plc[0] || 'auto';
+
+				_plc = $.grep(plc, function(word){
+					return /^top|bottom$/.test(word);
+				});
+				o.orientation.y = _plc[0] || 'auto';
+			}
+			if (o.defaultViewDate) {
+				var year = o.defaultViewDate.year || new Date().getFullYear();
+				var month = o.defaultViewDate.month || 0;
+				var day = o.defaultViewDate.day || 1;
+				o.defaultViewDate = UTCDate(year, month, day);
+			} else {
+				o.defaultViewDate = UTCToday();
+			}
+		},
+		_events: [],
+		_secondaryEvents: [],
+		_applyEvents: function(evs){
+			for (var i=0, el, ch, ev; i < evs.length; i++){
+				el = evs[i][0];
+				if (evs[i].length === 2){
+					ch = undefined;
+					ev = evs[i][1];
+				}
+				else if (evs[i].length === 3){
+					ch = evs[i][1];
+					ev = evs[i][2];
+				}
+				el.on(ev, ch);
+			}
+		},
+		_unapplyEvents: function(evs){
+			for (var i=0, el, ev, ch; i < evs.length; i++){
+				el = evs[i][0];
+				if (evs[i].length === 2){
+					ch = undefined;
+					ev = evs[i][1];
+				}
+				else if (evs[i].length === 3){
+					ch = evs[i][1];
+					ev = evs[i][2];
+				}
+				el.off(ev, ch);
+			}
+		},
+		_buildEvents: function(){
+            var events = {
+                keyup: $.proxy(function(e){
+                    if ($.inArray(e.keyCode, [27, 37, 39, 38, 40, 32, 13, 9]) === -1)
+                        this.update();
+                }, this),
+                keydown: $.proxy(this.keydown, this),
+                paste: $.proxy(this.paste, this)
+            };
+
+            if (this.o.showOnFocus === true) {
+                events.focus = $.proxy(this.show, this);
+            }
+
+            if (this.isInput) { // single input
+                this._events = [
+                    [this.element, events]
+                ];
+            }
+            else if (this.component && this.hasInput) { // component: input + button
+                this._events = [
+                    // For components that are not readonly, allow keyboard nav
+                    [this.inputField, events],
+                    [this.component, {
+                        click: $.proxy(this.show, this)
+                    }]
+                ];
+            }
+			else {
+				this._events = [
+					[this.element, {
+						click: $.proxy(this.show, this),
+						keydown: $.proxy(this.keydown, this)
+					}]
+				];
+			}
+			this._events.push(
+				// Component: listen for blur on element descendants
+				[this.element, '*', {
+					blur: $.proxy(function(e){
+						this._focused_from = e.target;
+					}, this)
+				}],
+				// Input: listen for blur on element
+				[this.element, {
+					blur: $.proxy(function(e){
+						this._focused_from = e.target;
+					}, this)
+				}]
+			);
+
+			if (this.o.immediateUpdates) {
+				// Trigger input updates immediately on changed year/month
+				this._events.push([this.element, {
+					'changeYear changeMonth': $.proxy(function(e){
+						this.update(e.date);
+					}, this)
+				}]);
+			}
+
+			this._secondaryEvents = [
+				[this.picker, {
+					click: $.proxy(this.click, this)
+				}],
+				[$(window), {
+					resize: $.proxy(this.place, this)
+				}],
+				[$(document), {
+					mousedown: $.proxy(function(e){
+						// Clicked outside the datepicker, hide it
+						if (!(
+							this.element.is(e.target) ||
+							this.element.find(e.target).length ||
+							this.picker.is(e.target) ||
+							this.picker.find(e.target).length ||
+							this.isInline
+						)){
+							this.hide();
+						}
+					}, this)
+				}]
+			];
+		},
+		_attachEvents: function(){
+			this._detachEvents();
+			this._applyEvents(this._events);
+		},
+		_detachEvents: function(){
+			this._unapplyEvents(this._events);
+		},
+		_attachSecondaryEvents: function(){
+			this._detachSecondaryEvents();
+			this._applyEvents(this._secondaryEvents);
+		},
+		_detachSecondaryEvents: function(){
+			this._unapplyEvents(this._secondaryEvents);
+		},
+		_trigger: function(event, altdate){
+			var date = altdate || this.dates.get(-1),
+				local_date = this._utc_to_local(date);
+
+			this.element.trigger({
+				type: event,
+				date: local_date,
+				dates: $.map(this.dates, this._utc_to_local),
+				format: $.proxy(function(ix, format){
+					if (arguments.length === 0){
+						ix = this.dates.length - 1;
+						format = this.o.format;
+					}
+					else if (typeof ix === 'string'){
+						format = ix;
+						ix = this.dates.length - 1;
+					}
+					format = format || this.o.format;
+					var date = this.dates.get(ix);
+					return DPGlobal.formatDate(date, format, this.o.language);
+				}, this)
+			});
+		},
+
+		show: function(){
+			if (this.inputField.prop('disabled') || (this.inputField.prop('readonly') && this.o.enableOnReadonly === false))
+				return;
+			if (!this.isInline)
+				this.picker.appendTo(this.o.container);
+			this.place();
+			this.picker.show();
+			this._attachSecondaryEvents();
+			this._trigger('show');
+			if ((window.navigator.msMaxTouchPoints || 'ontouchstart' in document) && this.o.disableTouchKeyboard) {
+				$(this.element).blur();
+			}
+			return this;
+		},
+
+		hide: function(){
+			if (this.isInline || !this.picker.is(':visible'))
+				return this;
+			this.focusDate = null;
+			this.picker.hide().detach();
+			this._detachSecondaryEvents();
+			this.viewMode = this.o.startView;
+			this.showMode();
+
+			if (this.o.forceParse && this.inputField.val())
+				this.setValue();
+			this._trigger('hide');
+			return this;
+		},
+
+		destroy: function(){
+			this.hide();
+			this._detachEvents();
+			this._detachSecondaryEvents();
+			this.picker.remove();
+			delete this.element.data().datepicker;
+			if (!this.isInput){
+				delete this.element.data().date;
+			}
+			return this;
+		},
+
+		paste: function(evt){
+			var dateString;
+			if (evt.originalEvent.clipboardData && evt.originalEvent.clipboardData.types
+				&& $.inArray('text/plain', evt.originalEvent.clipboardData.types) !== -1) {
+				dateString = evt.originalEvent.clipboardData.getData('text/plain');
+			}
+			else if (window.clipboardData) {
+				dateString = window.clipboardData.getData('Text');
+			}
+			else {
+				return;
+			}
+			this.setDate(dateString);
+			this.update();
+			evt.preventDefault();
+		},
+
+		_utc_to_local: function(utc){
+			return utc && new Date(utc.getTime() + (utc.getTimezoneOffset()*60000));
+		},
+		_local_to_utc: function(local){
+			return local && new Date(local.getTime() - (local.getTimezoneOffset()*60000));
+		},
+		_zero_time: function(local){
+			return local && new Date(local.getFullYear(), local.getMonth(), local.getDate());
+		},
+		_zero_utc_time: function(utc){
+			return utc && new Date(Date.UTC(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate()));
+		},
+
+		getDates: function(){
+			return $.map(this.dates, this._utc_to_local);
+		},
+
+		getUTCDates: function(){
+			return $.map(this.dates, function(d){
+				return new Date(d);
+			});
+		},
+
+		getDate: function(){
+			return this._utc_to_local(this.getUTCDate());
+		},
+
+		getUTCDate: function(){
+			var selected_date = this.dates.get(-1);
+			if (typeof selected_date !== 'undefined') {
+				return new Date(selected_date);
+			} else {
+				return null;
+			}
+		},
+
+		clearDates: function(){
+			if (this.inputField) {
+				this.inputField.val('');
+			}
+
+			this.update();
+			this._trigger('changeDate');
+
+			if (this.o.autoclose) {
+				this.hide();
+			}
+		},
+		setDates: function(){
+			var args = $.isArray(arguments[0]) ? arguments[0] : arguments;
+			this.update.apply(this, args);
+			this._trigger('changeDate');
+			this.setValue();
+			return this;
+		},
+
+		setUTCDates: function(){
+			var args = $.isArray(arguments[0]) ? arguments[0] : arguments;
+			this.update.apply(this, $.map(args, this._utc_to_local));
+			this._trigger('changeDate');
+			this.setValue();
+			return this;
+		},
+
+		setDate: alias('setDates'),
+		setUTCDate: alias('setUTCDates'),
+		remove: alias('destroy'),
+
+		setValue: function(){
+			var formatted = this.getFormattedDate();
+			this.inputField.val(formatted);
+			return this;
+		},
+
+		getFormattedDate: function(format){
+			if (format === undefined)
+				format = this.o.format;
+
+			var lang = this.o.language;
+			return $.map(this.dates, function(d){
+				return DPGlobal.formatDate(d, format, lang);
+			}).join(this.o.multidateSeparator);
+		},
+
+		getStartDate: function(){
+			return this.o.startDate;
+		},
+
+		setStartDate: function(startDate){
+			this._process_options({startDate: startDate});
+			this.update();
+			this.updateNavArrows();
+			return this;
+		},
+
+		getEndDate: function(){
+			return this.o.endDate;
+		},
+
+		setEndDate: function(endDate){
+			this._process_options({endDate: endDate});
+			this.update();
+			this.updateNavArrows();
+			return this;
+		},
+
+		setDaysOfWeekDisabled: function(daysOfWeekDisabled){
+			this._process_options({daysOfWeekDisabled: daysOfWeekDisabled});
+			this.update();
+			this.updateNavArrows();
+			return this;
+		},
+
+		setDaysOfWeekHighlighted: function(daysOfWeekHighlighted){
+			this._process_options({daysOfWeekHighlighted: daysOfWeekHighlighted});
+			this.update();
+			return this;
+		},
+
+		setDatesDisabled: function(datesDisabled){
+			this._process_options({datesDisabled: datesDisabled});
+			this.update();
+			this.updateNavArrows();
+		},
+
+		place: function(){
+			if (this.isInline)
+				return this;
+			var calendarWidth = this.picker.outerWidth(),
+				calendarHeight = this.picker.outerHeight(),
+				visualPadding = 10,
+				container = $(this.o.container),
+				windowWidth = container.width(),
+				scrollTop = this.o.container === 'body' ? $(document).scrollTop() : container.scrollTop(),
+				appendOffset = container.offset();
+
+			var parentsZindex = [];
+			this.element.parents().each(function(){
+				var itemZIndex = $(this).css('z-index');
+				if (itemZIndex !== 'auto' && itemZIndex !== 0) parentsZindex.push(parseInt(itemZIndex));
+			});
+			var zIndex = Math.max.apply(Math, parentsZindex) + this.o.zIndexOffset;
+			var offset = this.component ? this.component.parent().offset() : this.element.offset();
+			var height = this.component ? this.component.outerHeight(true) : this.element.outerHeight(false);
+			var width = this.component ? this.component.outerWidth(true) : this.element.outerWidth(false);
+			var left = offset.left - appendOffset.left,
+				top = offset.top - appendOffset.top;
+
+			if (this.o.container !== 'body') {
+				top += scrollTop;
+			}
+
+			this.picker.removeClass(
+				'datepicker-orient-top datepicker-orient-bottom '+
+				'datepicker-orient-right datepicker-orient-left'
+			);
+
+			if (this.o.orientation.x !== 'auto'){
+				this.picker.addClass('datepicker-orient-' + this.o.orientation.x);
+				if (this.o.orientation.x === 'right')
+					left -= calendarWidth - width;
+			}
+			// auto x orientation is best-placement: if it crosses a window
+			// edge, fudge it sideways
+			else {
+				if (offset.left < 0) {
+					// component is outside the window on the left side. Move it into visible range
+					this.picker.addClass('datepicker-orient-left');
+					left -= offset.left - visualPadding;
+				} else if (left + calendarWidth > windowWidth) {
+					// the calendar passes the widow right edge. Align it to component right side
+					this.picker.addClass('datepicker-orient-right');
+					left += width - calendarWidth;
+				} else {
+					// Default to left
+					this.picker.addClass('datepicker-orient-left');
+				}
+			}
+
+			// auto y orientation is best-situation: top or bottom, no fudging,
+			// decision based on which shows more of the calendar
+			var yorient = this.o.orientation.y,
+				top_overflow;
+			if (yorient === 'auto'){
+				top_overflow = -scrollTop + top - calendarHeight;
+				yorient = top_overflow < 0 ? 'bottom' : 'top';
+			}
+
+			this.picker.addClass('datepicker-orient-' + yorient);
+			if (yorient === 'top')
+				top -= calendarHeight + parseInt(this.picker.css('padding-top'));
+			else
+				top += height;
+
+			if (this.o.rtl) {
+				var right = windowWidth - (left + width);
+				this.picker.css({
+					top: top,
+					right: right,
+					zIndex: zIndex
+				});
+			} else {
+				this.picker.css({
+					top: top,
+					left: left,
+					zIndex: zIndex
+				});
+			}
+			return this;
+		},
+
+		_allow_update: true,
+		update: function(){
+			if (!this._allow_update)
+				return this;
+
+			var oldDates = this.dates.copy(),
+				dates = [],
+				fromArgs = false;
+			if (arguments.length){
+				$.each(arguments, $.proxy(function(i, date){
+					if (date instanceof Date)
+						date = this._local_to_utc(date);
+					dates.push(date);
+				}, this));
+				fromArgs = true;
+			}
+			else {
+				dates = this.isInput
+						? this.element.val()
+						: this.element.data('date') || this.inputField.val();
+				if (dates && this.o.multidate)
+					dates = dates.split(this.o.multidateSeparator);
+				else
+					dates = [dates];
+				delete this.element.data().date;
+			}
+
+			dates = $.map(dates, $.proxy(function(date){
+				return DPGlobal.parseDate(date, this.o.format, this.o.language, this.o.assumeNearbyYear);
+			}, this));
+			dates = $.grep(dates, $.proxy(function(date){
+				return (
+					!this.dateWithinRange(date) ||
+					!date
+				);
+			}, this), true);
+			this.dates.replace(dates);
+
+			if (this.dates.length)
+				this.viewDate = new Date(this.dates.get(-1));
+			else if (this.viewDate < this.o.startDate)
+				this.viewDate = new Date(this.o.startDate);
+			else if (this.viewDate > this.o.endDate)
+				this.viewDate = new Date(this.o.endDate);
+			else
+				this.viewDate = this.o.defaultViewDate;
+
+			if (fromArgs){
+				// setting date by clicking
+				this.setValue();
+			}
+			else if (dates.length){
+				// setting date by typing
+				if (String(oldDates) !== String(this.dates))
+					this._trigger('changeDate');
+			}
+			if (!this.dates.length && oldDates.length)
+				this._trigger('clearDate');
+
+			this.fill();
+			this.element.change();
+			return this;
+		},
+
+		fillDow: function(){
+			var dowCnt = this.o.weekStart,
+				html = '<tr>';
+			if (this.o.calendarWeeks){
+				this.picker.find('.datepicker-days .datepicker-switch')
+					.attr('colspan', function(i, val){
+						return parseInt(val) + 1;
+					});
+				html += '<th class="cw">&#160;</th>';
+			}
+			while (dowCnt < this.o.weekStart + 7){
+				html += '<th class="dow';
+        if ($.inArray(dowCnt, this.o.daysOfWeekDisabled) > -1)
+          html += ' disabled';
+        html += '">'+dates[this.o.language].daysMin[(dowCnt++)%7]+'</th>';
+			}
+			html += '</tr>';
+			this.picker.find('.datepicker-days thead').append(html);
+		},
+
+		fillMonths: function(){
+      var localDate = this._utc_to_local(this.viewDate);
+			var html = '',
+			i = 0;
+			while (i < 12){
+        var focused = localDate && localDate.getMonth() === i ? ' focused' : '';
+				html += '<span class="month' + focused + '">' + dates[this.o.language].monthsShort[i++]+'</span>';
+			}
+			this.picker.find('.datepicker-months td').html(html);
+		},
+
+		setRange: function(range){
+			if (!range || !range.length)
+				delete this.range;
+			else
+				this.range = $.map(range, function(d){
+					return d.valueOf();
+				});
+			this.fill();
+		},
+
+		getClassNames: function(date){
+			var cls = [],
+				year = this.viewDate.getUTCFullYear(),
+				month = this.viewDate.getUTCMonth(),
+				today = new Date();
+			if (date.getUTCFullYear() < year || (date.getUTCFullYear() === year && date.getUTCMonth() < month)){
+				cls.push('old');
+			}
+			else if (date.getUTCFullYear() > year || (date.getUTCFullYear() === year && date.getUTCMonth() > month)){
+				cls.push('new');
+			}
+			if (this.focusDate && date.valueOf() === this.focusDate.valueOf())
+				cls.push('focused');
+			// Compare internal UTC date with local today, not UTC today
+			if (this.o.todayHighlight &&
+				date.getUTCFullYear() === today.getFullYear() &&
+				date.getUTCMonth() === today.getMonth() &&
+				date.getUTCDate() === today.getDate()){
+				cls.push('today');
+			}
+			if (this.dates.contains(date) !== -1)
+				cls.push('active');
+			if (!this.dateWithinRange(date)){
+				cls.push('disabled');
+			}
+			if (this.dateIsDisabled(date)){
+				cls.push('disabled', 'disabled-date');	
+			} 
+			if ($.inArray(date.getUTCDay(), this.o.daysOfWeekHighlighted) !== -1){
+				cls.push('highlighted');
+			}
+
+			if (this.range){
+				if (date > this.range[0] && date < this.range[this.range.length-1]){
+					cls.push('range');
+				}
+				if ($.inArray(date.valueOf(), this.range) !== -1){
+					cls.push('selected');
+				}
+				if (date.valueOf() === this.range[0]){
+          cls.push('range-start');
+        }
+        if (date.valueOf() === this.range[this.range.length-1]){
+          cls.push('range-end');
+        }
+			}
+			return cls;
+		},
+
+		_fill_yearsView: function(selector, cssClass, factor, step, currentYear, startYear, endYear, callback){
+			var html, view, year, steps, startStep, endStep, thisYear, i, classes, tooltip, before;
+
+			html      = '';
+			view      = this.picker.find(selector);
+			year      = parseInt(currentYear / factor, 10) * factor;
+			startStep = parseInt(startYear / step, 10) * step;
+			endStep   = parseInt(endYear / step, 10) * step;
+			steps     = $.map(this.dates, function(d){
+				return parseInt(d.getUTCFullYear() / step, 10) * step;
+			});
+
+			view.find('.datepicker-switch').text(year + '-' + (year + step * 9));
+
+			thisYear = year - step;
+			for (i = -1; i < 11; i += 1) {
+				classes = [cssClass];
+				tooltip = null;
+
+				if (i === -1) {
+					classes.push('old');
+				} else if (i === 10) {
+					classes.push('new');
+				}
+				if ($.inArray(thisYear, steps) !== -1) {
+					classes.push('active');
+				}
+				if (thisYear < startStep || thisYear > endStep) {
+					classes.push('disabled');
+				}
+        if (thisYear === this.viewDate.getFullYear()) {
+				  classes.push('focused');
+        }
+
+				if (callback !== $.noop) {
+					before = callback(new Date(thisYear, 0, 1));
+					if (before === undefined) {
+						before = {};
+					} else if (typeof(before) === 'boolean') {
+						before = {enabled: before};
+					} else if (typeof(before) === 'string') {
+						before = {classes: before};
+					}
+					if (before.enabled === false) {
+						classes.push('disabled');
+					}
+					if (before.classes) {
+						classes = classes.concat(before.classes.split(/\s+/));
+					}
+					if (before.tooltip) {
+						tooltip = before.tooltip;
+					}
+				}
+
+				html += '<span class="' + classes.join(' ') + '"' + (tooltip ? ' title="' + tooltip + '"' : '') + '>' + thisYear + '</span>';
+				thisYear += step;
+			}
+			view.find('td').html(html);
+		},
+
+		fill: function(){
+			var d = new Date(this.viewDate),
+				year = d.getUTCFullYear(),
+				month = d.getUTCMonth(),
+				startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : -Infinity,
+				startMonth = this.o.startDate !== -Infinity ? this.o.startDate.getUTCMonth() : -Infinity,
+				endYear = this.o.endDate !== Infinity ? this.o.endDate.getUTCFullYear() : Infinity,
+				endMonth = this.o.endDate !== Infinity ? this.o.endDate.getUTCMonth() : Infinity,
+				todaytxt = dates[this.o.language].today || dates['en'].today || '',
+				cleartxt = dates[this.o.language].clear || dates['en'].clear || '',
+				titleFormat = dates[this.o.language].titleFormat || dates['en'].titleFormat,
+				tooltip,
+				before;
+			if (isNaN(year) || isNaN(month))
+				return;
+			this.picker.find('.datepicker-days .datepicker-switch')
+						.text(DPGlobal.formatDate(d, titleFormat, this.o.language));
+			this.picker.find('tfoot .today')
+						.text(todaytxt)
+						.toggle(this.o.todayBtn !== false);
+			this.picker.find('tfoot .clear')
+						.text(cleartxt)
+						.toggle(this.o.clearBtn !== false);
+			this.picker.find('thead .datepicker-title')
+						.text(this.o.title)
+						.toggle(this.o.title !== '');
+			this.updateNavArrows();
+			this.fillMonths();
+			var prevMonth = UTCDate(year, month-1, 28),
+				day = DPGlobal.getDaysInMonth(prevMonth.getUTCFullYear(), prevMonth.getUTCMonth());
+			prevMonth.setUTCDate(day);
+			prevMonth.setUTCDate(day - (prevMonth.getUTCDay() - this.o.weekStart + 7)%7);
+			var nextMonth = new Date(prevMonth);
+			if (prevMonth.getUTCFullYear() < 100){
+        nextMonth.setUTCFullYear(prevMonth.getUTCFullYear());
+      }
+			nextMonth.setUTCDate(nextMonth.getUTCDate() + 42);
+			nextMonth = nextMonth.valueOf();
+			var html = [];
+			var clsName;
+			while (prevMonth.valueOf() < nextMonth){
+				if (prevMonth.getUTCDay() === this.o.weekStart){
+					html.push('<tr>');
+					if (this.o.calendarWeeks){
+						// ISO 8601: First week contains first thursday.
+						// ISO also states week starts on Monday, but we can be more abstract here.
+						var
+							// Start of current week: based on weekstart/current date
+							ws = new Date(+prevMonth + (this.o.weekStart - prevMonth.getUTCDay() - 7) % 7 * 864e5),
+							// Thursday of this week
+							th = new Date(Number(ws) + (7 + 4 - ws.getUTCDay()) % 7 * 864e5),
+							// First Thursday of year, year from thursday
+							yth = new Date(Number(yth = UTCDate(th.getUTCFullYear(), 0, 1)) + (7 + 4 - yth.getUTCDay())%7*864e5),
+							// Calendar week: ms between thursdays, div ms per day, div 7 days
+							calWeek =  (th - yth) / 864e5 / 7 + 1;
+						html.push('<td class="cw">'+ calWeek +'</td>');
+					}
+				}
+				clsName = this.getClassNames(prevMonth);
+				clsName.push('day');
+
+				if (this.o.beforeShowDay !== $.noop){
+					before = this.o.beforeShowDay(this._utc_to_local(prevMonth));
+					if (before === undefined)
+						before = {};
+					else if (typeof(before) === 'boolean')
+						before = {enabled: before};
+					else if (typeof(before) === 'string')
+						before = {classes: before};
+					if (before.enabled === false)
+						clsName.push('disabled');
+					if (before.classes)
+						clsName = clsName.concat(before.classes.split(/\s+/));
+					if (before.tooltip)
+						tooltip = before.tooltip;
+				}
+
+				//Check if uniqueSort exists (supported by jquery >=1.12 and >=2.2)
+				//Fallback to unique function for older jquery versions
+				if ($.isFunction($.uniqueSort)) {
+					clsName = $.uniqueSort(clsName);
+				} else {
+					clsName = $.unique(clsName);
+				}
+
+				html.push('<td class="'+clsName.join(' ')+'"' + (tooltip ? ' title="'+tooltip+'"' : '') + '>'+prevMonth.getUTCDate() + '</td>');
+				tooltip = null;
+				if (prevMonth.getUTCDay() === this.o.weekEnd){
+					html.push('</tr>');
+				}
+				prevMonth.setUTCDate(prevMonth.getUTCDate()+1);
+			}
+			this.picker.find('.datepicker-days tbody').empty().append(html.join(''));
+
+			var monthsTitle = dates[this.o.language].monthsTitle || dates['en'].monthsTitle || 'Months';
+			var months = this.picker.find('.datepicker-months')
+						.find('.datepicker-switch')
+							.text(this.o.maxViewMode < 2 ? monthsTitle : year)
+							.end()
+						.find('span').removeClass('active');
+
+			$.each(this.dates, function(i, d){
+				if (d.getUTCFullYear() === year)
+					months.eq(d.getUTCMonth()).addClass('active');
+			});
+
+			if (year < startYear || year > endYear){
+				months.addClass('disabled');
+			}
+			if (year === startYear){
+				months.slice(0, startMonth).addClass('disabled');
+			}
+			if (year === endYear){
+				months.slice(endMonth+1).addClass('disabled');
+			}
+
+			if (this.o.beforeShowMonth !== $.noop){
+				var that = this;
+				$.each(months, function(i, month){
+          var moDate = new Date(year, i, 1);
+          var before = that.o.beforeShowMonth(moDate);
+					if (before === undefined)
+						before = {};
+					else if (typeof(before) === 'boolean')
+						before = {enabled: before};
+					else if (typeof(before) === 'string')
+						before = {classes: before};
+					if (before.enabled === false && !$(month).hasClass('disabled'))
+					    $(month).addClass('disabled');
+					if (before.classes)
+					    $(month).addClass(before.classes);
+					if (before.tooltip)
+					    $(month).prop('title', before.tooltip);
+				});
+			}
+
+			// Generating decade/years picker
+			this._fill_yearsView(
+				'.datepicker-years',
+				'year',
+				10,
+				1,
+				year,
+				startYear,
+				endYear,
+				this.o.beforeShowYear
+			);
+
+			// Generating century/decades picker
+			this._fill_yearsView(
+				'.datepicker-decades',
+				'decade',
+				100,
+				10,
+				year,
+				startYear,
+				endYear,
+				this.o.beforeShowDecade
+			);
+
+			// Generating millennium/centuries picker
+			this._fill_yearsView(
+				'.datepicker-centuries',
+				'century',
+				1000,
+				100,
+				year,
+				startYear,
+				endYear,
+				this.o.beforeShowCentury
+			);
+		},
+
+		updateNavArrows: function(){
+			if (!this._allow_update)
+				return;
+
+			var d = new Date(this.viewDate),
+				year = d.getUTCFullYear(),
+				month = d.getUTCMonth();
+			switch (this.viewMode){
+				case 0:
+					if (this.o.startDate !== -Infinity && year <= this.o.startDate.getUTCFullYear() && month <= this.o.startDate.getUTCMonth()){
+						this.picker.find('.prev').css({visibility: 'hidden'});
+					}
+					else {
+						this.picker.find('.prev').css({visibility: 'visible'});
+					}
+					if (this.o.endDate !== Infinity && year >= this.o.endDate.getUTCFullYear() && month >= this.o.endDate.getUTCMonth()){
+						this.picker.find('.next').css({visibility: 'hidden'});
+					}
+					else {
+						this.picker.find('.next').css({visibility: 'visible'});
+					}
+					break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+					if (this.o.startDate !== -Infinity && year <= this.o.startDate.getUTCFullYear() || this.o.maxViewMode < 2){
+						this.picker.find('.prev').css({visibility: 'hidden'});
+					}
+					else {
+						this.picker.find('.prev').css({visibility: 'visible'});
+					}
+					if (this.o.endDate !== Infinity && year >= this.o.endDate.getUTCFullYear() || this.o.maxViewMode < 2){
+						this.picker.find('.next').css({visibility: 'hidden'});
+					}
+					else {
+						this.picker.find('.next').css({visibility: 'visible'});
+					}
+					break;
+			}
+		},
+
+		click: function(e){
+			e.preventDefault();
+			e.stopPropagation();
+
+			var target, dir, day, year, month, monthChanged, yearChanged;
+			target = $(e.target);
+
+			// Clicked on the switch
+			if (target.hasClass('datepicker-switch')){
+				this.showMode(1);
+			}
+
+			// Clicked on prev or next
+			var navArrow = target.closest('.prev, .next');
+			if (navArrow.length > 0) {
+				dir = DPGlobal.modes[this.viewMode].navStep * (navArrow.hasClass('prev') ? -1 : 1);
+				if (this.viewMode === 0){
+					this.viewDate = this.moveMonth(this.viewDate, dir);
+					this._trigger('changeMonth', this.viewDate);
+				} else {
+					this.viewDate = this.moveYear(this.viewDate, dir);
+					if (this.viewMode === 1){
+						this._trigger('changeYear', this.viewDate);
+					}
+				}
+				this.fill();
+			}
+
+			// Clicked on today button
+			if (target.hasClass('today') && !target.hasClass('day')){
+				this.showMode(-2);
+				this._setDate(UTCToday(), this.o.todayBtn === 'linked' ? null : 'view');
+			}
+
+			// Clicked on clear button
+			if (target.hasClass('clear')){
+				this.clearDates();
+			}
+
+			if (!target.hasClass('disabled')){
+				// Clicked on a day
+				if (target.hasClass('day')){
+					day = parseInt(target.text(), 10) || 1;
+					year = this.viewDate.getUTCFullYear();
+					month = this.viewDate.getUTCMonth();
+
+					// From last month
+					if (target.hasClass('old')){
+						if (month === 0) {
+							month = 11;
+							year = year - 1;
+							monthChanged = true;
+							yearChanged = true;
+						} else {
+							month = month - 1;
+							monthChanged = true;
+ 						}
+ 					}
+
+					// From next month
+					if (target.hasClass('new')) {
+						if (month === 11){
+							month = 0;
+							year = year + 1;
+							monthChanged = true;
+							yearChanged = true;
+ 						} else {
+							month = month + 1;
+							monthChanged = true;
+ 						}
+					}
+					this._setDate(UTCDate(year, month, day));
+					if (yearChanged) {
+						this._trigger('changeYear', this.viewDate);
+					}
+					if (monthChanged) {
+						this._trigger('changeMonth', this.viewDate);
+					}
+				}
+
+				// Clicked on a month
+				if (target.hasClass('month')) {
+					this.viewDate.setUTCDate(1);
+					day = 1;
+					month = target.parent().find('span').index(target);
+					year = this.viewDate.getUTCFullYear();
+					this.viewDate.setUTCMonth(month);
+					this._trigger('changeMonth', this.viewDate);
+					if (this.o.minViewMode === 1){
+						this._setDate(UTCDate(year, month, day));
+						this.showMode();
+					} else {
+						this.showMode(-1);
+					}
+					this.fill();
+				}
+
+				// Clicked on a year
+				if (target.hasClass('year')
+						|| target.hasClass('decade')
+						|| target.hasClass('century')) {
+					this.viewDate.setUTCDate(1);
+
+					day = 1;
+					month = 0;
+					year = parseInt(target.text(), 10)||0;
+					this.viewDate.setUTCFullYear(year);
+
+					if (target.hasClass('year')){
+						this._trigger('changeYear', this.viewDate);
+						if (this.o.minViewMode === 2){
+							this._setDate(UTCDate(year, month, day));
+						}
+					}
+					if (target.hasClass('decade')){
+						this._trigger('changeDecade', this.viewDate);
+						if (this.o.minViewMode === 3){
+							this._setDate(UTCDate(year, month, day));
+						}
+					}
+					if (target.hasClass('century')){
+						this._trigger('changeCentury', this.viewDate);
+						if (this.o.minViewMode === 4){
+							this._setDate(UTCDate(year, month, day));
+						}
+					}
+
+					this.showMode(-1);
+					this.fill();
+				}
+			}
+
+			if (this.picker.is(':visible') && this._focused_from){
+				$(this._focused_from).focus();
+			}
+			delete this._focused_from;
+		},
+
+		_toggle_multidate: function(date){
+			var ix = this.dates.contains(date);
+			if (!date){
+				this.dates.clear();
+			}
+
+			if (ix !== -1){
+				if (this.o.multidate === true || this.o.multidate > 1 || this.o.toggleActive){
+					this.dates.remove(ix);
+				}
+			} else if (this.o.multidate === false) {
+				this.dates.clear();
+				this.dates.push(date);
+			}
+			else {
+				this.dates.push(date);
+			}
+
+			if (typeof this.o.multidate === 'number')
+				while (this.dates.length > this.o.multidate)
+					this.dates.remove(0);
+		},
+
+		_setDate: function(date, which){
+			if (!which || which === 'date')
+				this._toggle_multidate(date && new Date(date));
+			if (!which || which === 'view')
+				this.viewDate = date && new Date(date);
+
+			this.fill();
+			this.setValue();
+			if (!which || which !== 'view') {
+				this._trigger('changeDate');
+			}
+			if (this.inputField){
+				this.inputField.change();
+			}
+			if (this.o.autoclose && (!which || which === 'date')){
+				this.hide();
+			}
+		},
+
+		moveDay: function(date, dir){
+			var newDate = new Date(date);
+			newDate.setUTCDate(date.getUTCDate() + dir);
+
+			return newDate;
+		},
+
+		moveWeek: function(date, dir){
+			return this.moveDay(date, dir * 7);
+		},
+
+		moveMonth: function(date, dir){
+			if (!isValidDate(date))
+				return this.o.defaultViewDate;
+			if (!dir)
+				return date;
+			var new_date = new Date(date.valueOf()),
+				day = new_date.getUTCDate(),
+				month = new_date.getUTCMonth(),
+				mag = Math.abs(dir),
+				new_month, test;
+			dir = dir > 0 ? 1 : -1;
+			if (mag === 1){
+				test = dir === -1
+					// If going back one month, make sure month is not current month
+					// (eg, Mar 31 -> Feb 31 == Feb 28, not Mar 02)
+					? function(){
+						return new_date.getUTCMonth() === month;
+					}
+					// If going forward one month, make sure month is as expected
+					// (eg, Jan 31 -> Feb 31 == Feb 28, not Mar 02)
+					: function(){
+						return new_date.getUTCMonth() !== new_month;
+					};
+				new_month = month + dir;
+				new_date.setUTCMonth(new_month);
+				// Dec -> Jan (12) or Jan -> Dec (-1) -- limit expected date to 0-11
+				if (new_month < 0 || new_month > 11)
+					new_month = (new_month + 12) % 12;
+			}
+			else {
+				// For magnitudes >1, move one month at a time...
+				for (var i=0; i < mag; i++)
+					// ...which might decrease the day (eg, Jan 31 to Feb 28, etc)...
+					new_date = this.moveMonth(new_date, dir);
+				// ...then reset the day, keeping it in the new month
+				new_month = new_date.getUTCMonth();
+				new_date.setUTCDate(day);
+				test = function(){
+					return new_month !== new_date.getUTCMonth();
+				};
+			}
+			// Common date-resetting loop -- if date is beyond end of month, make it
+			// end of month
+			while (test()){
+				new_date.setUTCDate(--day);
+				new_date.setUTCMonth(new_month);
+			}
+			return new_date;
+		},
+
+		moveYear: function(date, dir){
+			return this.moveMonth(date, dir*12);
+		},
+
+		moveAvailableDate: function(date, dir, fn){
+			do {
+				date = this[fn](date, dir);
+
+				if (!this.dateWithinRange(date))
+					return false;
+
+				fn = 'moveDay';
+			}
+			while (this.dateIsDisabled(date));
+
+			return date;
+		},
+
+		weekOfDateIsDisabled: function(date){
+			return $.inArray(date.getUTCDay(), this.o.daysOfWeekDisabled) !== -1;
+		},
+
+		dateIsDisabled: function(date){
+			return (
+				this.weekOfDateIsDisabled(date) ||
+				$.grep(this.o.datesDisabled, function(d){
+					return isUTCEquals(date, d);
+				}).length > 0
+			);
+		},
+
+		dateWithinRange: function(date){
+			return date >= this.o.startDate && date <= this.o.endDate;
+		},
+
+		keydown: function(e){
+			if (!this.picker.is(':visible')){
+				if (e.keyCode === 40 || e.keyCode === 27) { // allow down to re-show picker
+					this.show();
+					e.stopPropagation();
+        }
+				return;
+			}
+			var dateChanged = false,
+				dir, newViewDate,
+				focusDate = this.focusDate || this.viewDate;
+			switch (e.keyCode){
+				case 27: // escape
+					if (this.focusDate){
+						this.focusDate = null;
+						this.viewDate = this.dates.get(-1) || this.viewDate;
+						this.fill();
+					}
+					else
+						this.hide();
+					e.preventDefault();
+					e.stopPropagation();
+					break;
+				case 37: // left
+				case 38: // up
+				case 39: // right
+				case 40: // down
+					if (!this.o.keyboardNavigation || this.o.daysOfWeekDisabled.length === 7)
+						break;
+					dir = e.keyCode === 37 || e.keyCode === 38 ? -1 : 1;
+          if (this.viewMode === 0) {
+  					if (e.ctrlKey){
+  						newViewDate = this.moveAvailableDate(focusDate, dir, 'moveYear');
+
+  						if (newViewDate)
+  							this._trigger('changeYear', this.viewDate);
+  					}
+  					else if (e.shiftKey){
+  						newViewDate = this.moveAvailableDate(focusDate, dir, 'moveMonth');
+
+  						if (newViewDate)
+  							this._trigger('changeMonth', this.viewDate);
+  					}
+  					else if (e.keyCode === 37 || e.keyCode === 39){
+  						newViewDate = this.moveAvailableDate(focusDate, dir, 'moveDay');
+  					}
+  					else if (!this.weekOfDateIsDisabled(focusDate)){
+  						newViewDate = this.moveAvailableDate(focusDate, dir, 'moveWeek');
+  					}
+          } else if (this.viewMode === 1) {
+            if (e.keyCode === 38 || e.keyCode === 40) {
+              dir = dir * 4;
+            }
+            newViewDate = this.moveAvailableDate(focusDate, dir, 'moveMonth');
+          } else if (this.viewMode === 2) {
+            if (e.keyCode === 38 || e.keyCode === 40) {
+              dir = dir * 4;
+            }
+            newViewDate = this.moveAvailableDate(focusDate, dir, 'moveYear');
+          }
+					if (newViewDate){
+						this.focusDate = this.viewDate = newViewDate;
+						this.setValue();
+						this.fill();
+						e.preventDefault();
+					}
+					break;
+				case 13: // enter
+					if (!this.o.forceParse)
+						break;
+					focusDate = this.focusDate || this.dates.get(-1) || this.viewDate;
+					if (this.o.keyboardNavigation) {
+						this._toggle_multidate(focusDate);
+						dateChanged = true;
+					}
+					this.focusDate = null;
+					this.viewDate = this.dates.get(-1) || this.viewDate;
+					this.setValue();
+					this.fill();
+					if (this.picker.is(':visible')){
+						e.preventDefault();
+						e.stopPropagation();
+						if (this.o.autoclose)
+							this.hide();
+					}
+					break;
+				case 9: // tab
+					this.focusDate = null;
+					this.viewDate = this.dates.get(-1) || this.viewDate;
+					this.fill();
+					this.hide();
+					break;
+			}
+			if (dateChanged){
+				if (this.dates.length)
+					this._trigger('changeDate');
+				else
+					this._trigger('clearDate');
+				if (this.inputField){
+					this.inputField.change();
+				}
+			}
+		},
+
+		showMode: function(dir){
+			if (dir){
+				this.viewMode = Math.max(this.o.minViewMode, Math.min(this.o.maxViewMode, this.viewMode + dir));
+			}
+			this.picker
+				.children('div')
+				.hide()
+				.filter('.datepicker-' + DPGlobal.modes[this.viewMode].clsName)
+					.show();
+			this.updateNavArrows();
+		}
+	};
+
+	var DateRangePicker = function(element, options){
+		$(element).data('datepicker', this);
+		this.element = $(element);
+		this.inputs = $.map(options.inputs, function(i){
+			return i.jquery ? i[0] : i;
+		});
+		delete options.inputs;
+
+		datepickerPlugin.call($(this.inputs), options)
+			.on('changeDate', $.proxy(this.dateUpdated, this));
+
+		this.pickers = $.map(this.inputs, function(i){
+			return $(i).data('datepicker');
+		});
+		this.updateDates();
+	};
+	DateRangePicker.prototype = {
+		updateDates: function(){
+			this.dates = $.map(this.pickers, function(i){
+				return i.getUTCDate();
+			});
+			this.updateRanges();
+		},
+		updateRanges: function(){
+			var range = $.map(this.dates, function(d){
+				return d.valueOf();
+			});
+			$.each(this.pickers, function(i, p){
+				p.setRange(range);
+			});
+		},
+		dateUpdated: function(e){
+			// `this.updating` is a workaround for preventing infinite recursion
+			// between `changeDate` triggering and `setUTCDate` calling.  Until
+			// there is a better mechanism.
+			if (this.updating)
+				return;
+			this.updating = true;
+
+			var dp = $(e.target).data('datepicker');
+
+			if (typeof(dp) === "undefined") {
+				return;
+			}
+
+			var new_date = dp.getUTCDate(),
+				i = $.inArray(e.target, this.inputs),
+				j = i - 1,
+				k = i + 1,
+				l = this.inputs.length;
+			if (i === -1)
+				return;
+
+			$.each(this.pickers, function(i, p){
+				if (!p.getUTCDate())
+					p.setUTCDate(new_date);
+			});
+
+			if (new_date < this.dates[j]){
+				// Date being moved earlier/left
+				while (j >= 0 && new_date < this.dates[j]){
+					this.pickers[j--].setUTCDate(new_date);
+				}
+			}
+			else if (new_date > this.dates[k]){
+				// Date being moved later/right
+				while (k < l && new_date > this.dates[k]){
+					this.pickers[k++].setUTCDate(new_date);
+				}
+			}
+			this.updateDates();
+
+			delete this.updating;
+		},
+		remove: function(){
+			$.map(this.pickers, function(p){ p.remove(); });
+			delete this.element.data().datepicker;
+		}
+	};
+
+	function opts_from_el(el, prefix){
+		// Derive options from element data-attrs
+		var data = $(el).data(),
+			out = {}, inkey,
+			replace = new RegExp('^' + prefix.toLowerCase() + '([A-Z])');
+		prefix = new RegExp('^' + prefix.toLowerCase());
+		function re_lower(_,a){
+			return a.toLowerCase();
+		}
+		for (var key in data)
+			if (prefix.test(key)){
+				inkey = key.replace(replace, re_lower);
+				out[inkey] = data[key];
+			}
+		return out;
+	}
+
+	function opts_from_locale(lang){
+		// Derive options from locale plugins
+		var out = {};
+		// Check if "de-DE" style date is available, if not language should
+		// fallback to 2 letter code eg "de"
+		if (!dates[lang]){
+			lang = lang.split('-')[0];
+			if (!dates[lang])
+				return;
+		}
+		var d = dates[lang];
+		$.each(locale_opts, function(i,k){
+			if (k in d)
+				out[k] = d[k];
+		});
+		return out;
+	}
+
+	var old = $.fn.datepicker;
+	var datepickerPlugin = function(option){
+		var args = Array.apply(null, arguments);
+		args.shift();
+		var internal_return;
+		this.each(function(){
+			var $this = $(this),
+				data = $this.data('datepicker'),
+				options = typeof option === 'object' && option;
+			if (!data){
+				var elopts = opts_from_el(this, 'date'),
+					// Preliminary otions
+					xopts = $.extend({}, defaults, elopts, options),
+					locopts = opts_from_locale(xopts.language),
+					// Options priority: js args, data-attrs, locales, defaults
+					opts = $.extend({}, defaults, locopts, elopts, options);
+				if ($this.hasClass('input-daterange') || opts.inputs){
+					$.extend(opts, {
+						inputs: opts.inputs || $this.find('input').toArray()
+					});
+					data = new DateRangePicker(this, opts);
+				}
+				else {
+					data = new Datepicker(this, opts);
+				}
+				$this.data('datepicker', data);
+			}
+			if (typeof option === 'string' && typeof data[option] === 'function'){
+				internal_return = data[option].apply(data, args);
+			}
+		});
+
+		if (
+			internal_return === undefined ||
+			internal_return instanceof Datepicker ||
+			internal_return instanceof DateRangePicker
+		)
+			return this;
+
+		if (this.length > 1)
+			throw new Error('Using only allowed for the collection of a single element (' + option + ' function)');
+		else
+			return internal_return;
+	};
+	$.fn.datepicker = datepickerPlugin;
+
+	var defaults = $.fn.datepicker.defaults = {
+		assumeNearbyYear: false,
+		autoclose: false,
+		beforeShowDay: $.noop,
+		beforeShowMonth: $.noop,
+		beforeShowYear: $.noop,
+		beforeShowDecade: $.noop,
+		beforeShowCentury: $.noop,
+		calendarWeeks: false,
+		clearBtn: false,
+		toggleActive: false,
+		daysOfWeekDisabled: [],
+		daysOfWeekHighlighted: [],
+		datesDisabled: [],
+		endDate: Infinity,
+		forceParse: true,
+		format: 'mm/dd/yyyy',
+		keyboardNavigation: true,
+		language: 'en',
+		minViewMode: 0,
+		maxViewMode: 4,
+		multidate: false,
+		multidateSeparator: ',',
+		orientation: "auto",
+		rtl: false,
+		startDate: -Infinity,
+		startView: 0,
+		todayBtn: false,
+		todayHighlight: false,
+		weekStart: 0,
+		disableTouchKeyboard: false,
+		enableOnReadonly: true,
+		showOnFocus: true,
+		zIndexOffset: 10,
+		container: 'body',
+		immediateUpdates: false,
+		title: '',
+		templates: {
+			leftArrow: '&laquo;',
+			rightArrow: '&raquo;'
+		}
+	};
+	var locale_opts = $.fn.datepicker.locale_opts = [
+		'format',
+		'rtl',
+		'weekStart'
+	];
+	$.fn.datepicker.Constructor = Datepicker;
+	var dates = $.fn.datepicker.dates = {
+		en: {
+			days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+			daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+			daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+			months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			today: "Today",
+			clear: "Clear",
+			titleFormat: "MM yyyy"
+		}
+	};
+
+	var DPGlobal = {
+		modes: [
+			{
+				clsName: 'days',
+				navFnc: 'Month',
+				navStep: 1
+			},
+			{
+				clsName: 'months',
+				navFnc: 'FullYear',
+				navStep: 1
+			},
+			{
+				clsName: 'years',
+				navFnc: 'FullYear',
+				navStep: 10
+			},
+			{
+				clsName: 'decades',
+				navFnc: 'FullDecade',
+				navStep: 100
+			},
+			{
+				clsName: 'centuries',
+				navFnc: 'FullCentury',
+				navStep: 1000
+		}],
+		isLeapYear: function(year){
+			return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
+		},
+		getDaysInMonth: function(year, month){
+			return [31, (DPGlobal.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+		},
+		validParts: /dd?|DD?|mm?|MM?|yy(?:yy)?/g,
+		nonpunctuation: /[^ -\/:-@\u5e74\u6708\u65e5\[-`{-~\t\n\r]+/g,
+		parseFormat: function(format){
+			if (typeof format.toValue === 'function' && typeof format.toDisplay === 'function')
+                return format;
+            // IE treats \0 as a string end in inputs (truncating the value),
+			// so it's a bad format delimiter, anyway
+			var separators = format.replace(this.validParts, '\0').split('\0'),
+				parts = format.match(this.validParts);
+			if (!separators || !separators.length || !parts || parts.length === 0){
+				throw new Error("Invalid date format.");
+			}
+			return {separators: separators, parts: parts};
+		},
+		parseDate: function(date, format, language, assumeNearby){
+			if (!date)
+				return undefined;
+			if (date instanceof Date)
+				return date;
+			if (typeof format === 'string')
+				format = DPGlobal.parseFormat(format);
+			if (format.toValue)
+                return format.toValue(date, format, language);
+            var part_re = /([\-+]\d+)([dmwy])/,
+				parts = date.match(/([\-+]\d+)([dmwy])/g),
+				fn_map = {
+					d: 'moveDay',
+					m: 'moveMonth',
+					w: 'moveWeek',
+					y: 'moveYear'
+				},
+				dateAliases = {
+					yesterday: '-1d',
+					today: '+0d',
+					tomorrow: '+1d'
+				},
+				part, dir, i, fn;
+			if (/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/.test(date)){
+				date = new Date();
+				for (i=0; i < parts.length; i++){
+					part = part_re.exec(parts[i]);
+					dir = parseInt(part[1]);
+					fn = fn_map[part[2]];
+					date = Datepicker.prototype[fn](date, dir);
+				}
+				return UTCDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+			}
+
+			if (typeof dateAliases[date] !== 'undefined') {
+				date = dateAliases[date];
+				parts = date.match(/([\-+]\d+)([dmwy])/g);
+
+				if (/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/.test(date)){
+					date = new Date();
+				  	for (i=0; i < parts.length; i++){
+						part = part_re.exec(parts[i]);
+						dir = parseInt(part[1]);
+						fn = fn_map[part[2]];
+						date = Datepicker.prototype[fn](date, dir);
+				  	}
+
+			  		return UTCDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+				}
+			}
+
+			parts = date && date.match(this.nonpunctuation) || [];
+			date = new Date();
+
+			function applyNearbyYear(year, threshold){
+				if (threshold === true)
+					threshold = 10;
+
+				// if year is 2 digits or less, than the user most likely is trying to get a recent century
+				if (year < 100){
+					year += 2000;
+					// if the new year is more than threshold years in advance, use last century
+					if (year > ((new Date()).getFullYear()+threshold)){
+						year -= 100;
+					}
+				}
+
+				return year;
+			}
+
+			var parsed = {},
+				setters_order = ['yyyy', 'yy', 'M', 'MM', 'm', 'mm', 'd', 'dd'],
+				setters_map = {
+					yyyy: function(d,v){
+						return d.setUTCFullYear(assumeNearby ? applyNearbyYear(v, assumeNearby) : v);
+					},
+					yy: function(d,v){
+						return d.setUTCFullYear(assumeNearby ? applyNearbyYear(v, assumeNearby) : v);
+					},
+					m: function(d,v){
+						if (isNaN(d))
+							return d;
+						v -= 1;
+						while (v < 0) v += 12;
+						v %= 12;
+						d.setUTCMonth(v);
+						while (d.getUTCMonth() !== v)
+							d.setUTCDate(d.getUTCDate()-1);
+						return d;
+					},
+					d: function(d,v){
+						return d.setUTCDate(v);
+					}
+				},
+				val, filtered;
+			setters_map['M'] = setters_map['MM'] = setters_map['mm'] = setters_map['m'];
+			setters_map['dd'] = setters_map['d'];
+			date = UTCToday();
+			var fparts = format.parts.slice();
+			// Remove noop parts
+			if (parts.length !== fparts.length){
+				fparts = $(fparts).filter(function(i,p){
+					return $.inArray(p, setters_order) !== -1;
+				}).toArray();
+			}
+			// Process remainder
+			function match_part(){
+				var m = this.slice(0, parts[i].length),
+					p = parts[i].slice(0, m.length);
+				return m.toLowerCase() === p.toLowerCase();
+			}
+			if (parts.length === fparts.length){
+				var cnt;
+				for (i=0, cnt = fparts.length; i < cnt; i++){
+					val = parseInt(parts[i], 10);
+					part = fparts[i];
+					if (isNaN(val)){
+						switch (part){
+							case 'MM':
+								filtered = $(dates[language].months).filter(match_part);
+								val = $.inArray(filtered[0], dates[language].months) + 1;
+								break;
+							case 'M':
+								filtered = $(dates[language].monthsShort).filter(match_part);
+								val = $.inArray(filtered[0], dates[language].monthsShort) + 1;
+								break;
+						}
+					}
+					parsed[part] = val;
+				}
+				var _date, s;
+				for (i=0; i < setters_order.length; i++){
+					s = setters_order[i];
+					if (s in parsed && !isNaN(parsed[s])){
+						_date = new Date(date);
+						setters_map[s](_date, parsed[s]);
+						if (!isNaN(_date))
+							date = _date;
+					}
+				}
+			}
+			return date;
+		},
+		formatDate: function(date, format, language){
+			if (!date)
+				return '';
+			if (typeof format === 'string')
+				format = DPGlobal.parseFormat(format);
+			if (format.toDisplay)
+                return format.toDisplay(date, format, language);
+            var val = {
+				d: date.getUTCDate(),
+				D: dates[language].daysShort[date.getUTCDay()],
+				DD: dates[language].days[date.getUTCDay()],
+				m: date.getUTCMonth() + 1,
+				M: dates[language].monthsShort[date.getUTCMonth()],
+				MM: dates[language].months[date.getUTCMonth()],
+				yy: date.getUTCFullYear().toString().substring(2),
+				yyyy: date.getUTCFullYear()
+			};
+			val.dd = (val.d < 10 ? '0' : '') + val.d;
+			val.mm = (val.m < 10 ? '0' : '') + val.m;
+			date = [];
+			var seps = $.extend([], format.separators);
+			for (var i=0, cnt = format.parts.length; i <= cnt; i++){
+				if (seps.length)
+					date.push(seps.shift());
+				date.push(val[format.parts[i]]);
+			}
+			return date.join('');
+		},
+		headTemplate: '<thead>'+
+			              '<tr>'+
+			                '<th colspan="7" class="datepicker-title"></th>'+
+			              '</tr>'+
+							'<tr>'+
+								'<th class="prev">&laquo;</th>'+
+								'<th colspan="5" class="datepicker-switch"></th>'+
+								'<th class="next">&raquo;</th>'+
+							'</tr>'+
+						'</thead>',
+		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>',
+		footTemplate: '<tfoot>'+
+							'<tr>'+
+								'<th colspan="7" class="today"></th>'+
+							'</tr>'+
+							'<tr>'+
+								'<th colspan="7" class="clear"></th>'+
+							'</tr>'+
+						'</tfoot>'
+	};
+	DPGlobal.template = '<div class="datepicker">'+
+							'<div class="datepicker-days">'+
+								'<table class="table-condensed">'+
+									DPGlobal.headTemplate+
+									'<tbody></tbody>'+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="datepicker-months">'+
+								'<table class="table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="datepicker-years">'+
+								'<table class="table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="datepicker-decades">'+
+								'<table class="table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="datepicker-centuries">'+
+								'<table class="table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+						'</div>';
+
+	$.fn.datepicker.DPGlobal = DPGlobal;
+
+
+	/* DATEPICKER NO CONFLICT
+	* =================== */
+
+	$.fn.datepicker.noConflict = function(){
+		$.fn.datepicker = old;
+		return this;
+	};
+
+	/* DATEPICKER VERSION
+	 * =================== */
+	$.fn.datepicker.version = '1.6.4';
+
+	/* DATEPICKER DATA-API
+	* ================== */
+
+	$(document).on(
+		'focus.datepicker.data-api click.datepicker.data-api',
+		'[data-provide="datepicker"]',
+		function(e){
+			var $this = $(this);
+			if ($this.data('datepicker'))
+				return;
+			e.preventDefault();
+			// component click requires us to explicitly show it
+			datepickerPlugin.call($this, 'show');
+		}
+	);
+	$(function(){
+		datepickerPlugin.call($('[data-provide="datepicker-inline"]'));
+	});
+
+}));
+/**
+ * Arabic translation for bootstrap-datepicker
+ * Mohammed Alshehri <alshehri866@gmail.com>
+ */
+
+;(function($){
+    $.fn.datepicker.dates['ar'] = {
+        days: ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+        daysShort: ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت", "أحد"],
+        daysMin: ["ح", "ن", "ث", "ع", "خ", "ج", "س", "ح"],
+        months: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+        monthsShort: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+        today: "هذا اليوم",
+        rtl: true
+    };
+}(jQuery));
+// Azerbaijani
+;(function($){
+    $.fn.datepicker.dates['az'] = {
+        days: ["Bazar", "Bazar ertəsi", "Çərşənbə axşamı", "Çərşənbə", "Cümə axşamı", "Cümə", "Şənbə"],
+        daysShort: ["B.", "B.e", "Ç.a", "Ç.", "C.a", "C.", "Ş."],
+        daysMin: ["B.", "B.e", "Ç.a", "Ç.", "C.a", "C.", "Ş."],
+        months: ["Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun", "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"],
+        monthsShort: ["Yan", "Fev", "Mar", "Apr", "May", "İyun", "İyul", "Avq", "Sen", "Okt", "Noy", "Dek"],
+        today: "Bu gün",
+        weekStart: 1
+    };
+}(jQuery));
+/**
+ * Bulgarian translation for bootstrap-datepicker
+ * Apostol Apostolov <apostol.s.apostolov@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['bg'] = {
+		days: ["Неделя", "Понеделник", "Вторник", "Сряда", "Четвъртък", "Петък", "Събота"],
+		daysShort: ["Нед", "Пон", "Вто", "Сря", "Чет", "Пет", "Съб"],
+		daysMin: ["Н", "П", "В", "С", "Ч", "П", "С"],
+		months: ["Януари", "Февруари", "Март", "Април", "Май", "Юни", "Юли", "Август", "Септември", "Октомври", "Ноември", "Декември"],
+		monthsShort: ["Ян", "Фев", "Мар", "Апр", "Май", "Юни", "Юли", "Авг", "Сеп", "Окт", "Ное", "Дек"],
+		today: "днес"
+	};
+}(jQuery));
+/**
+ * Bosnian translation for bootstrap-datepicker
+ */
+
+;(function($){
+	$.fn.datepicker.dates['bs'] = {
+		days: ["Nedjelja","Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota"],
+		daysShort: ["Ned", "Pon", "Uto", "Sri", "Čet", "Pet", "Sub"],
+		daysMin: ["N", "Po", "U", "Sr", "Č", "Pe", "Su"],
+		months: ["Januar", "Februar", "Mart", "April", "Maj", "Juni", "Juli", "August", "Septembar", "Oktobar", "Novembar", "Decembar"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+		today: "Danas",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Catalan translation for bootstrap-datepicker
+ * J. Garcia <jogaco.en@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['ca'] = {
+		days: ["Diumenge", "Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres", "Dissabte"],
+		daysShort: ["Diu",  "Dil", "Dmt", "Dmc", "Dij", "Div", "Dis"],
+		daysMin: ["dg", "dl", "dt", "dc", "dj", "dv", "ds"],
+		months: ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"],
+		monthsShort: ["Gen", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Des"],
+		today: "Avui",
+		monthsTitle: "Mesos",
+		clear: "Esborrar",
+		weekStart: 1,
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Czech translation for bootstrap-datepicker
+ * Matěj Koubík <matej@koubik.name>
+ * Fixes by Michal Remiš <michal.remis@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['cs'] = {
+		days: ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"],
+		daysShort: ["Ned", "Pon", "Úte", "Stř", "Čtv", "Pát", "Sob"],
+		daysMin: ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"],
+		months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"],
+		monthsShort: ["Led", "Úno", "Bře", "Dub", "Kvě", "Čer", "Čnc", "Srp", "Zář", "Říj", "Lis", "Pro"],
+		today: "Dnes",
+		clear: "Vymazat",
+		weekStart: 1,
+		format: "dd.m.yyyy"
+	};
+}(jQuery));
+/**
+ * Welsh translation for bootstrap-datepicker
+ * S. Morris <s.morris@bangor.ac.uk>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['cy'] = {
+		days: ["Sul", "Llun", "Mawrth", "Mercher", "Iau", "Gwener", "Sadwrn"],
+		daysShort: ["Sul", "Llu", "Maw", "Mer", "Iau", "Gwe", "Sad"],
+		daysMin: ["Su", "Ll", "Ma", "Me", "Ia", "Gwe", "Sa"],
+		months: ["Ionawr", "Chewfror", "Mawrth", "Ebrill", "Mai", "Mehefin", "Gorfennaf", "Awst", "Medi", "Hydref", "Tachwedd", "Rhagfyr"],
+		monthsShort: ["Ion", "Chw", "Maw", "Ebr", "Mai", "Meh", "Gor", "Aws", "Med", "Hyd", "Tach", "Rha"],
+		today: "Heddiw"
+	};
+}(jQuery));
+/**
+ * Danish translation for bootstrap-datepicker
+ * Christian Pedersen <http://github.com/chripede>
+ * Ivan Mylyanyk <https://github.com/imylyanyk>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['da'] = {
+		days: ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"],
+		daysShort: ["søn", "man", "tir", "ons", "tor", "fre", "lør"],
+		daysMin: ["sø", "ma", "ti", "on", "to", "fr", "lø"],
+		months: ["januar", "februar", "marts", "april", "maj", "juni", "juli", "august", "september", "oktober", "november", "december"],
+		monthsShort: ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
+		today: "I Dag",
+		clear: "Nulstil"
+	};
+}(jQuery));
+/**
+ * German translation for bootstrap-datepicker
+ * Sam Zurcher <sam@orelias.ch>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['de'] = {
+		days: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+		daysShort: ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"],
+		daysMin: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+		months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+		monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+		today: "Heute",
+		monthsTitle: "Monate",
+		clear: "Löschen",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Greek translation for bootstrap-datepicker
+ */
+
+;(function($){
+  $.fn.datepicker.dates['el'] = {
+    days: ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"],
+    daysShort: ["Κυρ", "Δευ", "Τρι", "Τετ", "Πεμ", "Παρ", "Σαβ"],
+    daysMin: ["Κυ", "Δε", "Τρ", "Τε", "Πε", "Πα", "Σα"],
+    months: ["Ιανουάριος", "Φεβρουάριος", "Μάρτιος", "Απρίλιος", "Μάιος", "Ιούνιος", "Ιούλιος", "Αύγουστος", "Σεπτέμβριος", "Οκτώβριος", "Νοέμβριος", "Δεκέμβριος"],
+    monthsShort: ["Ιαν", "Φεβ", "Μαρ", "Απρ", "Μάι", "Ιουν", "Ιουλ", "Αυγ", "Σεπ", "Οκτ", "Νοε", "Δεκ"],
+    today: "Σήμερα",
+    clear: "Καθαρισμός",
+    weekStart: 1,
+    format: "d/m/yyyy"
+  };
+}(jQuery));
+/**
+ * Australian English translation for bootstrap-datepicker
+ * Steve Chapman <steven.p.chapman@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['en-AU'] = {
+		days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+		daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+		daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+		months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		today: "Today",
+		monthsTitle: "Months",
+		clear: "Clear",
+		weekStart: 1,
+		format: "d/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * British English translation for bootstrap-datepicker
+ * Xavier Dutreilh <xavier@dutreilh.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['en-GB'] = {
+		days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+		daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+		daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+		months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		today: "Today",
+		monthsTitle: "Months",
+		clear: "Clear",
+		weekStart: 1,
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Irish English translation for bootstrap-datepicker
+ */
+
+;(function($){
+	$.fn.datepicker.dates['en-IE'] = {
+		days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+		daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+		daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+		months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		today: "Today",
+		monthsTitle: "Months",
+		clear: "Clear",
+		weekStart: 1,
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * New Zealand English translation for bootstrap-datepicker
+ */
+
+;(function($){
+	$.fn.datepicker.dates['en-NZ'] = {
+		days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+		daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+		daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+		months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		today: "Today",
+		monthsTitle: "Months",
+		clear: "Clear",
+		weekStart: 1,
+		format: "d/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * South African English translation for bootstrap-datepicker
+ */
+
+;(function($){
+	$.fn.datepicker.dates['en-ZA'] = {
+		days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+		daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+		daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+		months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		today: "Today",
+		monthsTitle: "Months",
+		clear: "Clear",
+		weekStart: 1,
+		format: "yyyy/mm/d"
+	};
+}(jQuery));
+/**
+ * Esperanto translation for bootstrap-datepicker
+ * Emmanuel Debanne <https://github.com/debanne>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['eo'] = {
+		days: ["dimanĉo", "lundo", "mardo", "merkredo", "ĵaŭdo", "vendredo", "sabato"],
+		daysShort: ["dim.", "lun.", "mar.", "mer.", "ĵaŭ.", "ven.", "sam."],
+		daysMin: ["d", "l", "ma", "me", "ĵ", "v", "s"],
+		months: ["januaro", "februaro", "marto", "aprilo", "majo", "junio", "julio", "aŭgusto", "septembro", "oktobro", "novembro", "decembro"],
+		monthsShort: ["jan.", "feb.", "mar.", "apr.", "majo", "jun.", "jul.", "aŭg.", "sep.", "okt.", "nov.", "dec."],
+		today: "Hodiaŭ",
+		clear: "Nuligi",
+		weekStart: 1,
+		format: "yyyy-mm-dd"
+	};
+}(jQuery));
+/**
+ * Spanish translation for bootstrap-datepicker
+ * Bruno Bonamin <bruno.bonamin@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['es'] = {
+		days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+		daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+		daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+		months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+		monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+		today: "Hoy",
+		monthsTitle: "Meses",
+		clear: "Borrar",
+		weekStart: 1,
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Estonian translation for bootstrap-datepicker
+ * Ando Roots <https://github.com/anroots>
+ * Fixes by Illimar Tambek <<https://github.com/ragulka>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['et'] = {
+		days: ["Pühapäev", "Esmaspäev", "Teisipäev", "Kolmapäev", "Neljapäev", "Reede", "Laupäev"],
+		daysShort: ["Pühap", "Esmasp", "Teisip", "Kolmap", "Neljap", "Reede", "Laup"],
+		daysMin: ["P", "E", "T", "K", "N", "R", "L"],
+		months: ["Jaanuar", "Veebruar", "Märts", "Aprill", "Mai", "Juuni", "Juuli", "August", "September", "Oktoober", "November", "Detsember"],
+		monthsShort: ["Jaan", "Veebr", "Märts", "Apr", "Mai", "Juuni", "Juuli", "Aug", "Sept", "Okt", "Nov", "Dets"],
+		today: "Täna",
+		clear: "Tühjenda",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Basque translation for bootstrap-datepicker
+ * Arkaitz Etxeberria <kondi80@gmail.com>
+ */
+
+;(function($){
+    $.fn.datepicker.dates['eu'] = {
+        days: ['Igandea', 'Astelehena', 'Asteartea', 'Asteazkena', 'Osteguna', 'Ostirala', 'Larunbata'],
+        daysShort: ['Ig', 'Al', 'Ar', 'Az', 'Og', 'Ol', 'Lr'],
+        daysMin: ['Ig', 'Al', 'Ar', 'Az', 'Og', 'Ol', 'Lr'],
+        months: ['Urtarrila', 'Otsaila', 'Martxoa', 'Apirila', 'Maiatza', 'Ekaina', 'Uztaila', 'Abuztua', 'Iraila', 'Urria', 'Azaroa', 'Abendua'],
+        monthsShort: ['Urt', 'Ots', 'Mar', 'Api', 'Mai', 'Eka', 'Uzt', 'Abu', 'Ira', 'Urr', 'Aza', 'Abe'],
+        today: "Gaur"
+    };
+}(jQuery));
+
+/**
+ * Persian translation for bootstrap-datepicker
+ * Mostafa Rokooie <mostafa.rokooie@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['fa'] = {
+		days: ["یک‌شنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه", "یک‌شنبه"],
+		daysShort: ["یک", "دو", "سه", "چهار", "پنج", "جمعه", "شنبه", "یک"],
+		daysMin: ["ی", "د", "س", "چ", "پ", "ج", "ش", "ی"],
+		months: ["ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن", "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"],
+		monthsShort: ["ژان", "فور", "مار", "آور", "مه", "ژون", "ژوی", "اوت", "سپت", "اکت", "نوا", "دسا"],
+		today: "امروز",
+		clear: "پاک کن",
+		weekStart: 1,
+		format: "yyyy/mm/dd"
+	};
+}(jQuery));
+/**
+ * Finnish translation for bootstrap-datepicker
+ * Jaakko Salonen <https://github.com/jsalonen>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['fi'] = {
+		days: ["sunnuntai", "maanantai", "tiistai", "keskiviikko", "torstai", "perjantai", "lauantai"],
+		daysShort: ["sun", "maa", "tii", "kes", "tor", "per", "lau"],
+		daysMin: ["su", "ma", "ti", "ke", "to", "pe", "la"],
+		months: ["tammikuu", "helmikuu", "maaliskuu", "huhtikuu", "toukokuu", "kesäkuu", "heinäkuu", "elokuu", "syyskuu", "lokakuu", "marraskuu", "joulukuu"],
+		monthsShort: ["tam", "hel", "maa", "huh", "tou", "kes", "hei", "elo", "syy", "lok", "mar", "jou"],
+		today: "tänään",
+		clear: "Tyhjennä",
+		weekStart: 1,
+		format: "d.m.yyyy"
+	};
+}(jQuery));
+/**
+ * Faroese translation for bootstrap-datepicker
+ * Theodor Johannesen <http://github.com/theodorjohannesen>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['fo'] = {
+		days: ["Sunnudagur", "Mánadagur", "Týsdagur", "Mikudagur", "Hósdagur", "Fríggjadagur", "Leygardagur"],
+		daysShort: ["Sun", "Mán", "Týs", "Mik", "Hós", "Frí", "Ley"],
+		daysMin: ["Su", "Má", "Tý", "Mi", "Hó", "Fr", "Le"],
+		months: ["Januar", "Februar", "Marts", "Apríl", "Mei", "Juni", "Juli", "August", "Septembur", "Oktobur", "Novembur", "Desembur"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"],
+		today: "Í Dag",
+		clear: "Reinsa"
+	};
+}(jQuery));
+/**
+ * French (Switzerland) translation for bootstrap-datepicker
+ * Christoph Jossi <c.jossi@ascami.ch>
+ * Based on 
+ * French translation for bootstrap-datepicker
+ * Nico Mollet <nico.mollet@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['fr'] = {
+		days: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+		daysShort: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+		daysMin: ["D", "L", "Ma", "Me", "J", "V", "S"],
+		months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+		monthsShort: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "Déc"],
+		today: "Aujourd'hui",
+		monthsTitle: "Mois",
+		clear: "Effacer",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * French translation for bootstrap-datepicker
+ * Nico Mollet <nico.mollet@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['fr'] = {
+		days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+		daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+		daysMin: ["d", "l", "ma", "me", "j", "v", "s"],
+		months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+		monthsShort: ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+		today: "Aujourd'hui",
+		monthsTitle: "Mois",
+		clear: "Effacer",
+		weekStart: 1,
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+;(function($){
+	$.fn.datepicker.dates['gl'] = {
+		days: ["Domingo", "Luns", "Martes", "Mércores", "Xoves", "Venres", "Sábado"],
+		daysShort: ["Dom", "Lun", "Mar", "Mér", "Xov", "Ven", "Sáb"],
+		daysMin: ["Do", "Lu", "Ma", "Me", "Xo", "Ve", "Sa"],
+		months: ["Xaneiro", "Febreiro", "Marzo", "Abril", "Maio", "Xuño", "Xullo", "Agosto", "Setembro", "Outubro", "Novembro", "Decembro"],
+		monthsShort: ["Xan", "Feb", "Mar", "Abr", "Mai", "Xun", "Xul", "Ago", "Sep", "Out", "Nov", "Dec"],
+		today: "Hoxe",
+		clear: "Limpar",
+		weekStart: 1,
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Hebrew translation for bootstrap-datepicker
+ * Sagie Maoz <sagie@maoz.info>
+ */
+
+;(function($){
+  $.fn.datepicker.dates['he'] = {
+      days: ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת", "ראשון"],
+      daysShort: ["א", "ב", "ג", "ד", "ה", "ו", "ש", "א"],
+      daysMin: ["א", "ב", "ג", "ד", "ה", "ו", "ש", "א"],
+      months: ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"],
+      monthsShort: ["ינו", "פבר", "מרץ", "אפר", "מאי", "יונ", "יול", "אוג", "ספט", "אוק", "נוב", "דצמ"],
+      today: "היום",
+      rtl: true
+  };
+}(jQuery));
+/**
+ * Croatian localisation
+ */
+
+;(function($){
+	$.fn.datepicker.dates['hr'] = {
+		days: ["Nedjelja", "Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota"],
+		daysShort: ["Ned", "Pon", "Uto", "Sri", "Čet", "Pet", "Sub"],
+		daysMin: ["Ne", "Po", "Ut", "Sr", "Če", "Pe", "Su"],
+		months: ["Siječanj", "Veljača", "Ožujak", "Travanj", "Svibanj", "Lipanj", "Srpanj", "Kolovoz", "Rujan", "Listopad", "Studeni", "Prosinac"],
+		monthsShort: ["Sij", "Velj", "Ožu", "Tra", "Svi", "Lip", "Srp", "Kol", "Ruj", "Lis", "Stu", "Pro"],
+		today: "Danas"
+	};
+}(jQuery));
+/**
+ * Hungarian translation for bootstrap-datepicker
+ * Sotus László <lacisan@gmail.com>
+ */
+
+;(function($){
+  $.fn.datepicker.dates['hu'] = {
+		days: ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"],
+		daysShort: ["vas", "hét", "ked", "sze", "csü", "pén", "szo"],
+		daysMin: ["V", "H", "K", "Sze", "Cs", "P", "Szo"],
+		months: ["január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"],
+		monthsShort: ["jan", "feb", "már", "ápr", "máj", "jún", "júl", "aug", "sze", "okt", "nov", "dec"],
+		today: "ma",
+		weekStart: 1,
+		clear: "töröl",
+		titleFormat: "yyyy. MM",
+		format: "yyyy.mm.dd"
+	};
+}(jQuery));
+/**
+ * Armenian translation for bootstrap-datepicker
+ * Hayk Chamyan <hamshen@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['hy'] = {
+		days: ["Կիրակի", "Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ", "Շաբաթ"],
+		daysShort: ["Կրկ", "Երկ", "Երք", "Չրք", "Հնգ", "Ուր", "Շբթ"],
+		daysMin: ["Կրկ", "Երկ", "Երք", "Չրք", "Հնգ", "Ուր", "Շբթ"],
+		months: ["Հունվար", "Փետրվար", "Մարտ", "Ապրիլ", "Մայիս", "Հունիս", "Հուլիս", "Օգոստոս", "Սեպտեմբեր", "Հոկտեմբեր", "Նոյեմբեր", "Դեկտեմբեր"],
+		monthsShort: ["Հուն", "Փետ", "Մար", "Ապր", "Մայ", "Հնս", "Հլս", "Օգս", "Սեպ", "Հոկ", "Նմբ", "Դեկ"],
+		today: "Այսօր",
+		clear: "Ջնջել",
+		format: "dd.mm.yyyy",
+		weekStart: 1
+	};
+}(jQuery));
+/**
+ * Bahasa translation for bootstrap-datepicker
+ * Azwar Akbar <azwar.akbar@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['id'] = {
+		days: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+		daysShort: ["Mgu", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+		daysMin: ["Mg", "Sn", "Sl", "Ra", "Ka", "Ju", "Sa"],
+		months: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
+		today: "Hari Ini",
+		clear: "Kosongkan"
+	};
+}(jQuery));
+/**
+ * Icelandic translation for bootstrap-datepicker
+ * Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['is'] = {
+		days: ["Sunnudagur", "Mánudagur", "Þriðjudagur", "Miðvikudagur", "Fimmtudagur", "Föstudagur", "Laugardagur"],
+		daysShort: ["Sun", "Mán", "Þri", "Mið", "Fim", "Fös", "Lau"],
+		daysMin: ["Su", "Má", "Þr", "Mi", "Fi", "Fö", "La"],
+		months: ["Janúar", "Febrúar", "Mars", "Apríl", "Maí", "Júní", "Júlí", "Ágúst", "September", "Október", "Nóvember", "Desember"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maí", "Jún", "Júl", "Ágú", "Sep", "Okt", "Nóv", "Des"],
+		today: "Í Dag"
+	};
+}(jQuery));
+/**
+ * Italian (Switzerland) translation for bootstrap-datepicker
+ * Christoph Jossi <c.jossi@ascami.ch>
+ * Based on 
+ * Italian translation for bootstrap-datepicker
+ * Enrico Rubboli <rubboli@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['it'] = {
+		days: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+		daysShort: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
+		daysMin: ["Do", "Lu", "Ma", "Me", "Gi", "Ve", "Sa"],
+		months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+		monthsShort: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+		today: "Oggi",
+		clear: "Cancella",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Italian translation for bootstrap-datepicker
+ * Enrico Rubboli <rubboli@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['it'] = {
+		days: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+		daysShort: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
+		daysMin: ["Do", "Lu", "Ma", "Me", "Gi", "Ve", "Sa"],
+		months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+		monthsShort: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+		today: "Oggi",
+		monthsTitle: "Mesi",
+		clear: "Cancella",
+		weekStart: 1,
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Japanese translation for bootstrap-datepicker
+ * Norio Suzuki <https://github.com/suzuki/>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['ja'] = {
+		days: ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"],
+		daysShort: ["日", "月", "火", "水", "木", "金", "土"],
+		daysMin: ["日", "月", "火", "水", "木", "金", "土"],
+		months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+		monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+		today: "今日",
+		format: "yyyy/mm/dd",
+		titleFormat: "yyyy年mm月",
+		clear: "クリア"
+	};
+}(jQuery));
+/**
+ * Georgian translation for bootstrap-datepicker
+ * Levan Melikishvili <levani0101@yahoo.com>
+ */
+
+;(function($){
+    $.fn.datepicker.dates['ka'] = {
+        days: ["კვირა", "ორშაბათი", "სამშაბათი", "ოთხშაბათი", "ხუთშაბათი", "პარასკევი", "შაბათი"],
+        daysShort: ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"],
+        daysMin: ["კვ", "ორ", "სა", "ოთ", "ხუ", "პა", "შა"],
+        months: ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომები", "ნოემბერი", "დეკემბერი"],
+        monthsShort: ["იან", "თებ", "მარ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"],
+        today: "დღეს",
+        clear: "გასუფთავება",
+        weekStart: 1,
+        format: "dd.mm.yyyy"
+    };
+}(jQuery));
+/**
+ * Cambodia (Khmer) translation for bootstrap-datepicker
+ * Lytay TOUCH <lytaytouch@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['kh'] = {
+		days: ["អាទិត្យ", "ចន្ទ", "អង្គារ", "ពុធ", "ព្រហស្បតិ៍", "សុក្រ", "សៅរ៍", "អាទិត្យ"],
+		daysShort: ["អា.ទិ", "ចន្ទ", "អង្គារ", "ពុធ", "ព្រ.ហ", "សុក្រ", "សៅរ៍", "អា.ទិ"],
+		daysMin: ["អា.ទិ", "ចន្ទ", "អង្គារ", "ពុធ", "ព្រ.ហ", "សុក្រ", "សៅរ៍", "អា.ទិ"],
+		months: ["មករា", "កុម្ភះ", "មិនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"],
+		monthsShort: ["មករា", "កុម្ភះ", "មិនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"],
+		today: "ថ្ងៃនេះ",
+		clear: "សំអាត"
+	};
+}(jQuery));
+/**
+ * Kazakh translation for bootstrap-datepicker
+ * Yerzhan Tolekov <era.tolekov@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['kk'] = {
+		days: ["Жексенбі", "Дүйсенбі", "Сейсенбі", "Сәрсенбі", "Бейсенбі", "Жұма", "Сенбі"],
+		daysShort: ["Жек", "Дүй", "Сей", "Сәр", "Бей", "Жұм", "Сен"],
+		daysMin: ["Жк", "Дс", "Сс", "Ср", "Бс", "Жм", "Сн"],
+		months: ["Қаңтар", "Ақпан", "Наурыз", "Сәуір", "Мамыр", "Маусым", "Шілде", "Тамыз", "Қыркүйек", "Қазан", "Қараша", "Желтоқсан"],
+		monthsShort: ["Қаң", "Ақп", "Нау", "Сәу", "Мам", "Мау", "Шіл", "Там", "Қыр", "Қаз", "Қар", "Жел"],
+		today: "Бүгін",
+		weekStart: 1
+	};
+}(jQuery));
+/**
+ * Korean translation for bootstrap-datepicker
+ * This is a port from https://github.com/moment/moment/blob/develop/src/locale/ko.js
+ */
+
+;(function($){
+	$.fn.datepicker.dates['ko'] = {
+		days: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+		daysShort: ["일", "월", "화", "수", "목", "금", "토"],
+		daysMin: ["일", "월", "화", "수", "목", "금", "토"],
+		months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		monthsShort: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		today: "오늘",
+		clear: "삭제",
+		format: "yyyy-mm-dd",
+		titleFormat: "yyyy년mm월",
+		weekStart: 0
+	};
+}(jQuery));
+/**
+ * Korean translation for bootstrap-datepicker
+ * Gu Youn <http://github.com/guyoun>
+ *
+ * DEPRECATED: This language code 'kr' is deprecated and will be removed in 2.0.
+ * Korean support is now in a 'ko' translation file to follow the ISO language
+ * code - http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+ */
+
+;(function($){
+	$.fn.datepicker.dates['kr'] = {
+		days: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+		daysShort: ["일", "월", "화", "수", "목", "금", "토"],
+		daysMin: ["일", "월", "화", "수", "목", "금", "토"],
+		months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		monthsShort: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+	};
+}(jQuery));
+/**
+ * Lithuanian translation for bootstrap-datepicker
+ * Šarūnas Gliebus <ssharunas@yahoo.co.uk>
+ */
+
+
+;(function($){
+    $.fn.datepicker.dates['lt'] = {
+        days: ["Sekmadienis", "Pirmadienis", "Antradienis", "Trečiadienis", "Ketvirtadienis", "Penktadienis", "Šeštadienis"],
+        daysShort: ["S", "Pr", "A", "T", "K", "Pn", "Š"],
+        daysMin: ["Sk", "Pr", "An", "Tr", "Ke", "Pn", "Št"],
+        months: ["Sausis", "Vasaris", "Kovas", "Balandis", "Gegužė", "Birželis", "Liepa", "Rugpjūtis", "Rugsėjis", "Spalis", "Lapkritis", "Gruodis"],
+        monthsShort: ["Sau", "Vas", "Kov", "Bal", "Geg", "Bir", "Lie", "Rugp", "Rugs", "Spa", "Lap", "Gru"],
+        today: "Šiandien",
+        monthsTitle:"Mėnesiai",
+        clear:"Išvalyti",
+        weekStart: 1,
+        format:"yyyy-mm-dd"
+    };
+}(jQuery));
+/**
+ * Latvian translation for bootstrap-datepicker
+ * Artis Avotins <artis@apit.lv>
+ */
+
+
+;(function($){
+    $.fn.datepicker.dates['lv'] = {
+        days: ["Svētdiena", "Pirmdiena", "Otrdiena", "Trešdiena", "Ceturtdiena", "Piektdiena", "Sestdiena"],
+        daysShort: ["Sv", "P", "O", "T", "C", "Pk", "S"],
+        daysMin: ["Sv", "Pr", "Ot", "Tr", "Ce", "Pk", "Se"],
+        months: ["Janvāris", "Februāris", "Marts", "Aprīlis", "Maijs", "Jūnijs", "Jūlijs", "Augusts", "Septembris", "Oktobris", "Novembris", "Decembris"],
+        monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mai", "Jūn", "Jūl", "Aug", "Sep", "Okt", "Nov", "Dec"],
+        today: "Šodien",
+        weekStart: 1
+    };
+}(jQuery));
+/**
+ * Montenegrin translation for bootstrap-datepicker
+ * Miodrag Nikač <miodrag@restartit.me>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['me'] = {
+		days: ["Nedjelja","Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota"],
+		daysShort: ["Ned", "Pon", "Uto", "Sri", "Čet", "Pet", "Sub"],
+		daysMin: ["Ne", "Po", "Ut", "Sr", "Če", "Pe", "Su"],
+		months: ["Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sep", "Okt", "Nov", "Dec"],
+		today: "Danas",
+		weekStart: 1,
+		clear: "Izbriši",
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Macedonian translation for bootstrap-datepicker
+ * Marko Aleksic <psybaron@gmail.com>
+ */
+
+;(function($){
+    $.fn.datepicker.dates['mk'] = {
+        days: ["Недела", "Понеделник", "Вторник", "Среда", "Четврток", "Петок", "Сабота"],
+        daysShort: ["Нед", "Пон", "Вто", "Сре", "Чет", "Пет", "Саб"],
+        daysMin: ["Не", "По", "Вт", "Ср", "Че", "Пе", "Са"],
+        months: ["Јануари", "Февруари", "Март", "Април", "Мај", "Јуни", "Јули", "Август", "Септември", "Октомври", "Ноември", "Декември"],
+        monthsShort: ["Јан", "Фев", "Мар", "Апр", "Мај", "Јун", "Јул", "Авг", "Сеп", "Окт", "Ное", "Дек"],
+        today: "Денес",
+        format: "dd.mm.yyyy"
+    };
+}(jQuery));
+/**
+ * Mongolian translation for bootstrap-datepicker
+ * Andrey Torsunov <andrey.torsunov@gmail.com>
+ */
+
+;(function($){
+    $.fn.datepicker.dates['mn'] = {
+        days: ["Ням", "Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба"],
+        daysShort: ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям"],
+        daysMin: ["Ня", "Да", "Мя", "Лх", "Пү", "Ба", "Бя"],
+        months: ["Хулгана", "Үхэр", "Бар", "Туулай", "Луу", "Могой", "Морь", "Хонь", "Бич", "Тахиа", "Нохой", "Гахай"],
+        monthsShort: ["Хул", "Үхэ", "Бар", "Туу", "Луу", "Мог", "Мор", "Хон", "Бич", "Тах", "Нох", "Гах"],
+        today: "Өнөөдөр",
+        clear: "Тодорхой",
+        format: "yyyy.mm.dd",
+        weekStart: 1
+    };
+}(jQuery));
+/**
+ * Malay translation for bootstrap-datepicker
+ * Ateman Faiz <noorulfaiz@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['ms'] = {
+		days: ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"],
+		daysShort: ["Aha", "Isn", "Sel", "Rab", "Kha", "Jum", "Sab"],
+		daysMin: ["Ah", "Is", "Se", "Ra", "Kh", "Ju", "Sa"],
+		months: ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ogo", "Sep", "Okt", "Nov", "Dis"],
+		today: "Hari Ini",
+        clear: "Bersihkan"
+	};
+}(jQuery));
+/**
+ * Norwegian (bokmål) translation for bootstrap-datepicker
+ * Fredrik Sundmyhr <http://github.com/fsundmyhr>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['nb'] = {
+		days: ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"],
+		daysShort: ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"],
+		daysMin: ["Sø", "Ma", "Ti", "On", "To", "Fr", "Lø"],
+		months: ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"],
+		today: "I Dag",
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Belgium-Dutch translation for bootstrap-datepicker
+ * Julien Poulin <poulin_julien@hotmail.com>
+ */
+
+;(function($){
+  $.fn.datepicker.dates['nl-BE'] = {
+    days: ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"],
+    daysShort: ["zo", "ma", "di", "wo", "do", "vr", "za"],
+    daysMin: ["zo", "ma", "di", "wo", "do", "vr", "za"],
+    months: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
+    monthsShort: ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
+    today: "Vandaag",
+    monthsTitle: "Maanden",
+    clear: "Leegmaken",
+    weekStart: 1,
+    format: "dd/mm/yyyy"
+  };
+}(jQuery));
+/**
+ * Dutch translation for bootstrap-datepicker
+ * Reinier Goltstein <mrgoltstein@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['nl'] = {
+		days: ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"],
+		daysShort: ["zo", "ma", "di", "wo", "do", "vr", "za"],
+		daysMin: ["zo", "ma", "di", "wo", "do", "vr", "za"],
+		months: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
+		monthsShort: ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
+		today: "Vandaag",
+		monthsTitle: "Maanden",
+		clear: "Wissen",
+		weekStart: 1,
+		format: "dd-mm-yyyy"
+	};
+}(jQuery));
+/**
+ *  Norwegian translation for bootstrap-datepicker
+ **/
+
+;(function($){
+  $.fn.datepicker.dates['no'] = {
+    days: ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
+    daysShort: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'],
+    daysMin: ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø'],
+    months: ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'],
+    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+    today: 'I dag',
+    clear: 'Nullstill',
+    weekStart: 1,
+    format: 'dd.mm.yyyy'
+  };
+}(jQuery));
+/**
+ * Polish translation for bootstrap-datepicker
+ * Robert <rtpm@gazeta.pl>
+ */
+
+;(function($){
+    $.fn.datepicker.dates['pl'] = {
+        days: ["niedziela", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"],
+        daysShort: ["niedz.", "pon.", "wt.", "śr.", "czw.", "piąt.", "sob."],
+        daysMin: ["ndz.", "pn.", "wt.", "śr.", "czw.", "pt.", "sob."],
+        months: ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"],
+        monthsShort: ["sty.", "lut.", "mar.", "kwi.", "maj", "cze.", "lip.", "sie.", "wrz.", "paź.", "lis.", "gru."],
+        today: "dzisiaj",
+        weekStart: 1,
+        clear: "wyczyść",
+        format: "dd.mm.yyyy"
+    };
+}(jQuery));
+/**
+ * Brazilian translation for bootstrap-datepicker
+ * Cauan Cabral <cauan@radig.com.br>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['pt-BR'] = {
+		days: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+		daysShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+		daysMin: ["Do", "Se", "Te", "Qu", "Qu", "Se", "Sa"],
+		months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+		monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+		today: "Hoje",
+		monthsTitle: "Meses",
+		clear: "Limpar",
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Portuguese translation for bootstrap-datepicker
+ * Original code: Cauan Cabral <cauan@radig.com.br>
+ * Tiago Melo <tiago.blackcode@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['pt'] = {
+		days: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+		daysShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+		daysMin: ["Do", "Se", "Te", "Qu", "Qu", "Se", "Sa"],
+		months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+		monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+		today: "Hoje",
+		monthsTitle: "Meses",
+		clear: "Limpar",
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Romanian translation for bootstrap-datepicker
+ * Cristian Vasile <cristi.mie@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['ro'] = {
+		days: ["Duminică", "Luni", "Marţi", "Miercuri", "Joi", "Vineri", "Sâmbătă"],
+		daysShort: ["Dum", "Lun", "Mar", "Mie", "Joi", "Vin", "Sâm"],
+		daysMin: ["Du", "Lu", "Ma", "Mi", "Jo", "Vi", "Sâ"],
+		months: ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"],
+		monthsShort: ["Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		today: "Astăzi",
+		clear: "Șterge",
+		weekStart: 1
+	};
+}(jQuery));
+/**
+ * Serbian latin translation for bootstrap-datepicker
+ * Bojan Milosavlević <milboj@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['rs-latin'] = {
+		days: ["Nedelja","Ponedeljak", "Utorak", "Sreda", "Četvrtak", "Petak", "Subota"],
+		daysShort: ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"],
+		daysMin: ["N", "Po", "U", "Sr", "Č", "Pe", "Su"],
+		months: ["Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sep", "Okt", "Nov", "Dec"],
+		today: "Danas",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Serbian cyrillic translation for bootstrap-datepicker
+ * Bojan Milosavlević <milboj@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['rs'] = {
+		days: ["Недеља","Понедељак", "Уторак", "Среда", "Четвртак", "Петак", "Субота"],
+		daysShort: ["Нед", "Пон", "Уто", "Сре", "Чет", "Пет", "Суб"],
+		daysMin: ["Н", "По", "У", "Ср", "Ч", "Пе", "Су"],
+		months: ["Јануар", "Фебруар", "Март", "Април", "Мај", "Јун", "Јул", "Август", "Септембар", "Октобар", "Новембар", "Децембар"],
+		monthsShort: ["Јан", "Феб", "Мар", "Апр", "Мај", "Јун", "Јул", "Авг", "Сеп", "Окт", "Нов", "Дец"],
+		today: "Данас",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Russian translation for bootstrap-datepicker
+ * Victor Taranenko <darwin@snowdale.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['ru'] = {
+		days: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+		daysShort: ["Вск", "Пнд", "Втр", "Срд", "Чтв", "Птн", "Суб"],
+		daysMin: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+		months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+		monthsShort: ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"],
+		today: "Сегодня",
+		clear: "Очистить",
+		format: "dd.mm.yyyy",
+		weekStart: 1
+	};
+}(jQuery));
+/**
+ * Slovak translation for bootstrap-datepicker
+ * Marek Lichtner <marek@licht.sk>
+ * Fixes by Michal Remiš <michal.remis@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates["sk"] = {
+		days: ["Nedeľa", "Pondelok", "Utorok", "Streda", "Štvrtok", "Piatok", "Sobota"],
+		daysShort: ["Ned", "Pon", "Uto", "Str", "Štv", "Pia", "Sob"],
+		daysMin: ["Ne", "Po", "Ut", "St", "Št", "Pia", "So"],
+		months: ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Máj", "Jún", "Júl", "Aug", "Sep", "Okt", "Nov", "Dec"],
+		today: "Dnes",
+		clear: "Vymazať",
+		weekStart: 1,
+		format: "d.m.yyyy"
+	};
+}(jQuery));
+/**
+ * Slovene translation for bootstrap-datepicker
+ * Gregor Rudolf <gregor.rudolf@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['sl'] = {
+		days: ["Nedelja", "Ponedeljek", "Torek", "Sreda", "Četrtek", "Petek", "Sobota"],
+		daysShort: ["Ned", "Pon", "Tor", "Sre", "Čet", "Pet", "Sob"],
+		daysMin: ["Ne", "Po", "To", "Sr", "Če", "Pe", "So"],
+		months: ["Januar", "Februar", "Marec", "April", "Maj", "Junij", "Julij", "Avgust", "September", "Oktober", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sep", "Okt", "Nov", "Dec"],
+		today: "Danes"
+	};
+}(jQuery));
+/**
+ * Albanian translation for bootstrap-datepicker
+ * Tomor Pupovci <http://www.github.com/ttomor>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['sq'] = {
+		days: ["E Diel", "E Hënë", "E Martē", "E Mërkurë", "E Enjte", "E Premte", "E Shtunë"],
+		daysShort: ["Die", "Hën", "Mar", "Mër", "Enj", "Pre", "Shtu"],
+		daysMin: ["Di", "Hë", "Ma", "Më", "En", "Pr", "Sht"],
+		months: ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"],
+		monthsShort: ["Jan", "Shk", "Mar", "Pri", "Maj", "Qer", "Korr", "Gu", "Sht", "Tet", "Nën", "Dhjet"],
+		today: "Sot"
+	};
+}(jQuery));
+
+/**
+ * Serbian latin translation for bootstrap-datepicker
+ * Bojan Milosavlević <milboj@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['sr-latin'] = {
+		days: ["Nedelja","Ponedeljak", "Utorak", "Sreda", "Četvrtak", "Petak", "Subota"],
+		daysShort: ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"],
+		daysMin: ["N", "Po", "U", "Sr", "Č", "Pe", "Su"],
+		months: ["Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sep", "Okt", "Nov", "Dec"],
+		today: "Danas",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Serbian cyrillic translation for bootstrap-datepicker
+ * Bojan Milosavlević <milboj@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['sr'] = {
+		days: ["Недеља","Понедељак", "Уторак", "Среда", "Четвртак", "Петак", "Субота"],
+		daysShort: ["Нед", "Пон", "Уто", "Сре", "Чет", "Пет", "Суб"],
+		daysMin: ["Н", "По", "У", "Ср", "Ч", "Пе", "Су"],
+		months: ["Јануар", "Фебруар", "Март", "Април", "Мај", "Јун", "Јул", "Август", "Септембар", "Октобар", "Новембар", "Децембар"],
+		monthsShort: ["Јан", "Феб", "Мар", "Апр", "Мај", "Јун", "Јул", "Авг", "Сеп", "Окт", "Нов", "Дец"],
+		today: "Данас",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+/**
+ * Swedish translation for bootstrap-datepicker
+ * Patrik Ragnarsson <patrik@starkast.net>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['sv'] = {
+		days: ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"],
+		daysShort: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
+		daysMin: ["Sö", "Må", "Ti", "On", "To", "Fr", "Lö"],
+		months: ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"],
+		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+		today: "Idag",
+		format: "yyyy-mm-dd",
+		weekStart: 1,
+		clear: "Rensa"
+	};
+}(jQuery));
+/**
+ * Swahili translation for bootstrap-datepicker
+ * Edwin Mugendi <https://github.com/edwinmugendi>
+ * Source: http://scriptsource.org/cms/scripts/page.php?item_id=entry_detail&uid=xnfaqyzcku
+ */
+
+;(function($){
+    $.fn.datepicker.dates['sw'] = {
+        days: ["Jumapili", "Jumatatu", "Jumanne", "Jumatano", "Alhamisi", "Ijumaa", "Jumamosi"],
+        daysShort: ["J2", "J3", "J4", "J5", "Alh", "Ij", "J1"],
+        daysMin: ["2", "3", "4", "5", "A", "I", "1"],
+        months: ["Januari", "Februari", "Machi", "Aprili", "Mei", "Juni", "Julai", "Agosti", "Septemba", "Oktoba", "Novemba", "Desemba"],
+        monthsShort: ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ago", "Sep", "Okt", "Nov", "Des"],
+        today: "Leo"
+    };
+}(jQuery));
+/**
+ * Thai translation for bootstrap-datepicker
+ * Suchau Jiraprapot <seroz24@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['th'] = {
+		days: ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์", "อาทิตย์"],
+		daysShort: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"],
+		daysMin: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"],
+		months: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+		monthsShort: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."],
+		today: "วันนี้"
+	};
+}(jQuery));
+/**
+ * Turkish translation for bootstrap-datepicker
+ * Serkan Algur <kaisercrazy_2@hotmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['tr'] = {
+		days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+		daysShort: ["Pz", "Pzt", "Sal", "Çrş", "Prş", "Cu", "Cts"],
+		daysMin: ["Pz", "Pzt", "Sa", "Çr", "Pr", "Cu", "Ct"],
+		months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+		monthsShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
+		today: "Bugün",
+		clear: "Temizle",
+		weekStart: 1,
+		format: "dd.mm.yyyy"
+	};
+}(jQuery));
+
+/**
+ * Ukrainian translation for bootstrap-datepicker
+ * Igor Polynets
+ */
+
+;(function($){
+	$.fn.datepicker.dates['ua'] = {
+		days: ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятница", "Субота", "Неділя"],
+		daysShort: ["Нед", "Пнд", "Втр", "Срд", "Чтв", "Птн", "Суб", "Нед"],
+		daysMin: ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
+		months: ["Cічень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
+		monthsShort: ["Січ", "Лют", "Бер", "Кві", "Тра", "Чер", "Лип", "Сер", "Вер", "Жов", "Лис", "Гру"],
+		today: "Сьогодні",
+		weekStart: 1
+	};
+}(jQuery));
+/**
+ * Ukrainian translation for bootstrap-datepicker
+ * Igor Polynets
+ */
+
+;(function($){
+	$.fn.datepicker.dates['uk'] = {
+		days: ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"],
+		daysShort: ["Нед", "Пнд", "Втр", "Срд", "Чтв", "Птн", "Суб"],
+		daysMin: ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+		months: ["Cічень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
+		monthsShort: ["Січ", "Лют", "Бер", "Кві", "Тра", "Чер", "Лип", "Сер", "Вер", "Жов", "Лис", "Гру"],
+		today: "Сьогодні",
+		clear: "Очистити",
+		format: "dd.mm.yyyy",
+		weekStart: 1
+	};
+}(jQuery));
+/**
+ * Vietnamese translation for bootstrap-datepicker
+ * An Vo <https://github.com/anvoz/>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['vi'] = {
+		days: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"],
+		daysShort: ["CN", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"],
+		daysMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+		months: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+		monthsShort: ["Th1", "Th2", "Th3", "Th4", "Th5", "Th6", "Th7", "Th8", "Th9", "Th10", "Th11", "Th12"],
+		today: "Hôm nay",
+		clear: "Xóa",
+		format: "dd/mm/yyyy"
+	};
+}(jQuery));
+/**
+ * Simplified Chinese translation for bootstrap-datepicker
+ * Yuan Cheung <advanimal@gmail.com>
+ */
+
+;(function($){
+	$.fn.datepicker.dates['zh-CN'] = {
+		days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+		daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+		daysMin:  ["日", "一", "二", "三", "四", "五", "六"],
+		months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+		monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+		today: "今日",
+		clear: "清除",
+		format: "yyyy年mm月dd日",
+		titleFormat: "yyyy年mm月",
+		weekStart: 1
+	};
+}(jQuery));
+/**
+ * Traditional Chinese translation for bootstrap-datepicker
+ * Rung-Sheng Jang <daniel@i-trend.co.cc>
+ * FrankWu  <frankwu100@gmail.com> Fix more appropriate use of Traditional Chinese habit
+ */
+
+;(function($){
+	$.fn.datepicker.dates['zh-TW'] = {
+		days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+		daysShort: ["週日", "週一", "週二", "週三", "週四", "週五", "週六"],
+		daysMin:  ["日", "一", "二", "三", "四", "五", "六"],
+		months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+		monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+		today: "今天",
+		format: "yyyy年mm月dd日",
+		weekStart: 1,
+		clear: "清除"
+	};
+}(jQuery));
+
 
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
@@ -67902,6 +71561,7 @@ angular.module("templates").run(["$templateCache", function($templateCache) {
 
 
 // new components need include before
+
 
 
 
