@@ -8,5 +8,5 @@
       = @title
 
     - @news_feed[:response].each do |entries|
-      %h2 #{entries[:title]}
-      %a{href: entries[:url], target: '_blank'} #{entries[:summary]}
+      %h2 #{entries[:title].html_safe}
+      %a{href: entries[:url], target: '_blank'} #{entries[:summary].html_safe}

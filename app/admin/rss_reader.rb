@@ -18,7 +18,9 @@ ActiveAdmin.register RssReader do
     attributes_table do
       row :url, as: :rss
       row :email
+      row :time_last_news
       row :created_at
+      row :updatee_at
     end
   end
 
