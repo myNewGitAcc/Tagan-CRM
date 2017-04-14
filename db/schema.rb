@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161117122923) do
+ActiveRecord::Schema.define(version: 20170413091737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,24 @@ ActiveRecord::Schema.define(version: 20161117122923) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer  "priority",     default: 0, null: false
+    t.integer  "attempts",     default: 0, null: false
+    t.text     "handler",                  null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "scheduled_at"
+    t.datetime "last_run"
+    t.string   "owner_type"
+    t.integer  "owner_id"
+  end
+
   create_table "internal_accounts", force: :cascade do |t|
     t.integer  "account_type"
     t.string   "name"
@@ -105,6 +123,22 @@ ActiveRecord::Schema.define(version: 20161117122923) do
     t.datetime "deleted_at"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  create_table "rss_readers", force: :cascade do |t|
+    t.string   "url"
+    t.string   "email"
+    t.datetime "time_last_news"
+  end
+
+  create_table "schedulers", force: :cascade do |t|
+    t.string   "type",       null: false
+    t.text     "task",       null: false
+    t.time     "time"
+    t.string   "day"
+    t.string   "frequency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "transactions", force: :cascade do |t|

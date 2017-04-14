@@ -106,6 +106,11 @@ GEM
     concurrent-ruby (1.0.2)
     cookiejar (0.3.3)
     daemons (1.2.3)
+    delayed_job (4.1.2)
+      activesupport (>= 3.0, < 5.1)
+    delayed_job_active_record (4.1.1)
+      activerecord (>= 3.0, < 5.1)
+      delayed_job (>= 3.0, < 5)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     devise (4.1.1)
@@ -154,6 +159,11 @@ GEM
     faye-websocket (0.10.4)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
+    feedjira (2.1.2)
+      faraday (>= 0.9)
+      faraday_middleware (>= 0.9)
+      loofah (>= 2.0)
+      sax-machine (>= 1.0)
     formtastic (3.1.4)
       actionpack (>= 3.2.13)
     formtastic_i18n (0.6.0)
@@ -218,6 +228,10 @@ GEM
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    launchy (2.4.3)
+      addressable (~> 2.3)
+    letter_opener (1.4.1)
+      launchy (~> 2.2)
     libv8 (3.16.14.15)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -306,6 +320,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    sax-machine (1.3.2)
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
@@ -366,10 +381,12 @@ DEPENDENCIES
   browserify-rails
   byebug
   coffee-rails (~> 4.1.0)
+  delayed_job_active_record
   devise
   devise-token_authenticatable
   dotenv-rails
   faye-rails (~> 2.0)
+  feedjira
   grape (~> 0.9.0)
   grape-swagger (~> 0.8.0)
   grape-swagger-rails!
@@ -377,6 +394,7 @@ DEPENDENCIES
   heroku_rails_deflate
   jbuilder (~> 2.0)
   jquery-rails
+  letter_opener
   paranoia (~> 2)
   pg (~> 0.15)
   rack-cors

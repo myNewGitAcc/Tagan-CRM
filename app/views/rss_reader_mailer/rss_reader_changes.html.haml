@@ -1,0 +1,12 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+  %body
+
+    %h4{style: 'text-align: center'}
+      = @title
+
+    - @news_feed[:response].each do |entries|
+      %h2 #{entries[:title]}
+      %a{href: entries[:url], target: '_blank'} #{entries[:summary]}

@@ -43,6 +43,7 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'letter_opener'
 end
 
 group :production, :staging do
@@ -79,3 +80,5 @@ gem 'bootstrap-datepicker-rails'
 
 gem 'vkontakte_api', '~> 1.4'
 gem 'dotenv-rails'
+gem "feedjira"
+gem 'delayed_job_active_record'
