@@ -1,0 +1,23 @@
+//#fullCalendar {
+  //width: 100%
+//}
+
+.admin_calendars {
+  table {
+    tbody {
+      tr td {
+        a.fc-event{
+          color: white;
+          text-decoration: none;
+        }
+        a.fc-event:hover {
+          color: white;
+          text-decoration: underline;
+        }
+        .fc-content {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

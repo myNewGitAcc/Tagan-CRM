@@ -82,3 +82,9 @@ gem 'vkontakte_api', '~> 1.4'
 gem 'dotenv-rails'
 gem "feedjira"
 gem 'delayed_job_active_record'
+
+gem 'fullcalendar-rails'
+gem 'momentjs-rails'
+
+gem 'just-datetime-picker', '~> 0.0.7'
+
