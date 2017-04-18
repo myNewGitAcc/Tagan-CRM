@@ -9,6 +9,6 @@
 
     - @news_feed[:response].each do |entries|
       %h2
-        %a{href: entries[:url], target: '_blank'} #{entries[:title].html_safe}
-      %p #{entries[:summary].html_safe}
+        %a{href: entries[:url], target: '_blank'} #{entries[:title].gsub(/&quot;|quot;|&quot/,'').html_safe}
+      %p #{entries[:summary].gsub(/&quot;|quot;|&quot/,'').html_safe}
       %hr

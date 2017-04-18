@@ -18,21 +18,24 @@ class RssReadersJob
       results = {}
       results[:response] = []
       email = rss.email.split(',')
-      feed = Feedjira::Feed.fetch_and_parse(rss.url)
-      title = feed.title
-      rss_entries = rss.time_last_news.nil? ? feed.entries : feed.entries.select{|e| e.published > rss.time_last_news}
-      rss_entries.sort_by{|rss_entry| rss_entry.published}.each_with_index do |entries, i|
-        info = {}
-        info[:title] =  entries.title
-        info[:url]   =  entries.url
-        info[:summary] = entries.summary
-        results[:response] << info
-        rss.update(time_last_news: entries.published) if rss_entries.size-1 == i
-      end
-      unless results[:response].blank?
-        email.each { |email|
-          RssReaderMailer.rss_reader_changes(email.strip, results, title).deliver_now
-        }
+      xml = Faraday.get(rss.url).body
+      if xml.present?
+        feed = Feedjira::Feed.parse xml
+        title = feed.title
+        rss_entries = rss.time_last_news.nil? ? feed.entries : feed.entries.select{|e| e.published > rss.time_last_news}
+        rss_entries.sort_by{|rss_entry| rss_entry.published}.each_with_index do |entries, i|
+          info = {}
+          info[:title] =  entries.title
+          info[:url]   =  entries.url
+          info[:summary] = entries.summary
+          results[:response] << info
+          rss.update(time_last_news: entries.published) if rss_entries.size-1 == i
+        end
+        unless results[:response].blank?
+          email.each { |email|
+            RssReaderMailer.rss_reader_changes(email.strip, results, title).deliver_now
+          }
+        end
       end
     end
 
