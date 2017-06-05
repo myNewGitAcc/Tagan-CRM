@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  wiki_root '/wiki'
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
@@ -24,6 +25,10 @@ Rails.application.routes.draw do
              }
 
   get '/login', to: 'auth#login'
+
+  # namespace :wiki do
+  #   resources :articles, only: :index
+  # end
 
   get '/*path' => 'auth#redirect'
 end

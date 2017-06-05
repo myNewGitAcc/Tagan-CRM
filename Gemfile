@@ -88,3 +88,6 @@ gem 'momentjs-rails'
 
 gem 'just-datetime-picker', '~> 0.0.7'
 
+gem 'irwi', :git => 'git://github.com/alno/irwi.git'
+gem 'bluecloth'
+gem 'will_paginate'

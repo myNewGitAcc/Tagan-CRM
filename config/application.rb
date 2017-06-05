@@ -37,7 +37,7 @@ module SpaApp
 
     config.assets.precompile.shift
 
-    config.assets.precompile += %w( messages.css messages.js )
+    config.assets.precompile += %w( messages.css messages.js wiki.js )
 
 
     # Add additional asset pathes

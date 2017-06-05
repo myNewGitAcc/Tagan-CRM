@@ -10,9 +10,12 @@
             <a href="/" class="navbar-brand" ng-click="nav.setPage($event)">TaganTeam</a>
         </div>
         <div uib-collapse="nav.isCollapsed" class="navbar-collapse collapse" id="navbar-main">
-            <ul class="nav navbar-nav"  ng-click="nav.setPage($event)">
+            <ul class="nav navbar-nav" ng-click="nav.setPage($event)">
                 <li ng-class="{'active': nav.activePage == '/'}">
                     <a href="/">Worktime</a>
+                </li>
+                <li>
+                    <a href="/wiki/all" target="_self">Wiki</a>
                 </li>
                 <li ng-class="{'active': nav.activePage == '/employees'}">
                     <a href="employees">Employees</a>
