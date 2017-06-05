@@ -1,0 +1,111 @@
+<h1>angular-notification</h1>
+
+<p><a href="https://travis-ci.org/neoziro/angular-notification"><img src="https://travis-ci.org/neoziro/angular-notification.svg?branch=master" alt="Build Status" /></a>
+<a href="https://david-dm.org/neoziro/angular-notification"><img src="https://david-dm.org/neoziro/angular-notification.svg?theme=shields.io" alt="Dependency Status" /></a>
+<a href="https://david-dm.org/neoziro/angular-notification#info=devDependencies"><img src="https://david-dm.org/neoziro/angular-notification/dev-status.svg?theme=shields.io" alt="devDependency Status" /></a></p>
+
+<p>Notification service for Angular using native HTML5 API.</p>
+
+<p><img src="https://f.cloud.github.com/assets/266302/2423762/a38113ac-ab9e-11e3-8e8a-2e4fe299e9f5.png" alt="notification example" /></p>
+
+<h2>Install</h2>
+
+<h3>Using bower</h3>
+
+<p><code>
+bower install angular-notification
+</code></p>
+
+<h3>Using npm</h3>
+
+<p><code>
+npm install angular-notification
+</code></p>
+
+<h2>Usage</h2>
+
+<p>```js
+angular.module('controllers.notification', ['notification'])
+.controller('NotificationCtrl', function ($notification) {
+  $notification('New message', {</p>
+
+<pre><code>body: 'You have a new message.'
+</code></pre>
+
+<p>  });
+})
+```</p>
+
+<h3>$notification(title, options)</h3>
+
+<p>Create a new notification, the signature is the same as <a href="https://developer.mozilla.org/en/docs/Web/API/notification">the Web Notification API</a>.</p>
+
+<p>Angular-notification provides some sugar to the default API, the permission is requested automatically. There is some options in addition to that already present in the official API:</p>
+
+<ul>
+<li>"delay": Specify a delay (in ms) after the notification is automatically closed. Default <code>null</code>.</li>
+<li>"focusWindowOnClick": Focus the window when the notification is clicked (works only on Chrome, Firefox prevent this for security issue). Default <code>true</code>.</li>
+</ul>
+
+
+<p><code>js
+$notification('title', {
+  body: 'message',
+  dir: 'auto',
+  lang: 'en',
+  tag: 'my-tag',
+  icon: '/my-icon.jpg',
+  delay: 1000, // in ms
+  focusWindowOnClick: true // focus the window on click
+})
+</code></p>
+
+<h3>$notificationProvider.setOptions(options)</h3>
+
+<p>Set default options.</p>
+
+<p><code>js
+$notificationProvider.setOptions({icon: '/my-icon.jpg'});
+</code></p>
+
+<h3>notification.close()</h3>
+
+<p>Close the notification.</p>
+
+<p><code>js
+var notification = $notification('hello');
+notification.close();
+</code></p>
+
+<h3>notification.$on(name, listener)</h3>
+
+<p>Listen an event on the notification. Using this method, the listener is automatically wrapped in an <code>$apply()</code>.</p>
+
+<p>The signature is the same as the angular <code>$scope.$on</code> signature, it returns the deregistration function.</p>
+
+<p>Avalaible examples are 'click', 'show', 'close' and 'error'.</p>
+
+<p>```js
+var notification = $notification('hello');
+var deregister = notification.$on('click', function () {
+  console.log('User has clicked.');
+});</p>
+
+<p>// Stop listening the event.
+deregister();
+```</p>
+
+<h3>$notification.requestPermission()</h3>
+
+<p>Request explicitly the permission to display notification, <a href="https://developer.mozilla.org/en-US/docs/Web/API/Notification.requestPermission">more info in the official API</a>.</p>
+
+<p><code>js
+$notification.requestPermission()
+.then(function (permission) {
+  console.log(permission); // default, granted, denied
+});
+</code></p>
+
+<h2>License</h2>
+
+<p>MIT</p>

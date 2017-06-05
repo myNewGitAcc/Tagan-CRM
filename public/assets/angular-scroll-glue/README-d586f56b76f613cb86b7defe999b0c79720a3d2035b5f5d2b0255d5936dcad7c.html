@@ -1,0 +1,73 @@
+<h1>angular-scroll-glue <a href="https://travis-ci.org/Luegg/angularjs-scroll-glue"><img src="https://travis-ci.org/Luegg/angularjs-scroll-glue.svg?branch=master" alt="Build Status" /></a></h1>
+
+<p>An AngularJs directive that automatically scrolls to the bottom of an element on changes in its scope.</p>
+
+<h2>Install</h2>
+
+<h3>Bower</h3>
+
+<p><code>bash
+$ bower install angular-scroll-glue --save
+</code></p>
+
+<h3>npm</h3>
+
+<p><code>bash
+$ npm i angularjs-scroll-glue
+</code></p>
+
+<h2>Usage</h2>
+
+<p><code>``javascript
+// Add</code>luegg.directives` to your module's dependencies.
+angular.module('yourModule', [</p>
+
+<pre><code>...,
+'luegg.directives'
+</code></pre>
+
+<p>]);
+```</p>
+
+<p>```html</p>
+
+<div scroll-glue>
+    <!-- Content here will be "scroll-glued". -->
+</div>
+
+
+
+
+<div scroll-glue="glued">
+    <!-- Content here will be "scroll-glued" if the passed expression is truthy. -->
+</div>
+
+
+<p>```</p>
+
+<p><strong>More information can be found in the <a href="#live-demo">live demo</a>.</strong></p>
+
+<h2>Live demo</h2>
+
+<p><a href="http://plnkr.co/edit/wxTyp7PpyxJOHSlUumVC?p=preview">Demo Plunk</a></p>
+
+<h2>Contribute</h2>
+
+<p>Despite this is a ultra specialized library, there will always be a fix to be made or a new feature to be added and I'm glad for any contributions. But please make sure to check the following before committing a pull request:</p>
+
+<ol>
+<li>Make sure the unit tests pass. Just run <code>npm test</code> and check if all is green.</li>
+<li>Try to add new tests that cover your changes.</li>
+<li>Make sure you do not introduce changes that break backward compatibility unless there is a really good reason to.</li>
+</ol>
+
+
+<h2>License (MIT)</h2>
+
+<p>Copyright (C) 2013 Luegg</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>

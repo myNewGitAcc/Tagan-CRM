@@ -1,0 +1,158 @@
+<h1>angular-storage <a href="https://travis-ci.org/auth0/angular-storage"><img src="https://secure.travis-ci.org/auth0/angular-storage.svg?branch=master" alt="Build Status" /></a></h1>
+
+<p>A Storage done right for AngularJS.</p>
+
+<h2>Key Features</h2>
+
+<ul>
+<li>Uses <strong><code>localStorage</code> or <code>sessionStorage</code> by default but if it's not available, it uses <code>ngCookies</code></strong>.</li>
+<li>Lets you <strong>save JS Objects</strong></li>
+<li>If <strong>you save a <code>Number</code>, you get a <code>Number</code></strong>, not a String</li>
+<li>Uses a <strong>caching system</strong> so that if you already have a value, it won't get it from the store again.</li>
+</ul>
+
+
+<h2>Installing it</h2>
+
+<p>You have several options:</p>
+
+<p><code>bash
+bower install a0-angular-storage
+</code></p>
+
+<p><code>bash
+npm install angular-storage
+</code></p>
+
+<p>````html</p>
+
+<script type="text/javascript" src="https://cdn.rawgit.com/auth0/angular-storage/master/dist/angular-storage.js"></script>
+
+
+<p>````</p>
+
+<h2>Using it</h2>
+
+<p>````js
+angular.module('app', ['angular-storage'])
+.controller('Controller', function(store) {
+  var myObj = {</p>
+
+<pre><code>name: 'mgonto'
+</code></pre>
+
+<p>  };</p>
+
+<p>  store.set('obj', myObj);</p>
+
+<p>  var myNewObject = store.get('obj');</p>
+
+<p>  angular.equals(myNewObject, myObj); // return true</p>
+
+<p>  store.remove('obj');</p>
+
+<p>  store.set('number', 2);</p>
+
+<p>  typeof(store.get('number')) === 'number'
+});
+````</p>
+
+<h2>Namespaced Storages</h2>
+
+<p>You can also create namespaced storages if you want</p>
+
+<p>````js
+angular.module('app', ['angular-storage'])
+.factory('Auth0Store', function(store) {
+  return store.getNamespacedStore('auth0');
+})
+.controller('Controller', function(Auth0Store) {</p>
+
+<p>  var myObj = {</p>
+
+<pre><code>name: 'mgonto'
+</code></pre>
+
+<p>  };</p>
+
+<p>  // This will be saved in localStorage as auth0.obj
+  Auth0Store.set('obj', myObj);</p>
+
+<p>  // This will look for auth0.obj
+  var myNewObject = Auth0Store.get('obj');</p>
+
+<p>  angular.equals(myNewObject, myObj); // return true
+});
+````</p>
+
+<h2>Changing storage type</h2>
+
+<p>```js
+angular.module('app', ['angular-storage'])
+  .config(function(storeProvider) {</p>
+
+<pre><code>// Store defaults to localStorage but we can set sessionStorage or cookieStorage.
+storeProvider.setStore('sessionStorage');
+</code></pre>
+
+<p>  })
+  .controller('Controller', function(store) {</p>
+
+<p>  var myObj = {</p>
+
+<pre><code>name: 'mgonto'
+</code></pre>
+
+<p>  };</p>
+
+<p>  // This will be saved in sessionStorage as obj
+  store.set('obj', myObj);</p>
+
+<p>  // This will look for obj in sessionStorage
+  var myNewObject = store.get('obj');</p>
+
+<p>  angular.equals(myNewObject, myObj); // return true
+});
+```</p>
+
+<h2>API</h2>
+
+<h3>storeProvider.setStore(storageName)</h3>
+
+<p>Sets the underlying store for the <code>store</code> service. It can be <code>localStorage</code>, <code>sessionStorage</code> or <code>cookieStorage</code>. Defaults to <code>localStorage</code></p>
+
+<h3>store.set(name, value)</h3>
+
+<p>Sets a new <code>value</code> to the storage with the key <code>name</code>. It can be any object.</p>
+
+<h3>store.get(name)</h3>
+
+<p>Returns the saved <code>value</code> with they key <code>name</code>. If you saved an object, you get an object.</p>
+
+<h3>store.remove(name)</h3>
+
+<p>Deletes the saved <code>value</code> with the key <code>name</code></p>
+
+<h3>store.getNamespacedStore(namespace, delimiter)</h3>
+
+<p>Returns a new <code>store</code> service that will use the <code>namespace</code> and <code>delimiter</code> when saving and getting values like the following <code>namespace[delimiter]key</code>. For example <code>auth0.object</code> considering <code>auth0</code> as <code>namespace</code> and <code>.</code> as a <code>delimiter</code></p>
+
+<h2>Usages</h2>
+
+<p>This library is used in <a href="https://github.com/auth0/auth0-angular">auth0-angular</a></p>
+
+<h2>Contributing</h2>
+
+<p>Just clone the repo, run <code>npm install</code>, <code>bower install</code> and then <code>gulp</code> to work :).</p>
+
+<h2>Issue Reporting</h2>
+
+<p>If you have found a bug or if you have a feature request, please report them at this repository issues section. Please do not report security vulnerabilities on the public GitHub issue tracker. The <a href="https://auth0.com/whitehat">Responsible Disclosure Program</a> details the procedure for disclosing security issues.</p>
+
+<h2>Author</h2>
+
+<p><a href="auth0.com">Auth0</a></p>
+
+<h2>License</h2>
+
+<p>This project is licensed under the MIT license. See the <a href="LICENSE">LICENSE</a> file for more info.</p>

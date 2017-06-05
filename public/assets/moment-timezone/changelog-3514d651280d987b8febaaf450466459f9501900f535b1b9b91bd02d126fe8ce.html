@@ -1,0 +1,188 @@
+<h3><code>0.5.4</code> <em>2016-05-03</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2016d</code>. <a href="https://github.com/moment/moment-timezone/pull/336">#336</a></li>
+<li>Ignore the results from <code>Intl.DateTimeFormat().resolvedOptions().timeZone</code> if it is undefined. <a href="https://github.com/moment/moment-timezone/pull/322">#322</a></li>
+</ul>
+
+
+<h3><code>0.5.3</code> <em>2016-03-24</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2016c</code>. <a href="https://github.com/moment/moment-timezone/pull/321">#321</a></li>
+</ul>
+
+
+<h3><code>0.5.2</code> <em>2016-03-15</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2016b</code>. <a href="https://github.com/moment/moment-timezone/pull/315">#315</a></li>
+</ul>
+
+
+<h3><code>0.5.1</code> <em>2016-03-01</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2016a</code>. <a href="https://github.com/moment/moment-timezone/pull/299">#299</a></li>
+<li>Fixed bug when <code>Date#toTimeString</code> did not return a known format. <a href="https://github.com/moment/moment-timezone/pull/302">#302</a>  <a href="https://github.com/moment/moment-timezone/pull/303">#303</a></li>
+<li>Added lookup on <code>Intl.DateTimeFormat().resolvedOptions().timeZone</code> to <code>moment.tz.guess()</code>. <a href="https://github.com/moment/moment-timezone/pull/304">#304</a> <a href="https://github.com/moment/moment-timezone/pull/291">#291</a></li>
+</ul>
+
+
+<h3><code>0.5.0</code> <em>2015-12-28</em></h3>
+
+<ul>
+<li>Added support for guessing the user's timezone via <code>moment.tz.guess()</code>. <a href="https://github.com/moment/moment-timezone/pull/285">#285</a></li>
+<li>Fixed UMD export issue when there was an html element with <code>id=exports</code>. <a href="https://github.com/moment/moment-timezone/pull/275">#275</a></li>
+<li>Removed jspm specific dependencies from <code>package.json</code>. <a href="https://github.com/moment/moment-timezone/pull/284">#284</a></li>
+</ul>
+
+
+<h3><code>0.4.1</code> <em>2015-10-07</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2015e</code>. <a href="https://github.com/moment/moment-timezone/pull/253">#253</a></li>
+<li>Updated data to IANA TZDB <code>2015f</code>. <a href="https://github.com/moment/moment-timezone/pull/253">#253</a></li>
+<li>Updated data to IANA TZDB <code>2015g</code>. <a href="https://github.com/moment/moment-timezone/pull/255">#255</a></li>
+<li>Added jspm dependencies for moment. <a href="https://github.com/moment/moment-timezone/pull/234">#234</a></li>
+<li>Included builds directory in npm. <a href="https://github.com/moment/moment-timezone/pull/237">#237</a></li>
+<li>Removed version field from bower.json. <a href="https://github.com/moment/moment-timezone/pull/230">#230</a></li>
+</ul>
+
+
+<h3><code>0.4.0</code> <em>2015-05-30</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2015b</code>. <a href="https://github.com/moment/moment-timezone/pull/201">#201</a></li>
+<li>Updated data to IANA TZDB <code>2015c</code>. <a href="https://github.com/moment/moment-timezone/pull/214">#214</a></li>
+<li>Updated data to IANA TZDB <code>2015d</code>. <a href="https://github.com/moment/moment-timezone/pull/214">#214</a></li>
+<li>Updated zone getter to allow lazy unpacking to improve initial page load times. <a href="https://github.com/moment/moment-timezone/pull/216">#216</a></li>
+<li>Added a <code>package.json</code> <code>jspm:main</code> entry point. <a href="https://github.com/moment/moment-timezone/pull/194">#194</a></li>
+<li>Added <code>composer.json</code>. <a href="https://github.com/moment/moment-timezone/pull/222">#222</a></li>
+<li>Added an error message when trying to load moment-timezone twice. <a href="https://github.com/moment/moment-timezone/pull/212">#212</a></li>
+</ul>
+
+
+<h3><code>0.3.1</code> <em>2015-03-16</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2015a</code>. <a href="https://github.com/moment/moment-timezone/pull/183">#183</a></li>
+</ul>
+
+
+<h3><code>0.3.0</code> <em>2015-01-13</em></h3>
+
+<ul>
+<li><em>Breaking:</em> Added country data to the <code>meta/*.json</code> files. Restructured the data to support multiple countries per zone. <a href="https://github.com/moment/moment-timezone/pull/162">#162</a></li>
+<li>Added the ability to set a default timezone for all new moments. <a href="https://github.com/moment/moment-timezone/pull/152">#152</a></li>
+<li>Fixed a bug when passing a moment with an offset to <code>moment.tz</code>. <a href="https://github.com/moment/moment-timezone/pull/169">#169</a></li>
+<li>Fixed a deprecation in moment core, changing <code>moment#zone</code> to <code>moment#utcOffset</code>. <a href="https://github.com/moment/moment-timezone/pull/168">#168</a></li>
+</ul>
+
+
+<h3><code>0.2.5</code> <em>2014-11-12</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2014j</code>. <a href="https://github.com/moment/moment-timezone/pull/151">#151</a></li>
+</ul>
+
+
+<h3><code>0.2.4</code> <em>2014-10-20</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2014i</code>. <a href="https://github.com/moment/moment-timezone/pull/142">#142</a></li>
+</ul>
+
+
+<h3><code>0.2.3</code> <em>2014-10-20</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2014h</code>. <a href="https://github.com/moment/moment-timezone/pull/141">#141</a></li>
+</ul>
+
+
+<h3><code>0.2.2</code> <em>2014-09-04</em></h3>
+
+<ul>
+<li>Updated data to IANA TZDB <code>2014g</code>. <a href="https://github.com/moment/moment-timezone/pull/126">#126</a></li>
+<li>Added a warning when using <code>moment-timezone</code> with <code>moment&lt;2.6.0</code>.</li>
+</ul>
+
+
+<h3><code>0.2.1</code> <em>2014-08-02</em></h3>
+
+<ul>
+<li>Fixed support for <code>moment@2.8.1+</code>.</li>
+</ul>
+
+
+<h3><code>0.2.0</code> <em>2014-07-21</em></h3>
+
+<ul>
+<li>Added the ability to configure whether ambiguous or invalid input is rolled forward or backward. <a href="https://github.com/moment/moment-timezone/pull/101">#101</a></li>
+<li>Added <code>moment&gt;=2.6.0</code> as a dependency in <code>bower.json</code>. <a href="https://github.com/moment/moment-timezone/issues/107">#107</a></li>
+<li>Fixed getting the name of a zone that was added as a linked zone. <a href="https://github.com/moment/moment-timezone/pull/104">#104</a></li>
+<li>Added an error message when a zone was not loaded. <a href="https://github.com/moment/moment-timezone/issues/106">#106</a></li>
+</ul>
+
+
+<h3><code>0.1.0</code> <em>2014-06-23</em></h3>
+
+<ul>
+<li><em>Breaking:</em> Changed data format from Zones+Rules to just Zones. <a href="https://github.com/moment/moment-timezone/pull/82">#82</a></li>
+<li><em>Breaking:</em> Removed <code>moment.tz.{addRule,addZone,zoneExists,zones}</code> as they are no longer relevant with the new data format.</li>
+<li>Made library 20x faster. <a href="http://jsperf.com/moment-timezone-0-1-0/2">JSPerf results</a></li>
+<li>Completely rewrote internals to support new data format.</li>
+<li>Updated the data collection process to get data directly from http://www.iana.org/time-zones.</li>
+<li>Updated data to IANA TZDB <code>2014e</code>.</li>
+<li>Updated <code>bower.json</code> to use a browser specific <code>main:</code> entry point.</li>
+<li>Added built files with included data.</li>
+<li>Added support for accurately parsing input around DST changes. <a href="https://github.com/moment/moment-timezone/pull/93">#93</a></li>
+<li>Added comprehensive documentation at <a href="http://momentjs.com/timezone/docs/">momentjs.com/timezone/docs/</a>.</li>
+<li>Added <code>moment.tz.link</code> for linking two identical zones.</li>
+<li>Added <code>moment.tz.zone</code> for getting a loaded zone.</li>
+<li>Added <code>moment.tz.load</code> for loading a bundled version of data from the IANA TZDB.</li>
+<li>Added <code>moment.tz.names</code> for getting the names of all the loaded timezones.</li>
+<li>Added <code>moment.tz.unpack</code> and <code>moment.tz.unpackBase60</code> for unpacking data.</li>
+<li>Added <code>moment-timezone-utils.js</code> for working with the packed and unpacked data.</li>
+<li>Fixed major memory leak. <a href="https://github.com/moment/moment-timezone/issues/79">#79</a></li>
+<li>Fixed global export to allow use in web workers. <a href="https://github.com/moment/moment-timezone/pull/78">#78</a></li>
+<li>Fixed global export in browser environments that define <code>window.module</code>. <a href="https://github.com/moment/moment-timezone/pull/76">#76</a></li>
+</ul>
+
+
+<h3><code>0.0.6</code> <em>2014-04-20</em></h3>
+
+<ul>
+<li>Fixed issue with preventing loading moment-timezone more than once. <a href="https://github.com/moment/moment-timezone/pull/75">#75</a></li>
+</ul>
+
+
+<h3><code>0.0.5</code> <em>2014-04-17</em></h3>
+
+<ul>
+<li>Improved performance with memoization. <a href="https://github.com/moment/moment-timezone/issues/39">#39</a></li>
+<li>Published only necessary files to npm. <a href="https://github.com/moment/moment-timezone/issues/46">#46</a></li>
+<li>Added better handling of timezones around DST. <a href="https://github.com/moment/moment-timezone/issues/53">#53</a> <a href="https://github.com/moment/moment-timezone/issues/61">#61</a> <a href="https://github.com/moment/moment-timezone/issues/70">#70</a></li>
+<li>Added Browserify support. <a href="https://github.com/moment/moment-timezone/issues/41">#41</a></li>
+<li>Added <code>moment.tz.zoneExists</code> <a href="https://github.com/moment/moment-timezone/issues/73">#73</a></li>
+<li>Fixed cloning moments with a timezone. <a href="https://github.com/moment/moment-timezone/issues/71">#71</a></li>
+<li>Prevent loading moment-timezone more than once. <a href="https://github.com/moment/moment-timezone/issues/74">#74</a></li>
+</ul>
+
+
+<h3><code>0.0.3</code> <em>2013-10-10</em></h3>
+
+<ul>
+<li>Added Bower support.</li>
+<li>Added support for newer versions of moment.</li>
+<li>Added support for constructing a moment with a string and zone.</li>
+<li>Added more links and timezone names in moment-timezone.json</li>
+</ul>
+
+
+<h3><code>0.0.1</code> <em>2013-07-17</em></h3>
+
+<ul>
+<li>Initial version.</li>
+</ul>

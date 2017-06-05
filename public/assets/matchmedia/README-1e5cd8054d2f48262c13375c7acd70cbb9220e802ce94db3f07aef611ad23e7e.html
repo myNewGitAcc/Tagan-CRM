@@ -1,0 +1,47 @@
+<h1>matchMedia() polyfill</h1>
+
+<h2>test whether a CSS media type or media query applies</h2>
+
+<ul>
+<li><strong>Authors</strong>: Scott Jehl, Paul Irish, Nicholas Zakas</li>
+<li><strong>Spec</strong>: <a href="http://dev.w3.org/csswg/cssom-view/#dom-window-matchmedia">dev.w3.org/csswg/cssom-view/#dom-window-matchmedia</a></li>
+<li><strong>Native support</strong>: Chrome <a href="http://trac.webkit.org/changeset/72552">since m10</a>, Firefox <a href="https://developer.mozilla.org/en/Firefox_6_for_developers">since 6</a>, and Safari <a href="https://developer.mozilla.org/en/DOM/window.matchMedia#Browser_compatibility">since 5.1</a></li>
+</ul>
+
+
+<h3>How about resizing the browser?</h3>
+
+<p>Paul Hayes <a href="http://www.paulrhayes.com/2011-11/use-css-transitions-to-link-media-queries-and-javascript/">tackled this using CSS transitions and their transitionEnd event</a></p>
+
+<p>His code: https://github.com/fofr/matchMedia.js -- though currently it doesnt support IE6-9, since they dont have transitions, obviously. :)</p>
+
+<h2>Usage</h2>
+
+<h4>test 'tv' media type</h4>
+
+<pre><code>if (matchMedia('tv').matches) {
+  // tv media type supported
+}
+</code></pre>
+
+<h3>test a mobile device media query</h3>
+
+<pre><code>if (matchMedia('only screen and (max-width: 480px)').matches) {
+  // smartphone/iphone... maybe run some small-screen related dom scripting?
+}
+</code></pre>
+
+<h4>test landscape orientation</h4>
+
+<pre><code>if (matchMedia('all and (orientation:landscape)').matches) {
+  // probably tablet in widescreen view
+}
+</code></pre>
+
+<h2>Used in:</h2>
+
+<ul>
+<li><a href="https://github.com/scottjehl/Respond">Respond.js</a></li>
+<li><a href="https://github.com/PaulKinlan/formfactor">FormFactor</a></li>
+<li><a href="http://www.modernizr.com/">Modernizr</a></li>
+</ul>

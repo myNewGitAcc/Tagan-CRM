@@ -1,0 +1,25 @@
+<h1><a href="http://momentjs.com/timezone">Moment Timezone</a></h1>
+
+<p><a href="https://gitter.im/moment/moment-timezone?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Join the chat at https://gitter.im/moment/moment-timezone" /></a></p>
+
+<p><a href="https://npmjs.org/package/moment-timezone"><img src="http://img.shields.io/npm/v/moment-timezone.svg?style=flat" alt="NPM version" /></a> <a href="https://npmjs.org/package/moment-timezone"><img src="http://img.shields.io/npm/dm/moment-timezone.svg?style=flat" alt="NPM downloads" /></a> <a href="LICENSE"><img src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="MIT License" /></a> <a href="http://travis-ci.org/moment/moment-timezone"><img src="http://img.shields.io/travis/moment/moment-timezone/develop.svg?style=flat" alt="Build Status" /></a></p>
+
+<p>IANA Time Zone Database + <a href="http://momentjs.com">Moment.js</a>.</p>
+
+<p>```js
+var june = moment("2014-06-01T12:00:00Z");
+june.tz('America/Los<em>Angeles').format('ha z'); // 5am PDT
+june.tz('America/New</em>York').format('ha z');    // 8am EDT
+june.tz('Asia/Tokyo').format('ha z');          // 9pm JST
+june.tz('Australia/Sydney').format('ha z');    // 10pm EST</p>
+
+<p>var dec = moment("2014-12-01T12:00:00Z");
+dec.tz('America/Los<em>Angeles').format('ha z');  // 4am PST
+dec.tz('America/New</em>York').format('ha z');     // 7am EST
+dec.tz('Asia/Tokyo').format('ha z');           // 9pm JST
+dec.tz('Australia/Sydney').format('ha z');     // 11pm EST
+```</p>
+
+<h4><a href="contributing.md">Contribute code or compile time zone data</a></h4>
+
+<h4><a href="changelog.md">Read the changelog</a></h4>

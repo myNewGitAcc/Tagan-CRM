@@ -1,0 +1,178 @@
+<p><a href="https://www.npmjs.com/package/google-maps"><img src="https://img.shields.io/npm/v/google-maps.svg?style=flat-square" alt="NPM version" /></a>
+<a href="https://gemnasium.com/Carrooi/Node-GoogleMaps"><img src="https://img.shields.io/gemnasium/Carrooi/Node-GoogleMaps.svg?style=flat-square" alt="Dependency Status" /></a>
+<a href="https://travis-ci.org/Carrooi/Node-GoogleMaps"><img src="https://img.shields.io/travis/Carrooi/Node-GoogleMaps.svg?style=flat-square" alt="Build Status" /></a></p>
+
+<p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=ARUCDRF95XRBA"><img src="https://img.shields.io/badge/donate-PayPal-brightgreen.svg?style=flat-square" alt="Donate" /></a></p>
+
+<h1>Google Maps</h1>
+
+<p>Wrapper for asynchronously used Google Maps API in browser.</p>
+
+<p>This module does not change original google maps api in any way. It just provide easy way to load and use this API
+asynchronously.</p>
+
+<h2>Installation</h2>
+
+<p>Environment with common js:
+<code>
+$ npm install google-maps
+</code></p>
+
+<p>Download and import one of these files into your .html file:
+* <a href="https://raw.github.com/Carrooi/Js-GoogleMapsLoader/master/lib/Google.js">Development version</a>
+* <a href="https://raw.github.com/Carrooi/Js-GoogleMapsLoader/master/lib/Google.min.js">Production version</a></p>
+
+<h2>Usage</h2>
+
+<p>```javascript
+var GoogleMapsLoader = require('google-maps'); // only for common js environments</p>
+
+<p>GoogleMapsLoader.load(function(google) {</p>
+
+<pre><code>new google.maps.Map(el, options);
+</code></pre>
+
+<p>});
+```</p>
+
+<p><strong>If you are not using environment with common js support, you can use <code>GoogleMapsLoader</code> variable directly. It is
+already in <code>window</code> object.</strong></p>
+
+<h2>Options</h2>
+
+<h3>Own API key</h3>
+
+<p><code>javascript
+GoogleMapsLoader.KEY = 'qwertyuiopasdfghjklzxcvbnm';
+</code></p>
+
+<h3>Business API client</h3>
+
+<p><code>javascript
+GoogleMapsLoader.CLIENT = 'yourclientkey';
+GoogleMapsLoader.VERSION = '3.14';
+</code></p>
+
+<h3>Libraries</h3>
+
+<p><code>javascript
+GoogleMapsLoader.LIBRARIES = ['geometry', 'places'];
+</code></p>
+
+<h3>Localization</h3>
+
+<p><code>javascript
+GoogleMapsLoader.LANGUAGE = 'fr';
+</code></p>
+
+<h3>Region</h3>
+
+<p><code>javascript
+GoogleMapsLoader.REGION = 'GB';
+</code></p>
+
+<h2>Unload google api</h2>
+
+<p>For testing purposes is good to remove all google objects and restore loader to its original state.</p>
+
+<p>```javascript
+GoogleMapsLoader.release(function() {</p>
+
+<pre><code>console.log('No google maps api around');
+</code></pre>
+
+<p>});
+```</p>
+
+<h2>Events</h2>
+
+<h3>onLoad</h3>
+
+<p>```javascript
+GoogleMapsLoader.onLoad(function(google) {</p>
+
+<pre><code>console.log('I just loaded google maps api');
+</code></pre>
+
+<p>});
+```</p>
+
+<h2>Tests</h2>
+
+<p><code>
+$ npm test
+</code></p>
+
+<h2>Changelog list</h2>
+
+<ul>
+<li><p>3.2.1</p>
+
+<ul>
+<li>Typo in readme</li>
+</ul>
+</li>
+<li><p>3.2.0</p>
+
+<ul>
+<li>Removed support for SENSOR parameter <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/34">#34</a></li>
+<li>Add support for REGION parameter <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/36">#36</a></li>
+<li>Removed deprecated promises API <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/issues/24">#24</a></li>
+<li>Fix some testing cases <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/23">#23</a></li>
+<li>Typo in readme <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/22">#22</a></li>
+</ul>
+</li>
+<li><p>3.1.0</p>
+
+<ul>
+<li>Fix mock google maps loader</li>
+<li>Add language parameter <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/17">#17</a></li>
+<li>Fix typos at readme <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/19">#19</a></li>
+<li>Fix for IE 8 <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/21">#21</a></li>
+<li>Rename repository to Js-GoogleMapsLoader <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/issues/15">#15</a></li>
+</ul>
+</li>
+<li><p>3.0.0</p>
+
+<ul>
+<li>Register to bower registry</li>
+<li>Moved to Carrooi organization</li>
+<li>Using mocked loader, so tests are much faster</li>
+<li>Optimized building request url</li>
+<li>Some variables and methods are now private and not accessible from outside</li>
+<li>Updated dependencies</li>
+<li>Whole package is written in javascript, not coffeescript</li>
+</ul>
+</li>
+<li><p>2.1.1</p>
+
+<ul>
+<li>Sh**.... Forgot to increase version at package.json</li>
+</ul>
+</li>
+<li><p>2.1.0</p>
+
+<ul>
+<li>Added support for libraries <a href="https://github.com/Carrooi/Js-GoogleMapsLoader/pull/3">#3</a> (thanks <a href="https://github.com/popara">popara</a>)</li>
+<li>Added tests</li>
+<li>Small optimization</li>
+</ul>
+</li>
+<li><p>2.0.0</p>
+
+<ul>
+<li>Added Maps API for Business support</li>
+<li>Added standalone version for non common js environments</li>
+<li>Removed dependency on <a href="https://github.com/kriskowal/q">q</a> package</li>
+<li>Using callback instead of promise</li>
+<li>Added tests + travis</li>
+<li>Added status badges</li>
+</ul>
+</li>
+<li><p>1.0.0</p>
+
+<ul>
+<li>Initial version</li>
+</ul>
+</li>
+</ul>
