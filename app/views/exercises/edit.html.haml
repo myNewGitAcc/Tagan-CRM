@@ -1,0 +1,23 @@
+%h1 Give an exercise
+%br
+.row.col-sm-4.col-sm-offset-4
+  .col-lg-12
+    = form_for @exercise do |f|
+      .form-group
+        .row.col-sm-8.col-sm-offset-2
+          = f.label 'Exercise:'
+          = f.select :exercise_list_id, options_for_select(@exercise_lists, @exercise.exercise_list_id), {}, {class: "form-control"}
+      .form-group
+        .row.col-sm-8.col-sm-offset-2
+          = f.label 'User:'
+          = f.select :user_id, options_for_select(@users, @exercise.user_id), {}, {class: "form-control"}
+      .form-group
+        .row.col-sm-8.col-sm-offset-2
+          = f.label 'Weight:'
+          = f.text_field :weight, class: 'text-info form-control'
+          %br
+      .form-group
+        .row.col-sm-8.col-sm-offset-2
+          = f.submit "Update", method: :put, class: 'btn btn-primary btn-lg btn-block'
+          %a{href: "/exercises/#{@exercise.id}", class: 'btn btn-default btn-lg btn-block'} Cancel
+

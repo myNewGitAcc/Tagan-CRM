@@ -1,0 +1,9 @@
+%h1= "Name: #{@exercise.user.first_name} #{@exercise.user.last_name}"
+
+%ui
+  %h3= "Task: #{@exercise.exercise_list.exercise}"
+  %h3= "Weight: #{@exercise.weight}"
+  .row
+    %a.col-sm-2.col-sm-offset-5{href: "/exercises/#{@exercise.id}/edit", class: 'btn btn-primary btn-lg'} Edit
+    %a.col-sm-2.col-sm-offset-5{href: '/exercises', class: 'btn btn-default btn-lg'} Cancel
+    =link_to "Delete", @exercise, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-lg col-sm-2 col-sm-offset-5'

@@ -13,3 +13,4 @@
  *= require_tree ./app
  *= require bootstrap-datepicker
  */
+.backlight:hover {background:#68C2EE;}

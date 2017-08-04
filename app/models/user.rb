@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   enum status: [:offline, :online, :away]
 
   has_many :working_times
+  has_many :exercises
 
   api_accessible :basic do |t|
     t.add :id

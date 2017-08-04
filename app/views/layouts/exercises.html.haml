@@ -1,0 +1,32 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title TaganTeam Wiki
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => false
+    = javascript_include_tag 'wiki'
+    = csrf_meta_tags
+  %body
+    .navbar.navbar-default.navbar-static-top
+      .container
+        .navbar-header
+          %a.navbar-brand{href: "/"} TaganTeam
+        #navbar-main.navbar-collapse.collapse
+          %ul.nav.navbar-nav
+            -if current_user
+              %li
+                %a{:href => "/"} Worktime
+              %li
+                %a{:href => "/wiki/all"} Wiki
+              %li
+                %a{:href => "/employees"} Employees
+              %li
+                %a{:href => "/worldtime"} WorldTime
+              %li
+                %a{:href => "/chats"} Chats
+            %li
+              %a{:href => "/exercises"} Performed exercises
+            %li
+              %a{:href => "/exercises/new"} Give an exercise
+    .wrapper.login-area.text-center
+      = yield

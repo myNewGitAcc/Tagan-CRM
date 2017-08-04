@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  resources :exercises
+
   wiki_root '/wiki'
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'

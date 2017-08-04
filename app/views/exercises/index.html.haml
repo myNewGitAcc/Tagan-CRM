@@ -1,0 +1,15 @@
+%h1 Performed exercises
+%div.table-responsive
+  %table.table
+    %tr.bg-primary
+      %td Exercise id
+      %td Exercise
+      %td User
+      %td Weigth
+    - @exercises.each do |i|
+      %tr.backlight
+        %td= link_to "#{i.id}","/exercises/#{i.id}"
+        %td= i.exercise_list.exercise
+        %td= "#{i.user.first_name} #{i.user.last_name}"
+        %td= i.weight
+
