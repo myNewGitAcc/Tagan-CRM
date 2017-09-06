@@ -2,7 +2,6 @@ class WikiPagesController < ApplicationController
   protect_from_forgery
   layout 'wiki'
   skip_before_action :verify_authenticity_token
-  skip_before_action :auth_user!
 
   acts_as_wiki_pages_controller
 
@@ -13,7 +12,7 @@ class WikiPagesController < ApplicationController
 
   def new
     @page = WikiPage.new
-    render "/wiki/new"
+    render "base_wiki_pages/new"
   end
 
   def create
@@ -24,14 +23,13 @@ class WikiPagesController < ApplicationController
 
   def show
     @page = WikiPage.find(params[:id])
-    @page.content = @page.content.gsub('_','\_').gsub('*','\*')
     render "base_wiki_pages/show"
   end
 
   def destroy
     @page = WikiPage.find(params[:id])
     @page.destroy
-    redirect_to action: "index"
+    redirect_to wiki_all_path
   end
 
   def wiki_pages_params
