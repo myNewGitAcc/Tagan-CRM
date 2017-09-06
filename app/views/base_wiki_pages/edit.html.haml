@@ -1,0 +1,33 @@
+= wiki_page_style
+
+%h1=wt 'Editing wiki page'
+
+= if params[:preview]
+  .class="wiki_content"
+  =wiki_content @page.content
+
+= wiki_page_form do |f|
+  = f.hidden_field :previous_version_number, :value => f.object.last_version_number
+  = hidden_field_tag :path, @page.path
+
+  .row.col-sm-8.col-sm-offset-2
+    %h4 Title:
+    = f.text_field :title, class: 'form-control'
+
+  .row.col-sm-8.col-sm-offset-2
+    %h4="Content: (#{link_to('Textile Markup', 'http://redcloth.org/hobix.com/textile/', target: '_blank')} allowed)".html_safe
+    =f.text_area :content, class: 'form-control', rows: "10"
+
+  .row.col-sm-8.col-sm-offset-2
+    %h4 Comment on this change (optional):
+    = f.text_field :comment, class: 'text-info form-control'
+
+  .row.col-sm-8.col-sm-offset-2
+    %br
+    %input{type: "submit", name: "save",    value: "Save page", class: "btn btn-primary btn-lg"}
+    %input{type: "submit", name: "preview", value: "Preview",   class: "btn btn-info btn-lg"}
+    %a{href: "/wiki/#{@page.id}", class: 'btn btn-default btn-lg'}Cancel
+    %br
+
+= wiki_page_attachments(@page)
+

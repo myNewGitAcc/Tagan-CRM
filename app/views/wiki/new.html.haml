@@ -1,0 +1,19 @@
+%h1 Creating a new article
+
+= form_for @page do |f|
+
+  .row.col-sm-8.col-sm-offset-2
+    %h4 Title:
+    %p= f.text_field :title, class: 'form-control'
+  .row.col-sm-8.col-sm-offset-2
+    %h4 Content:
+    %p= f.text_area :content, class: 'form-control', rows: "10"
+  .row.col-sm-8.col-sm-offset-2
+    = f.submit "Create page", method: :post, class: 'btn btn-primary btn-lg'
+    %a{href: "/wiki/#{@page.id}", class: 'btn btn-default btn-lg'}Cancel
+
+  = hidden_field_tag :path, value: @page.path
+  = f.hidden_field :creator_id, value: current_user.id unless current_user.nil?
+  = f.hidden_field :updator_id, value: current_user.id unless current_user.nil?
+
+
