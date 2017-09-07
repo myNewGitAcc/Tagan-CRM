@@ -1,6 +1,0 @@
-<h1>List of articles</h1>
-<a href="/wiki/new">Create New</a>
-
-  <% @pages.each do |page| %>
-    <p><b><%= link_to page.title, "/wiki/#{page.id}" %></b></p>
-  <% end %>

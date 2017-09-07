@@ -2,14 +2,9 @@ Rails.application.routes.draw do
 
   resources :exercises
 
-  delete  '/wiki/:id',        to: 'wiki_pages#destroy'
-  get     '/wiki/new',        to: 'wiki_pages#new'
-  post    '/wiki_pages',      to: 'wiki_pages#create'
-  get     '/wiki/all',        to: 'wiki_pages#index'
-  get     '/wiki/:id',        to: 'wiki_pages#show'
-  get     '/wiki/history',    to: 'wiki#history'
-
+  post      '/wiki_pages', to: 'wiki_pages#create'
   wiki_root '/wiki'
+
   mount API::Base => '/api'
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
