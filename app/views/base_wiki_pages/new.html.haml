@@ -1,6 +1,6 @@
 %h1 Creating a new article
 
-= form_for @page do |f|
+= form_for @page, url: "/wiki_pages", method: :post do |f|
 
   .row.col-sm-8.col-sm-offset-2
     %h4 Title:
