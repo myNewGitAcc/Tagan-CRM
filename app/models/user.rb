@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
 
   has_many :working_times
   has_many :exercises
+  has_many :project_controls1
 
   api_accessible :basic do |t|
     t.add :id
