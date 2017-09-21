@@ -73,7 +73,7 @@ ActiveAdmin.register ProjectReport do
     def create
       project_report = ProjectReport.new(permitted_params[:project_report])
 
-      project_report.earnings = get_earnings company
+      project_report.earnings = get_earnings set_company
 
       if project_report.save
         flash[:notice] = 'Project Report successfully added'
@@ -82,14 +82,17 @@ ActiveAdmin.register ProjectReport do
     end
 
     def update
-      company = Company.find(permitted_params[:project_report][:company_id])
       pr = ProjectReport.find(params[:id])
-      pr.earnings = get_earnings company
+      pr.earnings = get_earnings set_company
       pr.update(permitted_params[:project_report])
 
       super do |success|
         success.html { redirect_to collection_path }
       end
+    end
+
+    def set_company
+      Company.find(permitted_params[:project_report][:company_id])
     end
 
     def get_earnings company
