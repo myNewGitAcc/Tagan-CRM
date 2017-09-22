@@ -1,5 +1,9 @@
 %h1 List of articles
-%a{:href => "/wiki/new"} Create New
-- @pages.each do |page|
-  %p
-    %b= link_to page.title, "/wiki/#{page.id}"
+%div.table-responsive
+  .row.col-sm-4.col-sm-offset-4
+    %table.table
+      %tr.bg-info
+        %td= link_to "Create New", "/wiki/new"
+      - @pages.each do |page|
+        %tr.backlight
+          %td.text-left= link_to "#{page.title}","/wiki/#{page.id}"

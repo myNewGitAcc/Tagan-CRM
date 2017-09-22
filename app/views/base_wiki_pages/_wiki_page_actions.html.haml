@@ -1,5 +1,6 @@
 %ul.wiki_page_actions
-  = content_tag('li', link_to( wt( 'List pages' ), wiki_all_path))
-  = content_tag('li', link_to( wt( 'History' ), history_wiki_page_path(@page) )) if history_allowed?
-  = content_tag('li', link_to( wt( 'Edit' ), edit_wiki_page_path(@page) )) if edit_allowed?
-  = content_tag('li', link_to( wt( 'Destroy' ), destroy_wiki_page_path(@page), method: :delete, data: {confirm: wt( "Destroyed page can't be restored. Are you sure?" )})) if destroy_allowed?
+  .btn-group
+    %a{href: wiki_all_path,                 class: 'btn btn-default btn-sm'}= wt( 'List pages' )
+    %a{href: history_wiki_page_path(@page), class: 'btn btn-default btn-sm'}= wt( 'History' )
+    %a{href: edit_wiki_page_path(@page),    class: 'btn btn-default btn-sm'}= wt( 'Edit' )
+    %a{href: destroy_wiki_page_path(@page), class: 'btn btn-default btn-sm', data: {method: :delete, confirm: wt( "Destroyed page can't be restored. Are you sure?" )}}= wt( 'Destroy' )
