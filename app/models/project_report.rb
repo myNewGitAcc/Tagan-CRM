@@ -14,11 +14,21 @@ class ProjectReport < ActiveRecord::Base
     end
 
     def week
-      where("created_at > '#{Date.today.beginning_of_week}' and created_at < '#{Date.today.end_of_week}'")
+      where("created_at > '#{Date.today.beginning_of_week}' and created_at < '#{Time.now.end_of_week}'")
     end
 
     def month
-      where("created_at > '#{Date.today.beginning_of_month}' and created_at < '#{Date.today.end_of_month}'")
+      where("created_at > '#{Date.today.beginning_of_month}' and created_at < '#{Time.now.end_of_month}'")
+    end
+
+    def get_companies
+      where("created_at > '#{1.month.ago}'").pluck(:company_id).uniq
+    end
+
+    def get_time company_id
+      time = self.week.where(company_id: company_id).sum(:tracking_time)
+      return "00:00" if time.to_i == 0
+      time.scan(/\d*.\d*/)[0]
     end
 
   end

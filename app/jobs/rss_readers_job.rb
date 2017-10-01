@@ -15,30 +15,33 @@ class RssReadersJob
   def perform
     rss_reader = RssReader.all
     rss_reader.each do |rss|
-      results = {}
-      results[:response] = []
-      email = rss.email.split(',')
-      xml = Faraday.get(rss.url).body
-      if xml.present?
-        feed = Feedjira::Feed.parse xml
-        title = feed.title
-        rss_entries = rss.time_last_news.nil? ? feed.entries : feed.entries.select{|e| e.published > rss.time_last_news}
-        rss_entries.sort_by{|rss_entry| rss_entry.published}.each_with_index do |entries, i|
-          info = {}
-          info[:title] =  entries.title
-          info[:url]   =  entries.url
-          info[:summary] = entries.summary
-          results[:response] << info
-          rss.update(time_last_news: entries.published) if rss_entries.size-1 == i
+      begin
+        results = {}
+        results[:response] = []
+        email = rss.email.split(',')
+        xml = Faraday.get(rss.url).body
+        if xml.present?
+          feed = Feedjira::Feed.parse xml
+          title = feed.title
+          rss_entries = rss.time_last_news.nil? ? feed.entries : feed.entries.select{|e| e.published > rss.time_last_news}
+          rss_entries.sort_by{|rss_entry| rss_entry.published}.each_with_index do |entries, i|
+            info = {}
+            info[:title] =  entries.title
+            info[:url]   =  entries.url
+            info[:summary] = entries.summary
+            results[:response] << info
+            rss.update(time_last_news: entries.published) if rss_entries.size-1 == i
+          end
+          unless results[:response].blank?
+            email.each { |email|
+              RssReaderMailer.rss_reader_changes(email.strip, results, title).deliver_now
+            }
+          end
         end
-        unless results[:response].blank?
-          email.each { |email|
-            RssReaderMailer.rss_reader_changes(email.strip, results, title).deliver_now
-          }
-        end
+      rescue Exception => e
+        RssReaderMailer.error_notification(e).deliver_now
       end
     end
-
   end
 
   protected

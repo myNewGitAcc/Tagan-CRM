@@ -19,21 +19,14 @@ ActiveAdmin.register ProjectReport do
   |pr| pr.month
   end
 
-  sidebar 'General Stats', :only => :index, priority: 0 do
+  sidebar 'Tracking time statistics current week', :only => :index, priority: 0 do
+    company_ids = ProjectReport.get_companies
     table do
-      tr do
-        td strong 'Earnings for today:'
-        td h4 number_to_currency(ProjectReport.today.sum(:earnings))
-      end
-
-      tr do
-        td strong 'Earnings for current week:'
-        td h4 number_to_currency(ProjectReport.week.sum(:earnings))
-      end
-
-      tr do
-        td strong 'Earnings for current month:'
-        td h4 number_to_currency(ProjectReport.month.sum(:earnings))
+      Company.find(company_ids).each do |company|
+        tr do
+          td strong "#{company.name}:"
+          td h4 ProjectReport.get_time company.id
+        end
       end
     end
   end
@@ -50,7 +43,7 @@ ActiveAdmin.register ProjectReport do
     column 'Tracking Time' do |pr|
       pr.tracking_time.strftime('%H:%M')
     end
-    column('Earnings') {|t| number_to_currency t.earnings}
+    column  :created_at
     actions
   end
 
@@ -65,15 +58,8 @@ ActiveAdmin.register ProjectReport do
 
   controller do
 
-    def scoped_collection
-      ProjectReport.includes(:user)
-    end
-
-
     def create
       project_report = ProjectReport.new(permitted_params[:project_report])
-
-      project_report.earnings = get_earnings set_company
 
       if project_report.save
         flash[:notice] = 'Project Report successfully added'
@@ -83,24 +69,11 @@ ActiveAdmin.register ProjectReport do
 
     def update
       pr = ProjectReport.find(params[:id])
-      pr.earnings = get_earnings set_company
       pr.update(permitted_params[:project_report])
 
       super do |success|
         success.html { redirect_to collection_path }
       end
-    end
-
-    def set_company
-      Company.find(permitted_params[:project_report][:company_id])
-    end
-
-    def get_earnings company
-      hour = permitted_params[:project_report][:'tracking_time(4i)'].to_i
-      minute = permitted_params[:project_report][:'tracking_time(5i)'].to_i
-
-      return  hour * company.rates.last.amount if minute == 0
-      return  (hour * company.rates.last.amount) +  (company.rates.last.amount / (60 / minute).to_d)
     end
 
   end
