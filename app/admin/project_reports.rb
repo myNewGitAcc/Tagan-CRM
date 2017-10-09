@@ -21,14 +21,17 @@ ActiveAdmin.register ProjectReport do
 
   sidebar 'Tracking time statistics current week', :only => :index, priority: 0 do
     company_ids = ProjectReport.get_companies
-    table do
+    table class: 'project_report' do
       Company.find(company_ids).each do |company|
         tr do
           td strong "#{company.name}:"
-          td h4 ProjectReport.get_time company.id
+          td id: company.id do
+            h4 ProjectReport.get_time_current_time company.id
+          end
         end
       end
     end
+    div class: 'week-picker'
   end
 
   index do
@@ -73,6 +76,22 @@ ActiveAdmin.register ProjectReport do
 
       super do |success|
         success.html { redirect_to collection_path }
+      end
+    end
+
+    def get_tracking_time
+      companies = {}
+      company_ids = ProjectReport.get_companies
+      Company.find(company_ids).each do |company|
+        companies["#{company.name}"] = {
+                                        id: company.id,
+                                        time: ProjectReport.get_time(company.id, params[:start_date], params[:end_date])
+                                       }
+      end
+      respond_to do |format|
+          format.json { render json: { companies: companies,
+                                       start_data: Date.parse(params[:start_date]).strftime("%d.%m.%Y"),
+                                       end_data: Date.parse(params[:end_date]).strftime("%d.%m.%Y")} }
       end
     end
 

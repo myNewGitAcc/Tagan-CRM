@@ -25,11 +25,20 @@ class ProjectReport < ActiveRecord::Base
       where("created_at > '#{1.month.ago}'").pluck(:company_id).uniq
     end
 
-    def get_time company_id
+    def get_time_current_time company_id
       time = self.week.where(company_id: company_id).sum(:tracking_time)
       return "00:00" if time.to_i == 0
       time.scan(/\d*.\d*/)[0]
     end
+
+    def get_time company_id, start_date, end_date
+      time = self.where("created_at > '#{Date.parse(start_date)}' and created_at < '#{Date.parse(end_date)}' and company_id = '#{company_id}'")
+                 .sum(:tracking_time)
+
+      return "00:00" if time.to_i == 0
+      time.scan(/\d*.\d*/)[0]
+    end
+
 
   end
 

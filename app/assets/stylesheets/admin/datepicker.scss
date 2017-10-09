@@ -1,0 +1,26 @@
+.ui-datepicker {
+  width: 100%;
+
+  table.ui-datepicker-calendar {
+    width: 100%;
+    left: 0px;
+  }
+
+  .ui-datepicker-header {
+    width: 96%;
+    margin: 0px 0px 2px 0px;
+  }
+
+  .ui-datepicker-header:before {
+    content: "";
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 0px;
+    height: 0px;
+    border-left: 0px solid rgba(0, 0, 0, 0);
+    border-right: 0px solid rgba(0, 0, 0, 0);
+    border-bottom: 0px solid #676e73;
+  }
+
+}
