@@ -32,7 +32,7 @@ class ProjectReport < ActiveRecord::Base
     end
 
     def get_time company_id, start_date, end_date
-      time = self.where("created_at > '#{Date.parse(start_date)}' and created_at < '#{Date.parse(end_date)}' and company_id = '#{company_id}'")
+      time = self.where("created_at > '#{Date.parse(start_date)}' and created_at < '#{Time.parse(end_date).end_of_week}' and company_id = '#{company_id}'")
                  .sum(:tracking_time)
 
       return "00:00" if time.to_i == 0
