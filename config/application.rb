@@ -25,6 +25,8 @@ module SpaApp
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
 
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+
     config.browserify_rails.commandline_options = "-t [ babelify --presets [ es2015 ] ]"
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.

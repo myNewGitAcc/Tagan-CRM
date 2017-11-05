@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
 
   has_many :working_times
   has_many :exercises
+  has_many :user_scores
 
   api_accessible :basic do |t|
     t.add :id
@@ -85,7 +86,6 @@ class User < ActiveRecord::Base
     "#{self.first_name} #{self.last_name}"
   end
 
-
   def get_working_times
     current_today = Date.today
     working_time = self.working_times.find_by(created_at: current_today.beginning_of_day..current_today.end_of_day)
@@ -96,12 +96,34 @@ class User < ActiveRecord::Base
     end
   end
 
-
   def ensure_authentication_token
     self.authentication_token ||= generate_authentication_token
   end
 
+  def debit_score! value, note
+    user_scores.create(type: 0, value: value, note: note)
+    inform_by_slack value, note
+    inform_by_email value, note
+
+    # User.where(role: 1).each do |user|
+    #   user.inform_by_slack value, note
+    # end
+  end
+
   private
+
+  def inform_by_slack value, note
+    SlackPublish.new(
+        message: "Hey бля @#{self.slack_name} ! Ты получил #{value} дебетового балла \n" + note,
+        note_text: "*** Каждый твой дебетовый балл это не только минус в твою ЗП, \n но и минус из положительного отношения к тебе. ***",
+        note_color: '#ff0000',
+        channel_name: 'general'
+    ).publish if Rails.env == 'production'
+  end
+
+  def inform_by_email value, note
+    GaysMailer.auto_debit_score(email, "Ты получил #{value} дебетового балла", note).deliver_now
+  end
 
   def generate_authentication_token
     loop do
