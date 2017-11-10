@@ -14,6 +14,7 @@ ActiveAdmin.register MailServerEmails do
    actions
  end
 
- filter :address_to
+ filter :address_to, as: :select, collection: User.all.map{ |user| ["#{user.email}", user.id]}
+ filter :address_from
 
 end
