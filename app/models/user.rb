@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
   has_many :working_times
   has_many :exercises
   has_many :user_scores
+  has_many :mail_server_emails
 
   api_accessible :basic do |t|
     t.add :id
