@@ -1,0 +1,16 @@
+%h1 Incoming messages
+%table
+  %tr
+    -#%td Keeper:
+    %td To:
+    %td From:
+    -#%td Subject:
+    %td Body:
+  - emails.each do |email|
+    %tr
+      -#%td= link_to "#{find_user_name_by_id(email.user_id)}","/admin/users/#{email.user_id}"
+      %td= email.address_to
+      %td= email.address_from
+      %td= "Test message from"
+      %td= email.body.html_safe
+

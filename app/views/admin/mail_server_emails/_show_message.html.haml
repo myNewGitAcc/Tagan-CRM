@@ -1,0 +1,14 @@
+%h1 Incoming message
+%table
+  %tr
+    -#%td Keeper:
+    %td To:
+    %td From:
+    -#%td Subject:
+    %td Body:
+  %tr
+    -#%td= link_to "#{user_name}","/admin/users/#{email.user_id}"
+    %td= email.address_to
+    %td= email.address_from
+    %td= "Welcome to my awesome site"
+    %td= email.body.html_safe

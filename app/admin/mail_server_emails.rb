@@ -1,20 +1,19 @@
+include ActiveAdminHelper
+
 ActiveAdmin.register MailServerEmails do
-# See permitted parameters documentation:
-# https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-#
+
+  before_filter :skip_sidebar!, :only => :index
  permit_params :user, :address_from, :address_to, :body
 
  index do
-   selectable_column
-   id_column
-   column :user
-   column :address_from
-   column :address_to
-   column :body
-   actions
+   @emails = MailServerEmails.all
+   render partial: 'messages', :locals => {emails: @emails}
  end
 
- filter :address_to, as: :select, collection: User.all.map{ |user| ["#{user.email}", user.id]}
- filter :address_from
+ show do
+   @email = MailServerEmails.find(params[:id])
+   #@user_name = User.find(@email.user_id).full_name
+   render partial: 'show_message', :locals => {email: @email, user_name: @user_name }
+ end
 
 end
