@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "Enter new email (without domain)"
+read name
+email=$name"@taganteam.com"
+echo "Enter new password"
+read password
+
+pass=$(doveadm pw -s SHA256-CRYPT -u testuser@taganteam.com -p $password)
+
+db_password=$(grep -E "^password\s*=" /etc/postfix/pgsql/mailboxes.cf | sed 's/.*=\s*//')
+mailbox=($(PGPASSWORD=$db_password psql -t -U mailreader -d mail -c "INSERT INTO users (email,  password,  realname ) VALUES ( '"$email"', '"$pass"', '"$name"');"))

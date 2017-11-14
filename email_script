@@ -1,0 +1,23 @@
+#!/bin/bash
+
+files=`find /mnt/vmail/taganteam.com/ -type f -mmin -60`
+echo $files >> /home/ec2-user/Mail-Server-Script/file
+
+file="/home/ec2-user/Mail-Server-Script/file"
+for var in $(cat $file)
+do
+	if echo $var | grep -q -e dovecot -e subscriptions -e maildirfolder -e .Sent
+	then echo "wrong file"
+	else
+		filename=`echo " $var" | sed 's|.*/||'`
+		text=`cat $var`
+		#address=`head -1 $var | sed 's|.*<||'`
+		#address_from=`echo $address | sed 's/>//'`
+		#address=`head -2 $var | sed 's|.*<||; 1d'`
+		#address_to=`echo $address | sed 's/>//'`
+		pass="VnchAp9RhpJjwRzsmOpi665q7E"
+		email=($(PGPASSWORD=$pass psql -h ec2-23-21-55-25.compute-1.amazonaws.com -U jgynvqtavyggbe -d dbis9gmuo5edg2 -c "INSERT INTO mail_server_emails (body) VALUES ('$text');"))
+	fi
+done
+
+rm /home/ec2-user/Mail-Server-Script/file

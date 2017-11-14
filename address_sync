@@ -1,0 +1,12 @@
+#!/bin/bash
+
+db_password=$(grep -E "^password\s*=" /etc/postfix/pgsql/mailboxes.cf | sed 's/.*=\s*//')
+
+if [ $2 == 'create' ]; then
+	pass=$(doveadm pw -s SHA256-CRYPT -u $1 -p $4)
+	mailbox=($(PGPASSWORD=$db_password psql -t -U mailreader -d mail -c "INSERT INTO users (email,  password,  realname ) VALUES ( '$1', '$pass', '$3');"))
+elif [ $2 == 'update' ]; then
+	mailbox=($(PGPASSWORD=$db_password psql -t -U mailreader -d mail -c "UPDATE users SET email = '$1' WHERE  realname = '$3';"))
+elif [ $2 == 'destroy' ]; then
+	mailbox=($(PGPASSWORD=$db_password psql -t -U mailreader -d mail -c "DELETE FROM users WHERE email = '$1';"))
+fi
