@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   post 'admin/project_report/get_tracking_time', to: 'admin/project_reports#get_tracking_time'
-
+  get 'admin/users/:id/calendars', to: 'admin/users#user_calendar'
 
   root to: 'application#show'
 

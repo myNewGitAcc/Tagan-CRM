@@ -21,3 +21,31 @@
     }
   }
 }
+
+.fc-content {
+  font-size: 2px;
+}
+
+.fc-right {
+  .line {
+    margin-top: 7px;
+    width: 20px;
+    margin-right: 3px;
+  }
+
+  .m-t-none {
+    margin-top: 0px;
+  }
+
+  .line-blue {
+    border-bottom: 3px solid blue;
+  }
+
+  .line-green {
+    border-bottom: 3px solid green;
+  }
+
+  .line-red {
+    border-bottom: 3px solid red;
+  }
+}

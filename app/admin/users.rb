@@ -11,7 +11,9 @@ ActiveAdmin.register User do
     column :role
     column :status
     column :created_at
-    actions
+    actions do |resource|
+      link_to 'Calendar', "users/#{resource.id}/calendars"
+    end
   end
 
   filter :email
@@ -26,6 +28,15 @@ ActiveAdmin.register User do
       f.input :password_confirmation
     end
     f.actions
+  end
+
+  controller do
+
+    def user_calendar
+      params[:id] = params[:id].nil? ? params[:path].split('/')[2]:params[:id]
+      @user_event = UserEvent.where(user_id: params[:id])
+    end
+
   end
 
 end

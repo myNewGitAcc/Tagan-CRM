@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171105193649) do
+ActiveRecord::Schema.define(version: 20171206141047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,13 @@ ActiveRecord::Schema.define(version: 20171105193649) do
     t.integer  "internal_account_id", null: false
   end
 
+  create_table "mail_server_emails", force: :cascade do |t|
+    t.integer "user_id"
+    t.text    "address_from"
+    t.text    "address_to"
+    t.text    "body"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.text     "content"
     t.datetime "created_at", null: false
@@ -185,6 +192,15 @@ ActiveRecord::Schema.define(version: 20171105193649) do
     t.datetime "updated_at",          null: false
     t.float    "amount"
     t.integer  "internal_account_id", null: false
+  end
+
+  create_table "user_events", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "event"
+    t.datetime "start"
+    t.datetime "end"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_scores", force: :cascade do |t|

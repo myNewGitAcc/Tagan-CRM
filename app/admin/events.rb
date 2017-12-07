@@ -30,8 +30,8 @@ ActiveAdmin.register Event do
     f.inputs "Events Details" do
       f.input :title
       f.input :description
-      f.input :start_time, as: :just_datetime_picker
-      f.input :end_time, as: :just_datetime_picker
+      f.input :start_time
+      f.input :end_time
     end
     f.actions
   end
