@@ -32,10 +32,31 @@ ActiveAdmin.register User do
 
   controller do
 
+    def update
+      if params[:user][:password].blank?
+        params[:user].delete("password")
+        params[:user].delete("password_confirmation")
+      end
+      @user = User.find(params[:id])
+      if @user.update(user_params)
+        redirect_to admin_user_path(@user)
+      else
+        render action: 'edit'
+      end
+
+    end
+
     def user_calendar
       params[:id] = params[:id].nil? ? params[:path].split('/')[2]:params[:id]
       @user_event = UserEvent.where(user_id: params[:id])
     end
+
+    private
+
+      def user_params
+        params.require(:user).permit(:email, :role, :password, :password_confirmation, :first_name, :last_name)
+      end
+
 
   end
 
