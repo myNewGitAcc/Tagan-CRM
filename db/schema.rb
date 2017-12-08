@@ -54,11 +54,11 @@ ActiveRecord::Schema.define(version: 20171208000434) do
     t.string   "last_name"
     t.string   "middle_name"
     t.string   "email"
-    t.integer  "phone"
+    t.integer  "phone",       limit: 8
     t.text     "notes"
     t.string   "attachment"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
   end
 
   create_table "commissions", force: :cascade do |t|

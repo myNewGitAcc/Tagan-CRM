@@ -5,7 +5,7 @@ class CreateCandidates < ActiveRecord::Migration
       t.string  :last_name
       t.string  :middle_name
       t.string  :email
-      t.integer :phone
+      t.bigint  :phone
       t.text    :notes
       t.string  :attachment
 
