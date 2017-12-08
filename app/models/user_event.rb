@@ -1,7 +1,8 @@
 class UserEvent < ActiveRecord::Base
 
-  just_define_datetime_picker :start, add_to_attr_accessor: true
-  just_define_datetime_picker :end, add_to_attr_accessor: true
+  validate :check_valid_start_and_end
+
+  before_save :set_minutes
 
   def start
     self['start'] ||= Time.now
@@ -9,6 +10,20 @@ class UserEvent < ActiveRecord::Base
 
   def end
     self['end'] ||= Time.now
+  end
+
+  private
+
+  def set_minutes
+    self['start'] = self['start'].at_beginning_of_hour()
+    self['end']   = self['end'].at_beginning_of_hour()
+  end
+
+  def check_valid_start_and_end
+    hour = (Time.parse("#{self['end']}") - Time.parse("#{self['start']}")).to_i/60/60
+    if hour < 1
+      self.errors.add :end, 'The minimum event interval should be 1 hour'
+    end
   end
 
 end

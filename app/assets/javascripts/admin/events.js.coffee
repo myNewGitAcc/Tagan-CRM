@@ -1,24 +1,24 @@
 $(document).ready ->
 
   default_options = {
-    lang: 'ru',
-    header: {
-      center: "title",
-      right: "prev today next",
-      left: "listWeek, agendaWeek, month",
-      defaultView: "month",
-    },
+    lang: 'ru'
+    header:
+      center: "title"
+      right: "prev today next"
+      left: "listWeek, agendaWeek, month"
+      defaultView: "month"
     events: 'calendars.json'
   }
 
   default_options_user_calendar = {
-    lang: 'ru',
-    header: {
-      center: "title",
-      right: "prev today next",
-      left: "agendaWeek, month, listYear, addEvent",
-      defaultView: "listYear",
-    },
+    lang: 'ru'
+    header:
+      center: "title"
+      right: "prev today next"
+      left: "agendaWeek, month, listYear, addEvent"
+    defaultView: "listYear"
+    views:
+      listYear: buttonText: 'Год'
     customButtons: addEvent:
       text: 'Добавить событие'
       click: ->
@@ -51,3 +51,11 @@ $(document).ready ->
     )
 
 
+  setTime()
+
+
+
+setTime= () ->
+  startHour = $("#user_event_start_input #user_event_start_4i").find("option[selected='selected']").val()
+  $("#user_event_end_input #user_event_end_4i").find("option[selected='selected']").removeAttr('selected')
+  $("#user_event_end_input #user_event_end_4i").find("option[value=#{parseInt(startHour)+1}]").attr('selected', 'selected')
