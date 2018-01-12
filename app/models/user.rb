@@ -5,9 +5,6 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :timeoutable
 
   before_save   :ensure_authentication_token
-  after_create  :request_mailbox_create
-  after_update  :request_mailbox_update, if: :email_changed?
-  after_destroy :request_mailbox_destroy
   acts_as_api
 
   enum role: [:admin, :management, :developers, :trainees]
@@ -104,18 +101,6 @@ class User < ActiveRecord::Base
     self.authentication_token ||= generate_authentication_token
   end
 
-  def request_mailbox_create
-    net_ssh_tunnel('create')
-  end
-
-  def request_mailbox_update
-    net_ssh_tunnel('update')
-  end
-
-  def request_mailbox_destroy
-    net_ssh_tunnel('destroy')
-  end
-
   def debit_score! value, note
     user_scores.create(type: 0, value: value, note: note)
     inform_by_slack value, note
@@ -145,15 +130,6 @@ class User < ActiveRecord::Base
     loop do
       token = Devise.friendly_token
       break token unless User.where(authentication_token: token).first
-    end
-  end
-
-  def net_ssh_tunnel operator
-    Net::SSH.start(ENV['EXTERNAL_IP'], ENV['MAIL_SERVER_USER'],
-                   :keys_only => true,
-                   :key_data => ENV['MAIL_SERVER_KEY_PEM']
-    ) do |session|
-        session.exec!("sudo sh address_sync #{self.email} #{operator} '#{full_name}' #{self.password}")
     end
   end
 
