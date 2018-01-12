@@ -6,6 +6,10 @@ function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $
     this.hoursWorked = "XX часов XX минут XX секунд";
     this.remainsWork = "XX часов XX минут XX секунд";
 
+    let defineRemainsWorkMessage = remainsWork => {
+      this.remainsWork = remainsWork > 0 ? worktimeFactory.desintegration(remainsWork) : "Дома ждут!";
+    }
+
     users.getProfile().then( (response) => {
       this.userStatus = response.data.data.status;
       this.btn = true;
@@ -15,7 +19,8 @@ function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $
           wrapperCalculation(response);
         }else{
           this.hoursWorked = worktimeFactory.desintegration(response.data.data.labor_hours);
-          this.remainsWork = worktimeFactory.desintegration((8*60*60*1000)-response.data.data.labor_hours);
+          var remainsWorkTime = (8*60*60*1000)-response.data.data.labor_hours ;
+          defineRemainsWorkMessage(remainsWorkTime);
         }
       }, ()=>{
         this.hoursWorked="0 часов";
@@ -37,14 +42,11 @@ function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $
       users.userHoursUpdate($scope.currentUserId, hours, this.userStatus);
 
       var remainTime = new Date(8*60*60*1000) - worktimeFactory.msRounding(workedTime);
-      if(remainTime>0)
-        this.remainsWork = worktimeFactory.desintegration(remainTime);
-      else
-        this.remainsWork = "Дома ждут!";
+      defineRemainsWorkMessage(remainTime)
     }
 
     let wrapperCalculation = response => {
-        worktimeFactory.runCalculation(changingTimes,response.data.data.labor_hours, response.data.data.status_change_date); 
+        worktimeFactory.runCalculation(changingTimes,response.data.data.labor_hours, response.data.data.status_change_date);
     }
 
     let timeStartAtFirst = response => {
