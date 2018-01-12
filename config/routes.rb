@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   post 'admin/project_report/get_tracking_time', to: 'admin/project_reports#get_tracking_time'
   get 'admin/users/:id/calendars', to: 'admin/users#user_calendar'
-
+  post 'admin/candidates/:id/download_file', to: 'admin/candidates#download_file'
   root to: 'application#show'
 
   def shared_devise_path

@@ -29,4 +29,30 @@ ActiveAdmin.register Candidate do
     f.actions
   end
 
+  show do
+    attributes_table do
+      row :first_name
+      row :last_name
+      row :middle_name
+      row :email
+      row :phone
+      row :notes
+      row 'attachment' do |cond|
+        if cond.attachment.present?
+          span link_to 'download file', "/admin/candidates/#{cond.id}/download_file", method: :post
+        end
+      end
+      row :created_at
+      row :updated_at
+    end
+  end
+
+  controller do
+
+    def download_file
+      candidate =  Candidate.find(params[:id])
+      redirect_to candidate.attachment_url
+    end
+  end
+
 end
