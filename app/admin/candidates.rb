@@ -49,6 +49,12 @@ ActiveAdmin.register Candidate do
 
   controller do
 
+    def create
+      candidate = Candidate.create(permitted_params[:candidate])
+      candidate.events.create(title: candidate.full_name, description: 'Candidate', start_time: Time.new, end_time: Time.new)
+      redirect_to  admin_candidates_path
+    end
+
     def download_file
       candidate =  Candidate.find(params[:id])
       redirect_to candidate.attachment_url
