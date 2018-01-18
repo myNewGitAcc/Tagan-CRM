@@ -7,3 +7,4 @@
       - @pages.each do |page|
         %tr.backlight
           %td.text-left= link_to "#{page.title}","/wiki/#{page.id}"
+    =will_paginate @pages, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'

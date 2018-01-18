@@ -91,7 +91,7 @@ gem 'just-datetime-picker', '~> 0.0.7'
 gem 'irwi', :git => 'git://github.com/alno/irwi.git'
 gem 'bluecloth'
 gem 'will_paginate'
-
+gem 'will_paginate-bootstrap', '~> 1.0'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 
