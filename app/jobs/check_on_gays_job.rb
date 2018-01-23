@@ -25,12 +25,13 @@ class CheckOnGaysJob
   end
 
   def task
-    @task ||= Scheduler::CheckOnGaysJob.find(task_id)
+    @task ||= Scheduler::CheckOnGays.find(task_id)
   end
 
   def add_next_job job
-    next_run = (DateTime.now.beginning_of_day) + 1.day
-    Delayed::Job.create handler: CheckOnGaysJob.new.to_yaml, run_at: next_run, scheduled_at: next_run, last_run: Time.now.utc,
+    last_run = Time.now.utc
+    next_run = last_run + task.per_run_count
+    Delayed::Job.create handler: CheckOnGaysJob.new.to_yaml, run_at: next_run, scheduled_at: next_run, last_run: last_run,
                         owner_type: job.owner_type, owner_id: job.owner_id.to_i, priority: 0
   end
 

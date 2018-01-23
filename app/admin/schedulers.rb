@@ -26,12 +26,12 @@ ActiveAdmin.register Scheduler do
   form do |f|
     f.inputs 'Shedulers' do
       if (request.original_url.include?(new_admin_scheduler_path) rescue false)
-        f.input :name, as: :select, collection: %w(Scheduler::RssReadersImport), include_blank: false
+        f.input :name, as: :select, collection: %w(Scheduler::RssReadersImport Scheduler::CheckOnGays Scheduler::SendDump), include_blank: false
       end
 
       f.input :task_raw, as: :hidden
       f.input :time, label: 'Time (Hours/minutes)'
-      f.input :frequency, as: :select, collection: %W(#{'every 20 seconds'} #{'every minute'} #{'every 3 minutes'}), include_blank: false
+      f.input :frequency, as: :select, collection: %W(#{'every 20 seconds'} #{'every minute'} #{'every 3 minutes'} #{'every day'} #{'every 3 days'} #{'every week'}), include_blank: false
     end
     f.actions
   end

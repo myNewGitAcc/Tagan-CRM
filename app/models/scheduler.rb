@@ -22,10 +22,22 @@ class Scheduler < ActiveRecord::Base
     case self.frequency
       when 'every 20 seconds'
         self.task['per_run_count'] = '20'
+        self.task['unit'] = 'seconds'
       when 'every minute'
-        self.task['per_run_count'] = '60'
+        self.task['per_run_count'] = '1'
+        self.task['unit'] = 'minute'
       when 'every 3 minutes'
-        self.task['per_run_count'] = '180'
+        self.task['per_run_count'] = '3'
+        self.task['unit'] = 'minutes'
+      when 'every day'
+        self.task['per_run_count'] = '1'
+        self.task['unit'] = 'day'
+      when 'every 3 days'
+        self.task['per_run_count'] = '3'
+        self.task['unit'] = 'days'
+      when 'every week'
+        self.task['per_run_count'] = '1'
+        self.task['unit'] = 'week'
       else
         flash[:notice] = 'Please, select a frequency'
         redirect_to :back
@@ -34,7 +46,7 @@ class Scheduler < ActiveRecord::Base
 
 
   def time
-    self['time'] ||= Time.now.utc
+    self['time'] ||= Time.zone.now
   end
 
   def frequency
@@ -46,7 +58,7 @@ class Scheduler < ActiveRecord::Base
   end
 
   def per_run_count
-    task['per_run_count'].to_i
+    task['per_run_count'].to_i.send(task['unit'])
   end
 
   def next_run
@@ -68,7 +80,7 @@ class Scheduler < ActiveRecord::Base
   end
 
   def run_at
-    @run_at ||= time
+    @run_at ||= time - 3.hours
   end
 
   def create_background_job
