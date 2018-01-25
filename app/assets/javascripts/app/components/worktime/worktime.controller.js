@@ -44,7 +44,7 @@ function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $
     }
 
     let wrapperCalculation = response => {
-        worktimeFactory.runCalculation(changingTimes,response.data.data.labor_hours, response.data.data.status_change_date); 
+      worktimeFactory.runCalculation(changingTimes,response.data.data.labor_hours, response.data.data.updated_at);
     }
 
     let timeStartAtFirst = response => {
@@ -63,7 +63,7 @@ function worktimeController($rootScope, worktimeFactory, $scope, users, $http, $
       if(this.userStatus=="online"){
         worktimeFactory.stopCalculation();
         worktimeFactory.checkRecord($scope.currentUserId).then((response)=>{
-          var ms = response.data.data.labor_hours + worktimeFactory.msRounding(new Date() - Date.parse(response.data.data.status_change_date));
+          var ms = response.data.data.labor_hours + worktimeFactory.msRounding(new Date() - Date.parse(response.data.data.updated_at));
           worktimeFactory.updateRecordAtPauseOrAway($scope.currentUserId, ms);
         });
       }
