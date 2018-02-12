@@ -2,6 +2,7 @@ class WorkingTime < ActiveRecord::Base
   belongs_to :user
 
   acts_as_api
+  acts_as_paranoid
 
   api_accessible :basic do |t|
     t.add :id

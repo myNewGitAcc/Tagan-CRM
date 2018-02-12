@@ -1,6 +1,7 @@
 class UserEvent < ActiveRecord::Base
 
   validate :check_valid_start_and_end
+  acts_as_paranoid
 
   before_save :set_minutes
 

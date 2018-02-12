@@ -2,6 +2,7 @@ class ProjectReport < ActiveRecord::Base
 
   belongs_to :company
   belongs_to :user
+  acts_as_paranoid
 
   validates :company_id,    presence: true
   validates :user_id,       presence: true

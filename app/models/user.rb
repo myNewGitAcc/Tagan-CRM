@@ -6,14 +6,17 @@ class User < ActiveRecord::Base
 
   before_save   :ensure_authentication_token
   acts_as_api
+  acts_as_paranoid
 
   enum role: [:admin, :management, :developers, :trainees]
   enum status: [:offline, :online, :away]
 
-  has_many :working_times
-  has_many :exercises
-  has_many :user_scores
-  has_many :mail_server_emails
+  has_many :working_times, dependent: :destroy
+  has_many :exercises, dependent: :destroy
+  has_many :user_scores, dependent: :destroy
+  has_many :mail_server_emails, dependent: :destroy, class_name: 'MailServerEmails'
+  has_many :project_reports, dependent: :destroy
+  has_many :user_events, dependent: :destroy
 
   api_accessible :basic do |t|
     t.add :id
