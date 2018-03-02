@@ -74,7 +74,7 @@ gem 'faye-rails', '~> 2.0'
 
 gem 'thin'
 
-gem "paranoia", "~> 2"
+gem "paranoia", '~> 2.1.4'
 
 gem 'bootstrap-datepicker-rails'
 

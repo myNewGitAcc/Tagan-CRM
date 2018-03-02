@@ -1,4 +1,6 @@
 class MailServerEmails < ActiveRecord::Base
+  acts_as_paranoid
+
   belongs_to :user
 
   after_create  :cut_mail

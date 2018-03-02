@@ -4,6 +4,8 @@ class UserScore < ActiveRecord::Base
 
   enum type: [:debit, :credit]
 
+  acts_as_paranoid
+
   belongs_to :user
 
 end
