@@ -9,7 +9,8 @@ Rails.application.routes.draw do
   mount GrapeSwaggerRails::Engine => '/apidoc'
 
   devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
+  # ActiveAdmin.routes(self)
+  ActiveAdmin.routes(self) rescue ActiveAdmin::DatabaseHitDuringLoad
   post 'admin/project_report/get_tracking_time', to: 'admin/project_reports#get_tracking_time'
   get 'admin/users/:id/calendars', to: 'admin/users#user_calendar'
   post 'admin/candidates/:id/download_file', to: 'admin/candidates#download_file'
