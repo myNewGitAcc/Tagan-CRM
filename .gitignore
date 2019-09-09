@@ -19,3 +19,5 @@ node_modules/
 .env
 # Ignore application configuration
 /config/application.yml
+
+/config/secrets.yml
