@@ -109,10 +109,13 @@ group :development do
 
   gem 'capistrano'
 
-  gem 'capistrano3-puma'
+  gem 'capistrano-puma'
 
   gem 'capistrano-bundler'
 
   gem 'capistrano-rvm'
 
+  gem 'capistrano-passenger'
+
+  gem 'capistrano-figaro-yml'
 end

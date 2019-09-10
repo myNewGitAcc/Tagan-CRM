@@ -117,16 +117,19 @@ GEM
       sshkit (>= 1.9.0)
     capistrano-bundler (1.6.0)
       capistrano (~> 3.1)
+    capistrano-figaro-yml (1.0.5)
+      capistrano (~> 3.1)
+      sshkit (~> 1.2, >= 1.2.0)
+    capistrano-passenger (0.2.0)
+      capistrano (~> 3.0)
+    capistrano-puma (0.2.3)
+      capistrano (>= 3.0)
     capistrano-rails (1.4.0)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
-    capistrano3-puma (4.0.0)
-      capistrano (~> 3.7)
-      capistrano-bundler
-      puma (~> 4.0)
     carrierwave (1.2.1)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
@@ -625,9 +628,11 @@ DEPENDENCIES
   byebug
   capistrano
   capistrano-bundler
+  capistrano-figaro-yml
+  capistrano-passenger
+  capistrano-puma
   capistrano-rails
   capistrano-rvm
-  capistrano3-puma
   carrierwave
   coffee-rails (~> 4.1.0)
   delayed_job_active_record
@@ -672,4 +677,4 @@ DEPENDENCIES
   will_paginate-bootstrap (~> 1.0)
 
 BUNDLED WITH
-   1.16.2
+   1.17.3

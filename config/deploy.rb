@@ -1,12 +1,12 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.11.1"
 
-set :application, "my_app_name"
+set :application, "Tagan-CRM"
 set :repo_url, "git@github.com/myNewGitAcc/Tagan-CRM.git"
 
 set :branch, :master
 
-set :deploy_to, '/home/tasks/Tagan-CRM'
+set :deploy_to, '/home/deploy/tasks/Tagan-CRM'
 
 set :pty, true
 
@@ -18,7 +18,7 @@ set :keep_releases, 5
 
 set :rvm_type, :user
 
-set :rvm_ruby_version, 'ruby-2.3.1' # Should match ruby version
+set :rvm_ruby_version, 'ruby-2.3.8' # Should match ruby version
 
 
 set :puma_rackup, -> { File.join(current_path, 'config.ru') }
