@@ -2,7 +2,7 @@
 lock "~> 3.11.1"
 
 set :application, "Tagan-CRM"
-set :repo_url, "git@github.com/myNewGitAcc/Tagan-CRM.git"
+set :repo_url, "https://github.com/myNewGitAcc/Tagan-CRM.git"
 
 set :branch, :master
 
