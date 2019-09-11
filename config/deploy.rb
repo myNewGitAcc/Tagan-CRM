@@ -10,7 +10,7 @@ set :deploy_to, '/home/deploy/Tagan-CRM'
 
 set :pty, true
 
-set :linked_files, %w{/config/database.yml /config/secrets.yml}
+set :linked_files, %w{/home/deploy/Tagan-CRM/shared/config/database.yml /home/deploy/Tagan-CRM/shared/config/secrets.yml}
 
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/uploads}
 
