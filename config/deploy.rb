@@ -6,11 +6,11 @@ set :repo_url, "https://github.com/myNewGitAcc/Tagan-CRM.git"
 
 set :branch, :master
 
-set :deploy_to, '/home/deploy/tasks/Tagan-CRM'
+set :deploy_to, '/home/deploy/Tagan-CRM'
 
 set :pty, true
 
-set :linked_files, %w{config/database.yml config/secrets.yml}
+set :linked_files, %w{/config/database.yml /config/secrets.yml}
 
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/uploads}
 
@@ -48,6 +48,8 @@ set :puma_worker_timeout, nil
 set :puma_init_active_record, true
 
 set :puma_preload_app, false
+
+set :use_sudo, true
 
 
 # Default branch is :master
