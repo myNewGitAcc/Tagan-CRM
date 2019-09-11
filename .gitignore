@@ -12,6 +12,8 @@
 !/log/.keep
 /tmp
 /config/database.yml
+/shared/database.yml
+
 .idea/*
 /vendor/assets/components/
 node_modules/
@@ -21,3 +23,4 @@ node_modules/
 /config/application.yml
 
 /config/secrets.yml
+/shared/config/secrets/yml
