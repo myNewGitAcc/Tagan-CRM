@@ -6,7 +6,7 @@ set :repo_url, "https://github.com/myNewGitAcc/Tagan-CRM.git"
 
 set :branch, :master
 
-set :deploy_to, "/home/deploy/#{fetch :application}"
+set :deploy_to, '/home/deploy/Tagan-CRM'
 
 set :pty, true
 
