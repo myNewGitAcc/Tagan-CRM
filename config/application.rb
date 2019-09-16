@@ -5,6 +5,7 @@ require "net/http"
 
 require "action_view/railtie"
 require "sprockets/railtie"
+require 'browserify-rails'
 # require "rails/test_unit/railtie"
 require 'sprockets/es6'
 require 'vkontakte_api'
@@ -28,6 +29,9 @@ module SpaApp
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
 
     config.browserify_rails.commandline_options = "-t [ babelify --presets [ es2015 ] ]"
+
+    config.browserify_rails.commandline_options = "-t coffeeify --extension=\".js.coffee\""
+    config.browserify_rails.evaluate_node_modules = true
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]

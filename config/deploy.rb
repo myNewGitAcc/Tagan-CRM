@@ -1,18 +1,21 @@
-# config valid for current version and patch releases of Capistrano
-lock "~> 3.11.1"
-
 set :application, "Tagan-CRM"
 set :repo_url, "https://github.com/myNewGitAcc/Tagan-CRM.git"
 
 set :branch, :master
 
-set :deploy_to, '/home/deploy/Tagan-CRM'
+# set :deploy_to, '/home/deploy/Tagan-CRM'
+set :deploy_via, :remote_cache
 
 set :pty, true
 
-set :linked_files, %w{/home/deploy/Tagan-CRM/shared/config/database.yml /home/deploy/Tagan-CRM/shared/config/secrets.yml}
+#set :linked_files, %w{/home/deploy/Tagan-CRM/shared/config/database.yml /home/deploy/Tagan-CRM/shared/config/secrets.yml}
 
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/uploads}
+#set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/uploads}
+
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
+
+set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
+
 
 set :keep_releases, 5
 

@@ -1,8 +1,9 @@
 {
-  "name": "test_app",
+  "name": "tagan_crm",
   "version": "1.0.0",
   "description": "== README",
   "directories": {
+    "lib": "lib",
     "test": "test"
   },
   "dependencies": {
@@ -10,13 +11,13 @@
     "babel-preset-es2015": "^6.9.0",
     "babelify": "^7.3.0",
     "bower": "^1.7.9",
-    "browserify": "^10.2.6",
+    "browserify": "^16.5.0",
     "browserify-incremental": "^3.1.1",
     "underscore": "^1.8.3"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TaganTeam/test_app.git"
+    "url": "https://github.com/myNewGitAcc/Tagan-CRM.git"
   },
   "engines": {
     "node": ">= 0.10"
@@ -26,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/TaganTeam/test_app/issues"
   },
-  "homepage": "https://github.com/TaganTeam/test_app#readme",
+  "homepage": "https://github.com/myNewGitAcc/Tagan-CRM.git",
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
