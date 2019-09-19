@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
   has_many :project_reports, dependent: :destroy
   has_many :user_events, dependent: :destroy
 
+  has_many :posts
+
   api_accessible :basic do |t|
     t.add :id
     t.add :email

@@ -39,4 +39,5 @@ Rails.application.routes.draw do
   # end
 
   get '/*path' => 'auth#redirect'
-end
+  resources :posts
+ end

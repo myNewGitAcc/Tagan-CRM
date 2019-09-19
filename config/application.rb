@@ -31,7 +31,7 @@ module SpaApp
     config.browserify_rails.commandline_options = "-t [ babelify --presets [ es2015 ] ]"
 
     config.browserify_rails.commandline_options = "-t coffeeify --extension=\".js.coffee\""
-    config.browserify_rails.evaluate_node_modules = true
+    # config.browserify_rails.evaluate_node_modules = true
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]

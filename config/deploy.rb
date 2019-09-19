@@ -3,7 +3,7 @@ set :repo_url, "https://github.com/myNewGitAcc/Tagan-CRM.git"
 
 set :branch, :master
 
-# set :deploy_to, '/home/deploy/Tagan-CRM'
+set :deploy_to, '/home/deploy/Tagan-CRM'
 set :deploy_via, :remote_cache
 
 set :pty, true
@@ -23,6 +23,13 @@ set :rvm_type, :user
 
 set :rvm_ruby_version, 'ruby-2.3.8' # Should match ruby version
 
+set :pg_without_sudo, false
+set :pg_host, 'ec2-54-202-209-209.us-west-2.compute.amazonaws.com'
+set :pg_database, 'Tagan-CRM_prod'
+set :pg_username, 'tagan-crm'
+set :pg_ask_for_password, true
+
+set :passenger_restart_with_touch, true
 
 set :puma_rackup, -> { File.join(current_path, 'config.ru') }
 
@@ -53,6 +60,8 @@ set :puma_init_active_record, true
 set :puma_preload_app, false
 
 set :use_sudo, true
+
+after "deploy", "deploy:migrate"
 
 
 # Default branch is :master

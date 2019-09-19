@@ -31,6 +31,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
+gem 'capistrano-git-with-submodules', '~> 2.0', :github => 'ekho/capistrano-git-with-submodules'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -105,9 +106,11 @@ gem 'figaro'
 
 gem 'puma' #Should already be in your Gemfile
 
+gem 'passenger'
+
 group :development do
 
-  gem 'capistrano'
+  gem 'capistrano', '~> 3.4'
 
   gem 'capistrano-puma'
 
@@ -118,4 +121,6 @@ group :development do
   gem 'capistrano-passenger'
 
   gem 'capistrano-figaro-yml'
+
+  gem 'capistrano-postgresql'
 end
